@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?><diagram program="umlet" version="13.3">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>210</y>
+      <w>210</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>Game
+--
+- NetworkInterface
+- GUI
+
+- nbPlayer
+- Players: 
+- Map
+
+--
+menu()
+startGame()
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>240</x>
+      <y>20</y>
+      <w>210</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>NetworkInterface
+--
+- ListeningPort
+- nbClient
+- listClient
+- buffer
+
+--
+-static listen();
+-send(index client);
+
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>240</x>
+      <y>180</y>
+      <w>210</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>Player
+--
+- name
+- id
+- equip
+
+-nbPop
+
+- ressources
+- listBuildings
+- listUnits
+--
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>440</y>
+      <w>100</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>/Building/
+--
+
+--
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>560</y>
+      <w>100</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>Warefare
+--
+target
+--
+createUnit()
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>140</x>
+      <y>560</y>
+      <w>100</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>Farm
+--
+nbPop
+--
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>250</x>
+      <y>560</y>
+      <w>100</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>tower
+--
+range
+--
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>380</x>
+      <y>440</y>
+      <w>100</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>Unit
+--
+speed
+target
+--
+move()
+attack()
+getDamage()
+
+
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>200</x>
+      <y>390</y>
+      <w>100</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>/Element/
+--
+HP
+position
+size
+color
+timecreation
+--
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>380</x>
+      <y>560</y>
+      <w>100</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>SuperUnit
+--
+mana
+--
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>20</y>
+      <w>210</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>GUI
+--
+- Window
+- size
+- 
+--
+GUI()       
+start():int
+getState():int&amp; 
+- createContext():void 
+- drawMap():void 
+- drawUnitSelection():void 
+--
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

@@ -1,11 +1,9 @@
 #include "guilib.hpp"
 
-
-
-
 #include <iostream>
 #include <string>
 #include <vector>
+
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -22,7 +20,7 @@ GUI::GUI()
        window.create(VideoMode(WIN_W,WIN_H), GAME_NAME); 
        
        m_state=0;
-       m_elementSelected=1;
+       m_elementSelected=0;
        
        m_mapHeight = 600;
        m_mapWidth = 950;
@@ -61,14 +59,23 @@ int GUI::start()
                      }
                      if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
                      {
-                         m_elementSelected=0;
-                         int height= 50;
-                         int width= 50;
                          
-                         m_map[(msPos.y-height/2-m_mapPosY)*m_mapWidth + msPos.x-width/2-m_mapPosX]=1;
-                       
-                         // le bouton gauche est enfoncé : on tire
-                         //warehouse.setPosition(msPos.x/10*10,msPos.y/10*10);
+                            if(m_elementSelected!=0)
+                            {
+                                   int e_height[3]= {50,50,30};
+                                   int e_width[3] = {50,50,30};
+                                   int height = e_height[m_elementSelected-1];
+                                   int width  = e_width[m_elementSelected-1];
+
+
+                                   m_map[(msPos.y-height/2-m_mapPosY)*m_mapWidth + msPos.x-width/2-m_mapPosX]=m_elementSelected;
+                                   m_elementSelected=0;
+                            }
+                            for(int i=0;i<3;i++)
+                                   if(msPos.x > m_mapPosX +80*i && msPos.x < m_mapPosX + 60 +80*i && msPos.y > m_mapPosY + m_mapHeight && msPos.y < m_mapPosY + m_mapHeight + 60)
+                                          m_elementSelected = i+1;
+                                          
+                            
                          
                      }
                      if (event.type == sf::Event::TextEntered)
@@ -80,32 +87,19 @@ int GUI::start()
                      
               }
               
-              msPos=Mouse::getPosition(window);
+              msPos = Mouse::getPosition(window);
               
               
               window.clear(Color(48,48,48));
-              
-              
               
               
               for(int i=0;i<m_arraySprite.size();i++)
                      window.draw(*m_arraySprite[i]);
               for(int i=0;i<m_arrayText.size();i++)
                      window.draw(*m_arrayText[i]);
-                     
-              if(m_elementSelected)
-              {
-                     Sprite s;
-                     Texture t;// = new Texture();
-                     s.setTexture(t);
-                     int height= 50;
-                     int width= 50;
-                     s.setTextureRect(sf::IntRect(0, 0, width,height ));
-                     s.setPosition(Vector2f(msPos.x-width/2,msPos.y-height/2));
-                     s.setColor(sf::Color(0, 255, 0));
-                     
-                     window.draw(s);
-              }
+              
+              //std::cout << m_elementSelected-1 << endl;
+              drawUnitSelection();
               drawMap();
               
              //int nbButt=button.getNbOfBt();
@@ -294,13 +288,32 @@ void GUI::createContext()
                      m_arraySprite.push_back(mapSprite);
                      
                      
-                     Sprite * unitSrpite = new Sprite();
-                     unitSrpite->setTexture(t);
-                     int unitHeight= 50;
-                     int unitWidth= 50;
-                     unitSrpite->setTextureRect(sf::IntRect(0, 0, unitWidth,unitHeight ));
-                     unitSrpite->setPosition(Vector2f(m_mapPosX,m_mapPosY + m_mapHeight + 10));
-                     m_arraySprite.push_back(unitSrpite);
+                     Sprite * warehouseSrpite = new Sprite();
+                     warehouseSrpite->setTexture(t);
+                     int warehouseHeight= 60;
+                     int warehouseWidth= 60;
+                     warehouseSrpite->setTextureRect(sf::IntRect(0, 0, warehouseWidth, warehouseHeight ));
+                     warehouseSrpite->setPosition(Vector2f(m_mapPosX,m_mapPosY + m_mapHeight + 10));
+                     warehouseSrpite->setColor(sf::Color(0, 150, 0));
+                     m_arraySprite.push_back(warehouseSrpite);
+                     
+                     Sprite * farmSrpite = new Sprite();
+                     farmSrpite->setTexture(t);
+                     int farmHeight= 60;
+                     int farmWidth= 60;
+                     farmSrpite->setTextureRect(sf::IntRect(0, 0, farmWidth, farmHeight ));
+                     farmSrpite->setPosition(Vector2f(m_mapPosX + 80,m_mapPosY + m_mapHeight + 10));
+                     farmSrpite->setColor(sf::Color(0, 200, 0));
+                     m_arraySprite.push_back(farmSrpite);
+                     
+                     Sprite * towerSrpite = new Sprite();
+                     towerSrpite->setTexture(t);
+                     int towerHeight= 60;
+                     int towerWidth= 60;
+                     towerSrpite->setTextureRect(sf::IntRect(0, 0, towerWidth, towerHeight ));
+                     towerSrpite->setPosition(Vector2f(m_mapPosX + 160,m_mapPosY + m_mapHeight + 10));
+                     towerSrpite->setColor(sf::Color(0, 250, 0));
+                     m_arraySprite.push_back(towerSrpite);
                      
               }
               break;
@@ -461,6 +474,8 @@ void GUI::createContext()
 void GUI::drawMap()
 {
        m_mapdrawVal = (m_mapdrawVal+1)%2; //marker to know what has been drawn
+       int e_height[3]= {50,50,30};
+       int e_width[3] = {50,50,30};
        for(int i = 0; i < m_mapHeight ; i++ )
        {
               for(int j = 0; j < m_mapWidth ; j++ )
@@ -470,17 +485,21 @@ void GUI::drawMap()
                             m_mapDraw[i*m_mapWidth + j] = m_mapdrawVal; // mark the pixel as drawn
                             if(m_map[i*m_mapWidth + j]!=0)//if a elemen is present on the pixel
                             {
+                                   int type = m_map[i*m_mapWidth + j];
+                                   //cout << type << endl;
+                                   int u_height = e_height[type-1];
+                                   int u_width  = e_width[type-1];
                                    Sprite s;
                                    Texture t;
                                    s.setTexture(t);
-                                   int u_height= 50;
-                                   int u_width= 50;
+                                   
                                    s.setTextureRect(sf::IntRect(0, 0, u_width, u_height));
                                    s.setPosition(Vector2f(m_mapPosX+j,m_mapPosY+i));
-                                   s.setColor(sf::Color(0, 255, 0));
+                                   s.setColor(sf::Color(0, 100 + 50*type , 0));
                                    window.draw(s);
                                    
-                                   s.setTextureRect(sf::IntRect(0, 0, u_width-10, 10));
+                                   s.setPosition(Vector2f(m_mapPosX+j+2,m_mapPosY+i+2));
+                                   s.setTextureRect(sf::IntRect(0, 0, u_width-4, 8));
                                    s.setColor(sf::Color(255, 0, 0));
                                    window.draw(s);
                                    
@@ -492,3 +511,28 @@ void GUI::drawMap()
               }
        }
 }
+
+
+void GUI::drawUnitSelection()
+{
+       //m_mapPosX + 160,m_mapPosY + m_mapHeight + 10
+       
+       int e_height[3]= {50,50,30};
+       int e_width[3] = {50,50,30};
+       if(m_elementSelected)
+       {
+              
+              Sprite s;
+              Texture t;// = new Texture();
+              s.setTexture(t);
+              
+              int height = e_height[m_elementSelected-1];
+              int width = e_width[m_elementSelected-1];
+              s.setTextureRect(sf::IntRect(0, 0, width,height ));
+              s.setPosition(Vector2f(msPos.x-width/2,msPos.y-height/2));
+              s.setColor(sf::Color(0, 100 + 50*m_elementSelected, 0));
+              
+              window.draw(s);
+       }
+}
+

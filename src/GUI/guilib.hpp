@@ -87,6 +87,10 @@ class GUI
        
        void drawMap();
        
+       void drawUnitSelection();
+       
+       pthread_t m_thread_gui;
+       
        
        RenderWindow window;
        

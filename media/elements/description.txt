@@ -1,0 +1,3 @@
+warehouse;40x40;100
+farm;40x40;100
+tower;40x40;100
