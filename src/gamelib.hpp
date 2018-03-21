@@ -2,14 +2,13 @@
 #define GAME_LIB_H
 
 
+//#include "netlib.hpp"
 
-//#define WATCHPORT 4001
-
-#include "netlib.hpp"
 #include "GUI/guilib.hpp"
-#include "gamelib.hpp"
+#include "elements/element.hpp"
 
-#include <thread>
+
+
 #include <iostream>
 #include <string>
 
@@ -57,6 +56,10 @@ class Game
        
        void end(){m_gui_thread->join();};
        
+       void addElement(Element * element);
+       
+       int elmtListIndex();
+       
        
        
        
@@ -65,12 +68,12 @@ class Game
        GUI* m_gui;
        thread* m_gui_thread;
        
+       unsigned int *m_map;
+       int m_mapHeight;
+       int m_mapWidth;
        
-       
-       
-       
-       
-        
+       Element * m_elements[10000];
+       int m_elementsIndex;
        
 };
 

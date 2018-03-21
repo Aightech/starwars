@@ -41,7 +41,19 @@ int WATCHPORT;
 
 Game::Game()
 {
-       m_gui = new GUI();
+       m_mapHeight = MAP_HEIGHT;
+       m_mapWidth = MAP_WIDTH;
+       m_map = new unsigned int[m_mapHeight*m_mapWidth] ();
+       
+       m_gui = new GUI(m_map,m_mapWidth,m_mapHeight);
+       
+       for(int i =0; i<10000;i++)
+              m_elements[i]=NULL;
+       m_elementsIndex =0;
+       
+       Element::map()=m_map;
+       Element::mapHeight()=m_mapHeight;
+       Element::mapWidth()=m_mapWidth;
 
 }
 
@@ -53,8 +65,23 @@ void Game::init()
 void Game::start()
 {
        m_gui->getState()=GAME_CONTEXT;
-       m_gui_thread = new std::thread(&GUI::start, m_gui);
+       m_gui_thread = new std::thread(&GUI::start, m_gui,(void*)this);
+           
+}
+
+void Game::addElement(Element * element)
+{
        
 }
+
+int Game::elmtListIndex()
+{
+       int index = 0;
+       while(m_elements[index]==NULL){index++;}
+       return index;
+}
+
+
+
 
 

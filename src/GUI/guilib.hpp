@@ -4,6 +4,10 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <thread>
+
+#include "../elements/element.hpp"
+
 
 #include "buttonlib.hpp"
 #include "textboxlib.hpp"
@@ -74,9 +78,10 @@ class GUI
        *      It owns the different methods running the gui.
        */
        public:
-       GUI();
+       GUI(){};
+       GUI(unsigned int * map, int width, int height);
        
-       int start();
+       int start(void * game);
        /*! \brief Accessor method to get the state of the game from the main loop.   */
        int& getState(){return m_state;};
        
@@ -105,6 +110,7 @@ class GUI
        
        int m_state;
        int m_elementSelected;
+       bool m_elementOk;
        
        unsigned int *m_map;
        int m_mapHeight;

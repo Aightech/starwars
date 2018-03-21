@@ -1,0 +1,11 @@
+//map dimension
+#define MAP_HEIGHT 600
+#define MAP_WIDTH 950
+
+//Warehouse dimensions
+#define WAREHOUSE_TYPE 1
+#define WAREHOUSE_HP 500
+#define WAREHOUSE_WIDTH 50
+#define WAREHOUSE_HEIGHT 50
+#define WAREHOUSE_DEFENSE 5
+#define WAREHOUSE_COLOR 1

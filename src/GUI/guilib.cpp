@@ -1,4 +1,5 @@
 #include "guilib.hpp"
+#include "../gamelib.hpp"
 
 #include <iostream>
 #include <string>
@@ -11,7 +12,7 @@
 using namespace sf;
 using namespace std;
 
-GUI::GUI()
+GUI::GUI(unsigned int * map, int width, int height)
 {
        
        Button::setFont(GAME_FONT_BUTTON);
@@ -22,10 +23,10 @@ GUI::GUI()
        m_state=0;
        m_elementSelected=0;
        
-       m_mapHeight = 600;
-       m_mapWidth = 950;
+       m_mapHeight = height;
+       m_mapWidth = width;
        
-       m_map = new unsigned int[m_mapHeight*m_mapWidth] ();
+       m_map = map;//new unsigned int[m_mapHeight*m_mapWidth] ();
        m_mapDraw = new unsigned char[m_mapHeight*m_mapWidth] ();
        m_mapdrawVal = 0;
        
@@ -38,15 +39,14 @@ GUI::GUI()
 
 }
 
-int GUI::start()
+int GUI::start(void *pgame)
 {
+       Game * game = (Game *) pgame;
        createContext();
        
        
        while(window.isOpen() && m_state!=GAME_ONLINE)
        {
-              
-              
               Event event;
               while(window.pollEvent(event))
               {
@@ -62,14 +62,22 @@ int GUI::start()
                          
                             if(m_elementSelected!=0)
                             {
-                                   int e_height[3]= {50,50,30};
-                                   int e_width[3] = {50,50,30};
-                                   int height = e_height[m_elementSelected-1];
-                                   int width  = e_width[m_elementSelected-1];
-
-
-                                   m_map[(msPos.y-height/2-m_mapPosY)*m_mapWidth + msPos.x-width/2-m_mapPosX]=m_elementSelected;
-                                   m_elementSelected=0;
+                                   if(m_elementOk)
+                                   {
+                                          switch(m_elementSelected)
+                                          {
+                                                 case WAREHOUSE_TYPE:
+                                                 {
+                                                        int height = Warehouse::heigth();
+                                                        int width  = Warehouse::width();
+                                                        game->addElement(new Warehouse(game->elmtListIndex(),msPos.x-m_mapPosX,msPos.y-m_mapPosY));
+                                                 }break;
+                                          }
+                                          
+                                          
+                                          
+                                          m_elementSelected=0;
+                                   }
                             }
                             for(int i=0;i<3;i++)
                                    if(msPos.x > m_mapPosX +80*i && msPos.x < m_mapPosX + 60 +80*i && msPos.y > m_mapPosY + m_mapHeight && msPos.y < m_mapPosY + m_mapHeight + 60)
@@ -317,157 +325,6 @@ void GUI::createContext()
                      
               }
               break;
-              /*case LAN_MENU:
-              {
-                     string buttonsLabel[]={"host game","refresh","back"};
-                     int buttonIndex[]={HOST_BUTT,REFRESH_BUTT,BACK_BUTT};
-                     for(int i=0;i<3;i++)
-                     {
-                            buttons.push_back(new Button(buttonsLabel[i],Vector2f(20+window.getSize().x*i/3,window.getSize().y*7/8),buttonIndex[i]));
-                     }
-                     
-                     m_arraySprites.push_back(new Sprite);
-                     m_arraySprites[0]->setTexture(m_arrayConnectionTexture);
-                     m_arraySprites[0]->setTextureRect(sf::IntRect(0, 0, 651,37 ));
-                     m_arraySprites[0]->setPosition(Vector2f(window.getSize().x/2-350,window.getSize().y*3/10));
-                     
-                     for(int i=0;i<m_nbOfServers;i++)
-                     {      
-                            int n=5;
-                            
-                            m_arraySprites.push_back(new Sprite);
-                            m_arraySprites[i+1]->setTexture(m_arrayConnectionTexture);
-                            m_arraySprites[i+1]->setTextureRect(sf::IntRect(1, 38, 649,50 ));
-                            m_arraySprites[i+1]->setPosition(Vector2f(window.getSize().x/2-350+1,window.getSize().y*3/10+37+50*i));
-                            
-                            //Server number
-                            m_arrayText.push_back(new Text);
-                            m_arrayText[n*i]->setFont(m_font);
-                            char no[]="1";
-                            no[0]='1'+i;
-                            m_arrayText[n*i]->setString(no);
-                            m_arrayText[n*i]->setCharacterSize(15);
-                            m_arrayText[n*i]->setPosition(Vector2f(window.getSize().x/2-330,window.getSize().y*3/10+50+50*i));
-                            m_arrayText[n*i]->setColor(Color(0,0,0));
-                            
-                            //Server name
-                            m_arrayText.push_back(new Text);
-                            m_arrayText[n*i+1]->setFont(m_font);
-                            m_arrayText[n*i+1]->setString(m_servers[i].name);
-                            m_arrayText[n*i+1]->setCharacterSize(15);
-                            m_arrayText[n*i+1]->setPosition(Vector2f(window.getSize().x/2-300,window.getSize().y*3/10+50+50*i));
-                            m_arrayText[n*i+1]->setColor(Color(0,0,0));
-                            
-                            //Server IPaddress
-                            m_arrayText.push_back(new Text);
-                            m_arrayText[n*i+2]->setFont(m_font);
-                            m_arrayText[n*i+2]->setString(m_servers[i].IPaddress);
-                            m_arrayText[n*i+2]->setCharacterSize(15);
-                            m_arrayText[n*i+2]->setPosition(Vector2f(window.getSize().x/2-100,window.getSize().y*3/10+50+50*i));
-                            m_arrayText[n*i+2]->setColor(Color(0,0,0));
-                            
-                            //Server Port no
-                            m_arrayText.push_back(new Text);
-                            m_arrayText[n*i+3]->setFont(m_font);
-                            char port[]="20270000";
-                            sprintf(port,"%d",m_servers[i].portNo);
-                            m_arrayText[n*i+3]->setString(port);
-                            m_arrayText[n*i+3]->setCharacterSize(15);
-                            m_arrayText[n*i+3]->setPosition(Vector2f(window.getSize().x/2+70,window.getSize().y*3/10+50+50*i));
-                            m_arrayText[n*i+3]->setColor(Color(0,0,0));
-                            
-                            //Server date
-                            m_arrayText.push_back(new Text);
-                            m_arrayText[n*i+4]->setFont(m_font);
-                            char date[]="17h25m23";
-                            m_arrayText[n*i+4]->setString(date);
-                            m_arrayText[n*i+4]->setCharacterSize(15);
-                            m_arrayText[n*i+4]->setPosition(Vector2f(window.getSize().x/2+170,window.getSize().y*3/10+50+50*i));
-                            m_arrayText[n*i+4]->setColor(Color(0,0,0));
-                            
-                            buttons.push_back(new Button("join",Vector2f(window.getSize().x/2+305,window.getSize().y*3/10+35+50*i),JOIN_S1_BUTT+i));
-                     }
-                     
-              }
-              break;
-              case CREATION_MENU:
-              {
-                     string buttonsLabel[]={"start","back"};
-                     int buttonIndex[]={START_BUTT,BACK_BUTT};
-                     for(int i=0;i<2;i++)
-                     {
-                            buttons.push_back(new Button(buttonsLabel[i],Vector2f(20+window.getSize().x*7/9,window.getSize().y*(i+8)/10),buttonIndex[i]));
-                     }
-                     if(!m_host)
-                            buttons[0]->disable();
-                     m_arraySprites.push_back(new Sprite);
-                     m_arraySprites[0]->setTexture(m_arrayConnectionTexture);
-                     m_arraySprites[0]->setTextureRect(sf::IntRect(0, 0, 651,37 ));
-                     m_arraySprites[0]->setPosition(Vector2f(window.getSize().x/2-350,window.getSize().y*3/10));
-                     
-                     for(int i=0;i<m_nbPlayer;i++)
-                     {      
-                            int n=5;
-                            
-                            m_arraySprites.push_back(new Sprite);
-                            m_arraySprites[i+1]->setTexture(m_arrayConnectionTexture);
-                            m_arraySprites[i+1]->setTextureRect(sf::IntRect(1, 38, 649,50 ));
-                            m_arraySprites[i+1]->setPosition(Vector2f(window.getSize().x/2-350+1,window.getSize().y*3/10+37+50*i));
-                            
-                            //Player number
-                            m_arrayText.push_back(new Text);
-                            m_arrayText[n*i]->setFont(m_font);
-                            char no[]="1";
-                            no[0]='1'+i;
-                            m_arrayText[n*i]->setString(no);
-                            m_arrayText[n*i]->setString(no);
-                            m_arrayText[n*i]->setCharacterSize(15);
-                            m_arrayText[n*i]->setPosition(Vector2f(window.getSize().x/2-330,window.getSize().y*3/10+50+50*i));
-                            m_arrayText[n*i]->setColor(Color(0,0,0));
-                            
-                            //Player name
-                            m_arrayText.push_back(new Text);
-                            m_arrayText[n*i+1]->setFont(m_font);
-                            m_arrayText[n*i+1]->setString(m_players[i].name);
-                            m_arrayText[n*i+1]->setCharacterSize(15);
-                            m_arrayText[n*i+1]->setPosition(Vector2f(window.getSize().x/2-300,window.getSize().y*3/10+50+50*i));
-                            m_arrayText[n*i+1]->setColor(Color(0,0,0));
-                            
-                            //Player IPaddress
-                            m_arrayText.push_back(new Text);
-                            m_arrayText[n*i+2]->setFont(m_font);
-                            char IP[]="192.168.0.1";
-                            m_arrayText[n*i+2]->setString(m_players[i].IPaddress);
-                            m_arrayText[n*i+2]->setCharacterSize(15);
-                            m_arrayText[n*i+2]->setPosition(Vector2f(window.getSize().x/2-100,window.getSize().y*3/10+50+50*i));
-                            m_arrayText[n*i+2]->setColor(Color(0,0,0));
-                            
-                            //Player Port no
-                            m_arrayText.push_back(new Text);
-                            m_arrayText[n*i+3]->setFont(m_font);
-                            char port[]="20270000";
-                            sprintf(port,"%d",m_players[i].portNo);
-                            m_arrayText[n*i+3]->setString(port);
-                            m_arrayText[n*i+3]->setCharacterSize(15);
-                            m_arrayText[n*i+3]->setPosition(Vector2f(window.getSize().x/2+70,window.getSize().y*3/10+50+50*i));
-                            m_arrayText[n*i+3]->setColor(Color(0,0,0));
-                            
-                            //Player Port no
-                            m_arrayText.push_back(new Text);
-                            m_arrayText[n*i+4]->setFont(m_font);
-                            char date[]="17h25m23";
-                            m_arrayText[n*i+4]->setString(date);
-                            m_arrayText[n*i+4]->setCharacterSize(15);
-                            m_arrayText[n*i+4]->setPosition(Vector2f(window.getSize().x/2+170,window.getSize().y*3/10+50+50*i));
-                            m_arrayText[n*i+4]->setColor(Color(0,0,0));
-                            
-                            buttons.push_back(new Button("X",Vector2f(window.getSize().x/2+305,window.getSize().y*3/10+35+50*i),KILL_P1_BUTT+i));
-                            if(!m_host)
-                                   buttons[buttons.size()-1]->disable();
-                     }
-                     
-              }
-              break;*/
        }
 }
 
@@ -485,8 +342,7 @@ void GUI::drawMap()
                             m_mapDraw[i*m_mapWidth + j] = m_mapdrawVal; // mark the pixel as drawn
                             if(m_map[i*m_mapWidth + j]!=0)//if a elemen is present on the pixel
                             {
-                                   int type = m_map[i*m_mapWidth + j];
-                                   //cout << type << endl;
+                                   int type = m_map[i*m_mapWidth + j]%10;
                                    int u_height = e_height[type-1];
                                    int u_width  = e_width[type-1];
                                    Sprite s;
@@ -517,8 +373,8 @@ void GUI::drawUnitSelection()
 {
        //m_mapPosX + 160,m_mapPosY + m_mapHeight + 10
        
-       int e_height[3]= {50,50,30};
-       int e_width[3] = {50,50,30};
+       int e_height[3]= {Warehouse::heigth(),50,30};
+       int e_width[3] = {Warehouse::width(),50,30};
        if(m_elementSelected)
        {
               
@@ -528,9 +384,36 @@ void GUI::drawUnitSelection()
               
               int height = e_height[m_elementSelected-1];
               int width = e_width[m_elementSelected-1];
+              
               s.setTextureRect(sf::IntRect(0, 0, width,height ));
               s.setPosition(Vector2f(msPos.x-width/2,msPos.y-height/2));
-              s.setColor(sf::Color(0, 100 + 50*m_elementSelected, 0));
+              
+              
+              if(msPos.x-width/2 > m_mapPosX && msPos.y-height/2 > m_mapPosY && msPos.x+width/2 < m_mapPosX+m_mapWidth && msPos.y+height/2 < m_mapPosY+m_mapHeight)
+              {
+                     int x = msPos.x-width/2 - m_mapPosX;
+                     int y = msPos.y-height/2 - m_mapPosY;
+                     bool placeFree = true;
+                     for(int iu = 0 ; iu < height ; iu++)//mark the whole area of the element as marked
+                            for(int ju = 0; ju < width ; ju++)
+                                   if(m_map[(y+iu)*m_mapWidth + x + ju] != 0)
+                                          placeFree = false;
+                     if(placeFree)
+                     {       
+                            s.setColor(sf::Color(0, 100 + 50*m_elementSelected, 0));
+                            m_elementOk = true;
+                     }
+                     else
+                     {
+                            s.setColor(sf::Color(255, 0 , 0, 100));
+                            m_elementOk = false;
+                     }
+              }       
+              else
+              {
+                     s.setColor(sf::Color(100, 0 , 0, 100));
+                     m_elementOk = false;
+              }
               
               window.draw(s);
        }
