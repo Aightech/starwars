@@ -15,48 +15,56 @@ using namespace std;
 GUI::GUI(unsigned int * map, int width, int height)
 {
        
+       //////------- Loading different fonts ------- /////
        Button::setFont(GAME_FONT_BUTTON);
        Button::setTexture(GAME_THEME_BUTTON);
        
+       //////------- WINDOW SETTING ------- /////
        window.create(VideoMode(WIN_W,WIN_H), GAME_NAME); 
        
-       m_state=0;
-       m_elementSelected=0;
-       
+       //////------- MAP SETTING ------- /////
+       m_map = map;//get and share the game map
        m_mapHeight = height;
        m_mapWidth = width;
-       
-       m_map = map;//new unsigned int[m_mapHeight*m_mapWidth] ();
-       m_mapDraw = new unsigned char[m_mapHeight*m_mapWidth] ();
-       m_mapdrawVal = 0;
-       
-       m_mapPosX = window.getSize().x-m_mapWidth -10;
+       m_mapPosX = window.getSize().x-m_mapWidth - 10;//set the position of the map on the window
        m_mapPosY = 10;
        
+       //////------- FLAGS SETTING ------- /////
+       m_state=0;
+       m_elementSelected=0;
+       m_mapDraw = new unsigned char[m_mapHeight*m_mapWidth] ();//used in drawMap
+       m_mapdrawVal = 0;
        
-       
-         
+ 
 
 }
 
+//this methode is launch in a thread
 int GUI::start(void *pgame)
-{
+{       
+       //get the game object
        Game * game = (Game *) pgame;
+       
+       //create the first GUI context of the app
        createContext();
        
-       
+       Event event;
+       /////------- GUI LOOP ------- /////
        while(window.isOpen() && m_state!=GAME_ONLINE)
        {
-              Event event;
+              /////------- MONITOR EVENTS ------- /////
               while(window.pollEvent(event))
               {
+                     /////------- WINDOW CLOSED ------- /////
                      if(event.type==Event::Closed)
                             window.close();
+                     /////------- WINDOW RESIZED ------- /////
                      if (event.type == sf::Event::Resized)
                      {
                             window.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
                             createContext();
                      }
+                     /////------- MOUSE EVENT ------- /////
                      if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
                      {
                          
@@ -70,8 +78,25 @@ int GUI::start(void *pgame)
                                                  {
                                                         int height = Warehouse::heigth();
                                                         int width  = Warehouse::width();
+                                                        //add a ellement on the map
                                                         game->addElement(new Warehouse(game->elmtListIndex(),msPos.x-m_mapPosX,msPos.y-m_mapPosY));
                                                  }break;
+                                                 
+                                                 /*case FARM_TYPE:
+                                                 {
+                                                        int height = Warehouse::heigth();
+                                                        int width  = Warehouse::width();
+                                                        //add a ellement on the map
+                                                        //game->addElement(new Warehouse(game->elmtListIndex(),msPos.x-m_mapPosX,msPos.y-m_mapPosY));
+                                                 }break;
+                                                 
+                                                 case TOWER_TYPE:
+                                                 {
+                                                        int height = Warehouse::heigth();
+                                                        int width  = Warehouse::width();
+                                                        //add a ellement on the map
+                                                        //game->addElement(new Warehouse(game->elmtListIndex(),msPos.x-m_mapPosX,msPos.y-m_mapPosY));
+                                                 }break;*/
                                           }
                                           
                                           
@@ -79,6 +104,7 @@ int GUI::start(void *pgame)
                                           m_elementSelected=0;
                                    }
                             }
+                            //TODO transform this in a method
                             for(int i=0;i<3;i++)
                                    if(msPos.x > m_mapPosX +80*i && msPos.x < m_mapPosX + 60 +80*i && msPos.y > m_mapPosY + m_mapHeight && msPos.y < m_mapPosY + m_mapHeight + 60)
                                           m_elementSelected = i+1;
@@ -86,6 +112,7 @@ int GUI::start(void *pgame)
                             
                          
                      }
+                     /////------- KEYBOARD EVENT ------- /////
                      if (event.type == sf::Event::TextEntered)
                      {
                          //if (event.text.unicode < 128)
@@ -95,42 +122,36 @@ int GUI::start(void *pgame)
                      
               }
               
+              /////-------  GUI UPDATE ------- /////
+              
+              //get the mouse position
               msPos = Mouse::getPosition(window);
               
-              
+              //clear the window
               window.clear(Color(48,48,48));
               
               
+              /////------- DRAWING GUI OBJECT ARRAYS ------- /////
               for(int i=0;i<m_arraySprite.size();i++)
                      window.draw(*m_arraySprite[i]);
               for(int i=0;i<m_arrayText.size();i++)
                      window.draw(*m_arrayText[i]);
               
-              //std::cout << m_elementSelected-1 << endl;
-              drawUnitSelection();
+              /////------- DRAWING MAP ------- /////
               drawMap();
+              drawUnitSelection();
               
-             //int nbButt=button.getNbOfBt();
-             int select=0;
-             int s=0;
-             
+              /////------- GET BUTTON'S STATES ------- /////
+              int select=0,s=0;
               for(int i=0;i<m_arrayButton.size();i++)
                      select+=m_arrayButton[i]->update(window);
-              if(select)
+              if(select)//if a button was selected
               {
                      switch(abs(select))
                      {
                             case PLAY_BUTT:
-                            
                             break;
                             case LAN_BUTT:
-                                   //m_state=LAN_MENU;
-                                   
-                                   //m_nbOfServers=scanServers(m_servers);
-                                   
-                                   //if(m_nbOfServers==0)
-                                     //   printf("no server\n");  
-                                   //createMenu();
                             break;
                             
                             
@@ -138,75 +159,19 @@ int GUI::start(void *pgame)
                             case JOIN_S2_BUTT:
                             case JOIN_S3_BUTT:
                             case JOIN_S4_BUTT:
-                            {
-                            
-                                   int server=abs(select)-JOIN_S1_BUTT;
-                                   //printf("G: server :%d\n",server);
-                                   
-                                   //sprintf(m_buffer.Tx,"G%dP%dN%s",1,m_buffer.R_port,"aight;");
-                                   //m_buffer.T_flag=1;
-                                   //sendTCP(m_servers[m_server].IPaddress,m_servers[m_server].portNo,&m_buffer); 
-                                   //m_host=0; 
-                                     //m_buffer.R_flag=0;
-                                   //if(atoi(strchr(m_buffer.Rx,'G')+1)==1)
-                                   m_state=CREATION_MENU;
-                            }             
+                                   {int server=abs(select)-JOIN_S1_BUTT;}
                             break;
                             
                             case HOST_BUTT:
-                            {
-                                   m_state=CREATION_MENU;
-                                   /*m_host=1;
-                                   m_nbPlayer=1;
-                                   strcpy(m_players[0].name,"mwa");
-                                   strcpy(m_players[0].IPaddress,"127.0.0.1");
-                                   m_players[0].portNo=m_buffer.R_port;
-                                   m_players[0].no=0;
-                                   
-                                   if(!fork())
-                                   {
-                                          startServer();
-                                          exit(0);
-                                   }
-                                   
-                                   m_server=0;
-                                   strcpy(m_servers[0].IPaddress,"127.0.0.1");
-                                   m_servers[0].portNo=SERVERPORT;
-                                   */
-                                   
-                                   createContext();
-                            }
                             break;
                             
                             case KILL_P1_BUTT: 
                             case KILL_P2_BUTT: 
                             case KILL_P3_BUTT: 
-                            case KILL_P4_BUTT:
-                            { 
-                                   /*int toKill = abs(select)-KILL_P1_BUTT;
-                                   printf("G: s : %d\n",m_server);
-                                   printf("G: Killing : %d , to [%s] on %d\n",toKill,m_servers[m_server].IPaddress,m_servers[m_server].portNo);
-                                   sprintf(m_buffer.Tx,"G%dU%d",10,toKill);
-                                   m_buffer.T_flag=1;
-                                   sendTCP(m_servers[m_server].IPaddress,m_servers[m_server].portNo,&m_buffer); 
-                                   */
-                            }            
+                            case KILL_P4_BUTT:            
                             break;
                             
-                            case START_BUTT:
-                            { 
-                                   /*if(m_nbPlayer>1)
-                                   {
-                                          sprintf(m_buffer.Tx,"G%d",20);
-                                          m_buffer.T_flag=1;
-                                          sendTCP(m_servers[m_server].IPaddress,m_servers[m_server].portNo,&m_buffer);
-                                          
-                                          
-                                   }*/
-                                   
-                                   
-                                   
-                            }            
+                            case START_BUTT:           
                             break;
                             
                             
@@ -219,18 +184,8 @@ int GUI::start(void *pgame)
                             break;
                             
                             case BACK_BUTT:
-                            {
-                                   
-                                   /*if(m_state=CREATION_MENU)
-                                   {
-                                          sprintf(m_buffer.Tx,"G%dU%d",10,m_myNo);
-                                          m_buffer.T_flag=1;
-                                          sendTCP(m_servers[m_server].IPaddress,m_servers[m_server].portNo,&m_buffer); 
-                                   }*/
                                    m_state=MAIN_MENU;
-                                   
                                    createContext();
-                            }
                             break;
                             
                             case SAVE_BUTT:
@@ -238,7 +193,6 @@ int GUI::start(void *pgame)
                      }
               }
               
-              //window.draw(m_title);
               window.display();
        }
        
@@ -248,6 +202,7 @@ int GUI::start(void *pgame)
 
 void GUI::createContext()
 {
+       /////------- FLUSH ALL THE GUI ARRAYS ------- /////
        for(int i=m_arrayButton.size()-1;i>-1;i--)
        {
               delete m_arrayButton[i];
@@ -264,6 +219,7 @@ void GUI::createContext()
               m_arrayText.pop_back();
        }
        
+       /////------- CREATION F CONTEXTS ------- /////
        switch(m_state)
        {
               case MAIN_MENU:
@@ -331,8 +287,11 @@ void GUI::createContext()
 void GUI::drawMap()
 {
        m_mapdrawVal = (m_mapdrawVal+1)%2; //marker to know what has been drawn
+       
+       //TODO: create static access from ELEMENT
        int e_height[3]= {50,50,30};
        int e_width[3] = {50,50,30};
+       
        for(int i = 0; i < m_mapHeight ; i++ )
        {
               for(int j = 0; j < m_mapWidth ; j++ )
