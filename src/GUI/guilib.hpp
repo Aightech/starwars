@@ -82,6 +82,8 @@ class GUI
        GUI(unsigned int * map, int width, int height);
        
        int start(void * game);
+       
+       //TODO change name
        /*! \brief Accessor method to get the state of the game from the main loop.   */
        int& getState(){return m_state;};
        
@@ -90,35 +92,44 @@ class GUI
        /*! \brief Generate the graphics of the different menu's states of the game. It's mainly SFML sprites/Text/Buttons creation   */
        void createContext();
        
+       /*! \brief Draw the map and all the elements placed on it */
        void drawMap();
        
+       /*! \brief draw the selected unit at the mouse position. colored the Unit to indicate the validity of the position*/
        void drawUnitSelection();
        
-       pthread_t m_thread_gui;
        
-       
+       //the window of the gui
        RenderWindow window;
        
-       vector<Sprite*> m_arraySprite;
-       vector<Text*>   m_arrayText;
-       vector<Font*>   m_arrayFont;
+       //arrays containing graphical elements
+       vector<Sprite*> m_arraySprite;// such as icons
+       vector<Text*>   m_arrayText;// texts
+       vector<Font*>   m_arrayFont;// and fonts
        
-       vector<Button*> m_arrayButton;
-       vector<Textbox*> m_arrayTextBox;
+       vector<Button*> m_arrayButton;// but also buttons
+       vector<Textbox*> m_arrayTextBox;// and textboxes
        
-       Vector2i msPos;
+       Vector2i msPos;// store the mouse position
        
+       
+       //the state of the application 
        int m_state;
-       int m_elementSelected;
+       
+       //useful flags
+       int m_elementSelected;//use for drawMap
        bool m_elementOk;
        
-       unsigned int *m_map;
+       
+       unsigned int *m_map;//refer to the game map
        int m_mapHeight;
        int m_mapWidth;
        
+       //the position of the map on the window
        int m_mapPosX;
        int m_mapPosY;
        
+       //used in drawMap to ensure the update
        unsigned char *m_mapDraw;
        int m_mapdrawVal;
        

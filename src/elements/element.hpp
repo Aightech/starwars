@@ -41,10 +41,12 @@ class Element
        
        protected:
        void updatePos();
-       int updateID()
-       {return (m_ID = s_team*1000000000 + 100000*m_no + 100*m_HP + m_type);};
+       
        //     team numero  HP  type
        // ID:    4| 999 9|99 9|99
+       int updateID()
+       {return (m_ID = s_team*1000000000 + 100000*m_no + 100*m_HP + m_type);};
+       
        
        void setPos(int px, int py){m_x=px;m_y=py;};
        void virtual setSize(int pw,int ph) = 0;

@@ -15,6 +15,8 @@
 using namespace sf;
 using namespace std;
 
+
+//struct to store players data
 typedef struct _Player {
 
 	int no;
@@ -54,10 +56,13 @@ class Game
        /*! \brief launch an online game. The game have to be setted (through menu() )*/
        void start();
        
+       /*! \brief Wait the gui thread to end.*/
        void end(){m_gui_thread->join();};
        
+       /*! \brief */
        void addElement(Element * element);
        
+       /*! \brief */
        int elmtListIndex();
        
        
@@ -68,10 +73,13 @@ class Game
        GUI* m_gui;
        thread* m_gui_thread;
        
+       /*! \brief represent the map and all its elements (each pixel contain 0 or the ID of the element it shows)*/
        unsigned int *m_map;
        int m_mapHeight;
        int m_mapWidth;
        
+       
+       //TODO replace with a boost list
        Element * m_elements[10000];
        int m_elementsIndex;
        

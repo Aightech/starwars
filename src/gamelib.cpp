@@ -41,30 +41,45 @@ int WATCHPORT;
 
 Game::Game()
 {
+       
+       //////------- MAP SETTING ------- /////
+       //set the map dimensions thanks to the macros define in macro.txt file
        m_mapHeight = MAP_HEIGHT;
        m_mapWidth = MAP_WIDTH;
+       //allocate the int array representing the map 
        m_map = new unsigned int[m_mapHeight*m_mapWidth] ();
        
+       
+       //////------- GUI SETTING ------- /////
+       //allocate a new GUI and share with it the new map and its dimensions.
        m_gui = new GUI(m_map,m_mapWidth,m_mapHeight);
        
+       
+       //TODO: initaite a boost list
        for(int i =0; i<10000;i++)
               m_elements[i]=NULL;
        m_elementsIndex =0;
        
+       
+       //////------- ELEMENT SETTING ------- /////
        Element::map()=m_map;
        Element::mapHeight()=m_mapHeight;
        Element::mapWidth()=m_mapWidth;
 
 }
 
-
+//No current use
 void Game::init()
 {   
 }
 
 void Game::start()
 {
+       
+       //DEBUG: set the context to debug the game mode
        m_gui->getState()=GAME_CONTEXT;
+       
+       //start a new thread for the GUI
        m_gui_thread = new std::thread(&GUI::start, m_gui,(void*)this);
            
 }
