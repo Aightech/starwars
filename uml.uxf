@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?><diagram program="umlet" version="13.3">
-  <zoom_level>10</zoom_level>
+  <zoom_level>8</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>20</x>
-      <y>210</y>
-      <w>210</w>
-      <h>190</h>
+      <x>528</x>
+      <y>64</y>
+      <w>240</w>
+      <h>208</h>
     </coordinates>
     <panel_attributes>Game
 --
-- NetworkInterface
-- GUI
-
-- nbPlayer
-- Players: 
-- Map
-
+- m_gui: GUI*
+- m_gui_threadd: thread*
+- m_map: unsigned int*
+- m_mapHeight: int
+- m_mapWidth: int
+- m_lements[10000]: Element*
+- m_elementsIndex: int
 --
-menu()
-startGame()
---</panel_attributes>
++ Game()
++ init((): void
++ menu():  void
++ start(): void
++ end(): void
++ addElement(element: Element*: void
++ elmtListIndex(): int</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>240</x>
-      <y>20</y>
-      <w>210</w>
-      <h>150</h>
+      <x>1280</x>
+      <y>184</y>
+      <w>168</w>
+      <h>120</h>
     </coordinates>
     <panel_attributes>NetworkInterface
 --
@@ -48,10 +52,10 @@ startGame()
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>240</x>
-      <y>180</y>
-      <w>210</w>
-      <h>180</h>
+      <x>1304</x>
+      <y>0</y>
+      <w>168</w>
+      <h>144</h>
     </coordinates>
     <panel_attributes>Player
 --
@@ -71,10 +75,10 @@ startGame()
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>30</x>
-      <y>440</y>
-      <w>100</w>
-      <h>110</h>
+      <x>480</x>
+      <y>736</y>
+      <w>80</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>/Building/
 --
@@ -87,10 +91,10 @@ startGame()
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>30</x>
-      <y>560</y>
-      <w>100</w>
-      <h>110</h>
+      <x>480</x>
+      <y>872</y>
+      <w>80</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>Warefare
 --
@@ -103,10 +107,10 @@ createUnit()
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>140</x>
-      <y>560</y>
-      <w>100</w>
-      <h>110</h>
+      <x>384</x>
+      <y>872</y>
+      <w>80</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>Farm
 --
@@ -119,10 +123,10 @@ nbPop
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>250</x>
-      <y>560</y>
-      <w>100</w>
-      <h>110</h>
+      <x>568</x>
+      <y>872</y>
+      <w>80</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>tower
 --
@@ -135,10 +139,10 @@ range
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>380</x>
-      <y>440</y>
-      <w>100</w>
-      <h>110</h>
+      <x>760</x>
+      <y>736</y>
+      <w>80</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>Unit
 --
@@ -157,30 +161,45 @@ getDamage()
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>200</x>
-      <y>390</y>
-      <w>100</w>
-      <h>110</h>
+      <x>528</x>
+      <y>320</y>
+      <w>248</w>
+      <h>320</h>
     </coordinates>
     <panel_attributes>/Element/
 --
-HP
-position
-size
-color
-timecreation
+- m_ID: int
+- m_no: int
+- m_type: int
+- m_color: int
+- s_map: static unsigned int *
+- s_mapHeight: static int
+- s_mapWidth: static int
+- m_x: int
+- m_y: int
+- m_width: int
+- m_height: int
+- m_HP: int
+- m_defense: float
+- s_team: static: int
 --
-
++ Element()
++ Element(no: int, px: int, py: int)
++ map(): static unsigned int*
++ mapHeight(): static int&amp;
++ mapWidth(): static int&amp;
+# updatePos(): void
+# updateID(): int
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>380</x>
-      <y>560</y>
-      <w>100</w>
-      <h>110</h>
+      <x>760</x>
+      <y>872</y>
+      <w>80</w>
+      <h>88</h>
     </coordinates>
     <panel_attributes>SuperUnit
 --
@@ -193,25 +212,127 @@ mana
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>20</x>
-      <y>20</y>
-      <w>210</w>
-      <h>170</h>
+      <x>912</x>
+      <y>64</y>
+      <w>320</w>
+      <h>352</h>
     </coordinates>
     <panel_attributes>GUI
 --
-- Window
+- window: RenderWindow
 - size
-- 
+- m_arraySprite: vector&lt;Sprite*&gt;
+- m_arrayText: vector&lt;Text*&gt; 
+- m_arrayFont: vector&lt;Font*&gt;
+- m_arrayButton: vector&lt;Button*&gt;
+- m_arrayTextBox: vector&lt;Textbox*&gt;
+- msPos: Vector2i
+- m_state: int
+- m_elementSelected: int
+- m_elementOk: int
+- m_map: unsigned int*
+- m_mapHeight: int;
+- m_mapWidth: int
+- m_mapPosX: int
+- m_mapPosY: int
+- m_mapDraw: unisgned  char*
+-  m_mapdrawVal: int
 --
-GUI()       
-start():int
-getState():int&amp; 
++ GUI()
++ GUI(map: unsigned int*, width: int, height: int)       
++ start(game: void*): int
++ getState():int&amp; 
 - createContext():void 
 - drawMap():void 
-- drawUnitSelection():void 
---
---</panel_attributes>
+- drawUnitSelection():void </panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>696</x>
+      <y>632</y>
+      <w>120</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;130.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>512</x>
+      <y>632</y>
+      <w>96</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>100.0;10.0;10.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>416</x>
+      <y>816</y>
+      <w>88</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>90.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>536</x>
+      <y>816</y>
+      <w>88</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;90.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>512</x>
+      <y>816</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>792</x>
+      <y>816</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>640</x>
+      <y>264</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>760</x>
+      <y>152</y>
+      <w>168</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>190.0;10.0;10.0;10.0</additional_attributes>
   </element>
 </diagram>
