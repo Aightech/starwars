@@ -76,10 +76,12 @@ int GUI::start(void *pgame)
                                           {
                                                  case WAREHOUSE_TYPE:
                                                  {
-                                                        int height = Warehouse::heigth();
-                                                        int width  = Warehouse::width();
+                                                        //int height = Warehouse::heigth();
+                                                        //int width  = Warehouse::width();
                                                         //add a ellement on the map
+                                                        cout << "CLICKED" << endl;
                                                         game->addElement(new Warehouse(game->elmtListIndex(),msPos.x-m_mapPosX,msPos.y-m_mapPosY));
+                                                        
                                                  }break;
                                                  
                                                  /*case FARM_TYPE:
@@ -100,7 +102,7 @@ int GUI::start(void *pgame)
                                           }
                                           
                                           
-                                          
+                                          m_elementOk=false;
                                           m_elementSelected=0;
                                    }
                             }
@@ -196,6 +198,7 @@ int GUI::start(void *pgame)
               window.display();
        }
        
+       game->endGUI();
        return 0;
        
 }
@@ -289,8 +292,6 @@ void GUI::drawMap()
        m_mapdrawVal = (m_mapdrawVal+1)%2; //marker to know what has been drawn
        
        //TODO: create static access from ELEMENT
-       int e_height[3]= {50,50,30};
-       int e_width[3] = {50,50,30};
        
        for(int i = 0; i < m_mapHeight ; i++ )
        {
@@ -301,23 +302,29 @@ void GUI::drawMap()
                             m_mapDraw[i*m_mapWidth + j] = m_mapdrawVal; // mark the pixel as drawn
                             if(m_map[i*m_mapWidth + j]!=0)//if a elemen is present on the pixel
                             {
-                                   int type = m_map[i*m_mapWidth + j]%10;
-                                   int u_height = e_height[type-1];
-                                   int u_width  = e_width[type-1];
+                                   int type = m_map[i*m_mapWidth + j]%10;//get the type of the element to draw
+                                   int hp = m_map[i*m_mapWidth + j]/100%1000;//get the hp of the element to draw
+                                   
+                                   Element * e = Element::elementsType[type-1];
+                                   
+                                   int u_height = e->height();
+                                   int u_width  = e->width();
+                                   
                                    Sprite s;
                                    Texture t;
                                    s.setTexture(t);
                                    
+                                   //draw element
                                    s.setTextureRect(sf::IntRect(0, 0, u_width, u_height));
                                    s.setPosition(Vector2f(m_mapPosX+j,m_mapPosY+i));
                                    s.setColor(sf::Color(0, 100 + 50*type , 0));
                                    window.draw(s);
                                    
+                                   //draw HP
                                    s.setPosition(Vector2f(m_mapPosX+j+2,m_mapPosY+i+2));
-                                   s.setTextureRect(sf::IntRect(0, 0, u_width-4, 8));
+                                   s.setTextureRect(sf::IntRect(0, 0, ((float)hp/1000)*u_width-4, 8));
                                    s.setColor(sf::Color(255, 0, 0));
                                    window.draw(s);
-                                   
                                    for(int iu = 0 ; iu < u_height ; iu++)//mark the whole area of the element as marked
                                           for(int ju = 0; ju < u_width ; ju++)
                                                  m_mapDraw[(i+iu)*m_mapWidth + j + ju] = m_mapdrawVal;
@@ -330,10 +337,6 @@ void GUI::drawMap()
 
 void GUI::drawUnitSelection()
 {
-       //m_mapPosX + 160,m_mapPosY + m_mapHeight + 10
-       
-       int e_height[3]= {Warehouse::heigth(),50,30};
-       int e_width[3] = {Warehouse::width(),50,30};
        if(m_elementSelected)
        {
               
@@ -341,33 +344,38 @@ void GUI::drawUnitSelection()
               Texture t;// = new Texture();
               s.setTexture(t);
               
-              int height = e_height[m_elementSelected-1];
-              int width = e_width[m_elementSelected-1];
+              Element * e = Element::elementsType[m_elementSelected-1];
+              
+              int height = e->height();
+              int width  = e->width();
               
               s.setTextureRect(sf::IntRect(0, 0, width,height ));
               s.setPosition(Vector2f(msPos.x-width/2,msPos.y-height/2));
               
-              
+              //if we're in the map
               if(msPos.x-width/2 > m_mapPosX && msPos.y-height/2 > m_mapPosY && msPos.x+width/2 < m_mapPosX+m_mapWidth && msPos.y+height/2 < m_mapPosY+m_mapHeight)
               {
                      int x = msPos.x-width/2 - m_mapPosX;
                      int y = msPos.y-height/2 - m_mapPosY;
                      bool placeFree = true;
-                     for(int iu = 0 ; iu < height ; iu++)//mark the whole area of the element as marked
+                     
+                     //test the whole area of the element to know if the element is at a free place
+                     for(int iu = 0 ; iu < height ; iu++)
                             for(int ju = 0; ju < width ; ju++)
                                    if(m_map[(y+iu)*m_mapWidth + x + ju] != 0)
                                           placeFree = false;
-                     if(placeFree)
+                     if(placeFree)//if we're at free place
                      {       
                             s.setColor(sf::Color(0, 100 + 50*m_elementSelected, 0));
                             m_elementOk = true;
                      }
-                     else
+                     else//if there're already somthing at the place
                      {
                             s.setColor(sf::Color(255, 0 , 0, 100));
                             m_elementOk = false;
                      }
-              }       
+              }  
+              //if we're outside the map     
               else
               {
                      s.setColor(sf::Color(100, 0 , 0, 100));

@@ -2,10 +2,31 @@
 #define MAP_HEIGHT 600
 #define MAP_WIDTH 950
 
+//Elements
+#define NB_ELEMENT 2
+#define ELEMENTS_ARRAY {new Warehouse(),new Warehouse()}
+
+
 //Warehouse dimensions
 #define WAREHOUSE_TYPE 1
-#define WAREHOUSE_HP 500
+#define WAREHOUSE_HP 999
 #define WAREHOUSE_WIDTH 50
 #define WAREHOUSE_HEIGHT 50
 #define WAREHOUSE_DEFENSE 5
 #define WAREHOUSE_COLOR 1
+
+//Farm dimensions
+#define FARM_TYPE 2
+#define FARM_HP 999
+#define FARM_WIDTH 50
+#define FARM_HEIGHT 50
+#define FARM_DEFENSE 5
+#define FARM_COLOR 2
+
+//Tower dimensions
+#define TOWER_TYPE 2
+#define TOWER_HP 999
+#define TOWER_WIDTH 50
+#define TOWER_HEIGHT 50
+#define TOWER_DEFENSE 5
+#define TOWER_COLOR 2

@@ -55,9 +55,7 @@ Game::Game()
        m_gui = new GUI(m_map,m_mapWidth,m_mapHeight);
        
        
-       //TODO: initaite a boost list
-       for(int i =0; i<10000;i++)
-              m_elements[i]=NULL;
+       
        m_elementsIndex =0;
        
        
@@ -79,6 +77,8 @@ void Game::start()
        //DEBUG: set the context to debug the game mode
        m_gui->getState()=GAME_CONTEXT;
        
+       m_guiTerminate=false;
+       
        //start a new thread for the GUI
        m_gui_thread = new std::thread(&GUI::start, m_gui,(void*)this);
            
@@ -86,17 +86,30 @@ void Game::start()
 
 void Game::addElement(Element * element)
 {
+       cout << "Element added" << endl;
+       cout << m_elementsIndex <<  endl;
        
+        cout << "++++++++++++" << endl;
+        
+       m_elmtsMtx.lock();
+       m_elementsIndex++;
+       m_elements.push_back(element);
+       m_elmtsMtx.unlock();
 }
 
-int Game::elmtListIndex()
+
+void Game::update()
 {
-       int index = 0;
-       while(m_elements[index]==NULL){index++;}
-       return index;
+       m_elmtsMtx.lock();
+       for(list<Element*>::iterator it = m_elements.begin(); it !=  m_elements.end(); it++) 
+       {
+              m_elmtsMtx.unlock();
+              //cout << m_elementsIndex<< endl;
+              m_elmtsMtx.lock();
+       }
+       m_elmtsMtx.unlock();
+       //cout << "----"<< endl;
 }
-
-
 
 
 

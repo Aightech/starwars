@@ -8,9 +8,11 @@
 #include "elements/element.hpp"
 
 
-
+#include <list>
+#include <atomic>
 #include <iostream>
 #include <string>
+#include <mutex>
 
 using namespace sf;
 using namespace std;
@@ -57,15 +59,21 @@ class Game
        void start();
        
        /*! \brief Wait the gui thread to end.*/
-       void end(){m_gui_thread->join();};
+       bool GUIactive(){return !m_guiTerminate;};
+       
+       /*! \brief Wait the gui thread to end.*/
+       bool endGUI(){m_guiTerminate=true;};
        
        /*! \brief */
        void addElement(Element * element);
        
+      
        /*! \brief */
-       int elmtListIndex();
+       //TODO improve to tackle elmtListIndex Maximum and come back to 0 
+       int elmtListIndex(){return m_elementsIndex;};
        
-       
+       //TODO: finish method
+       void update();
        
        
        
@@ -80,8 +88,11 @@ class Game
        
        
        //TODO replace with a boost list
-       Element * m_elements[10000];
+       list<Element *> m_elements;
        int m_elementsIndex;
+       
+       atomic<bool> m_guiTerminate;
+       mutex m_elmtsMtx;
        
 };
 

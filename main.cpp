@@ -20,15 +20,19 @@ int main(int argc,char ** argv)
 {
        srand(time(NULL));
        
-       //Element *el = new Warehouse();
-       
        Game game;
        
        game.start();
        
-       //game.updateElements();
+       while(game.GUIactive())
+       {
+              //get server info
+              
+              //update game
+              game.update();
+       }
        
-       game.end();
+       cout << "Game ended" <<endl;
              
        return 0;
 }

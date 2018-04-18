@@ -24,7 +24,7 @@ bin/textboxlib.o: src/GUI/textboxlib.cpp src/GUI/textboxlib.hpp
 bin/element.o: src/elements/element.cpp src/elements/element.hpp
 	g++ -c src/elements/element.cpp -o bin/element.o	
 	
-bin/warehouse.o: src/elements/building/warehouse.cpp src/elements/building/warehouse.hpp
+bin/warehouse.o: src/elements/element.cpp src/elements/element.hpp src/elements/building/warehouse.cpp src/elements/building/warehouse.hpp
 	g++ -c src/elements/building/warehouse.cpp -o bin/warehouse.o	
 	
 	

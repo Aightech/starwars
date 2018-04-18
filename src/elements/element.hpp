@@ -11,6 +11,7 @@
 using namespace std;
 
 
+
 class Element
 {
        public:
@@ -18,6 +19,9 @@ class Element
        Element(int no, int px, int py):m_no(no),m_x(px),m_y(py){};
        
        ~Element(){};
+       
+       //TODO tranform to return a action 
+       //virtual int update()=0;
        
        int x(){return m_x;};
        int y(){return m_y;};
@@ -30,12 +34,16 @@ class Element
               return m_HP;
        };
        
-       
+       int width(){return m_width;}
+       int height(){return m_height;}
        
        
        static unsigned int*& map(){return s_map;};
        static int& mapHeight(){return s_mapHeight;};
        static int& mapWidth(){return s_mapWidth;};
+       
+       
+       static Element* elementsType[NB_ELEMENT];
        
        
        
@@ -70,7 +78,9 @@ class Element
        
        int m_HP;
        float m_defense;
-       static int s_team ;
+       static int s_team;
+
+       
        
        
 };
