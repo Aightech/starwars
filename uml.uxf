@@ -98,9 +98,9 @@
     </coordinates>
     <panel_attributes>Warefare
 --
-target
+- _target: int[2]
 --
-createUnit()
++ createUnit(): void
 </panel_attributes>
     <additional_attributes/>
   </element>
@@ -114,7 +114,7 @@ createUnit()
     </coordinates>
     <panel_attributes>Farm
 --
-nbPop
++ _nbPop: int
 --
 
 </panel_attributes>
@@ -130,7 +130,8 @@ nbPop
     </coordinates>
     <panel_attributes>tower
 --
-range
+- _reach: int
+- _damages: int
 --
 
 </panel_attributes>
@@ -141,17 +142,18 @@ range
     <coordinates>
       <x>760</x>
       <y>736</y>
-      <w>80</w>
-      <h>88</h>
+      <w>360</w>
+      <h>112</h>
     </coordinates>
     <panel_attributes>Unit
 --
-speed
-target
+- _speed: int (vitesse de déplacement sur la map en pixels/?)
+- _reach: int (portée)
+- _damages: int (dégâts infligés)
 --
-move()
-attack()
-getDamage()
++ move()
++ attack()
++ getDamage()
 
 
 
@@ -168,7 +170,7 @@ getDamage()
     </coordinates>
     <panel_attributes>/Element/
 --
-- m_ID: int
+- m_ID: int 
 - m_no: int
 - m_type: int
 - m_color: int
@@ -203,9 +205,9 @@ getDamage()
     </coordinates>
     <panel_attributes>SuperUnit
 --
-mana
+- _mana: int
 --
-
++ capacity(): void (quand full mana)
 </panel_attributes>
     <additional_attributes/>
   </element>
@@ -236,7 +238,7 @@ mana
 - m_mapPosX: int
 - m_mapPosY: int
 - m_mapDraw: unisgned  char*
--  m_mapdrawVal: int
+- m_mapdrawVal: int
 --
 + GUI()
 + GUI(map: unsigned int*, width: int, height: int)       
@@ -306,12 +308,12 @@ mana
     <id>Relation</id>
     <coordinates>
       <x>792</x>
-      <y>816</y>
+      <y>840</y>
       <w>24</w>
-      <h>72</h>
+      <h>48</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
