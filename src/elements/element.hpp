@@ -21,7 +21,7 @@ class Element
        ~Element(){};
        
        //TODO tranform to return a action 
-       //virtual int update()=0;
+       virtual int update()=0;
        
        int x(){return m_x;};
        int y(){return m_y;};
@@ -30,7 +30,7 @@ class Element
        int getDamage(int damage)
        {
               m_HP -= m_defense*damage;
-              updateID();
+              updatePos();
               return m_HP;
        };
        

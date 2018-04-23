@@ -7,6 +7,10 @@
 #define ELEMENTS_ARRAY {new Warehouse(),new Warehouse()}
 
 
+
+//Building
+#define NB_BUILDING 3
+
 //Warehouse dimensions
 #define WAREHOUSE_TYPE 1
 #define WAREHOUSE_HP 999
@@ -24,9 +28,9 @@
 #define FARM_COLOR 2
 
 //Tower dimensions
-#define TOWER_TYPE 2
+#define TOWER_TYPE 3
 #define TOWER_HP 999
 #define TOWER_WIDTH 50
 #define TOWER_HEIGHT 50
 #define TOWER_DEFENSE 5
-#define TOWER_COLOR 2
+#define TOWER_COLOR 3

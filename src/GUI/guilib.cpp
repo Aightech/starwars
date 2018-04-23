@@ -120,6 +120,12 @@ int GUI::start(void *pgame)
                          //if (event.text.unicode < 128)
                          char c=event.text.unicode;
                              std::cout << "ASCII character typed: " << (int)c << std::endl;
+                             if(c=='p')
+                             {
+                                   std::cout << "Attack " << std::endl;
+                                   game->test();
+                             
+                             }
                      }
                      
               }

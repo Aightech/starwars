@@ -48,8 +48,7 @@ class Warehouse: public Element
        
        ~Warehouse(){};
        
-       //static int width(){return s_width;};
-       //static int heigth(){return s_height;};
+       int update();
        
        
        private:

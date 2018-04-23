@@ -2,7 +2,6 @@
 #include <iostream>
 #include <string>
 
-#include "netlib.hpp"
 #include "GUI/guilib.hpp"
 #include "gamelib.hpp"
 
@@ -67,8 +66,10 @@ Game::Game()
 }
 
 //No current use
-void Game::init()
+void Game::test()
 {   
+       list<Element*>::iterator it = m_elements.begin();
+       (*it)->getDamage(1);
 }
 
 void Game::start()
@@ -104,7 +105,7 @@ void Game::update()
        for(list<Element*>::iterator it = m_elements.begin(); it !=  m_elements.end(); it++) 
        {
               m_elmtsMtx.unlock();
-              //cout << m_elementsIndex<< endl;
+              (*it)->update();
               m_elmtsMtx.lock();
        }
        m_elmtsMtx.unlock();
