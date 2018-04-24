@@ -9,6 +9,8 @@
 #include <netinet/in.h>
 #include <netdb.h> 
 
+#include <fcntl.h>
+
 
 
 NetAPI::NetAPI()
@@ -45,7 +47,7 @@ int NetAPI::send(int port, char * hostname, char * buf)
        bcopy((char *)m_Txdest->h_addr, (char *)&m_Txaddr.sin_addr.s_addr, m_Txdest->h_length);
        m_Txaddr.sin_port = htons(port);
 
-       this->send(&m_Txaddr,buf);
+       return this->send(&m_Txaddr,buf);
 }
 
 
@@ -54,7 +56,7 @@ int NetAPI::send(struct sockaddr_in * addr, char * buf)
 
        /* send the message to the server */
        m_Txlen = sizeof(*addr);
-       int n = sendto(m_Txfd, buf, strlen(buf), 0, (struct sockaddr *)addr, m_Txlen);
+       int n = sendto(m_Txfd, buf, strlen(buf), MSG_DONTWAIT, (struct sockaddr *)addr, m_Txlen);
        
        if (n < 0 && m_verbose) 
               printf("Tx:ERROR in sendto\n");
@@ -62,25 +64,25 @@ int NetAPI::send(struct sockaddr_in * addr, char * buf)
               printf("Tx:Sent [%s], to %s:%d\n", buf, inet_ntoa(addr->sin_addr), ntohs(addr->sin_port));
        
        
-       return 0;
+       return n;
 }
 
 int NetAPI::send(int port, char * hostname, char * buf, char recvBuff[])
 {
-       this->send(port,hostname,buf);
+       int n = this->send(port,hostname,buf);
        
        usleep(0.1);
        /* print the server's reply */
-       int n = recvfrom(m_Txfd, recvBuff, BUFSIZE, 0, (struct sockaddr*)&m_Txaddr, &m_Txlen);
+       int m = recvfrom(m_Txfd, recvBuff, BUFSIZE, 0, (struct sockaddr*)&m_Txaddr, &m_Txlen);
        
        if(m_verbose)
        {
-              if (n < 0) 
+              if (m < 0) 
                      printf("Tx:ERROR in recvfrom\n");
               else
                      printf("Tx:data from server: [%s]\n", recvBuff);
        }
-       return 0;
+       return m;
 }
 
 
@@ -88,20 +90,100 @@ int NetAPI::send(int port, char * hostname, char * buf, char recvBuff[])
 int NetAPI::send(struct sockaddr_in * addr, char * buf, char recvBuff[])
 {
 
-       this->send(addr,buf);
+       int n = this->send(addr,buf);
        usleep(0.1);
        /* print the server's reply */
-       int n = recvfrom(m_Txfd, recvBuff, BUFSIZE, 0, (struct sockaddr*)addr, &m_Txlen);
+       int m = recvfrom(m_Txfd, recvBuff, BUFSIZE, 0, (struct sockaddr*)addr, &m_Txlen);
        
        if(m_verbose)
        {
-              if (n < 0) 
+              if (m < 0) 
                      printf("Tx:ERROR in recvfrom\n");
               else
                      printf("Tx:data from server: [%s]\n", recvBuff);
        }
-       return 0;
+       return m;
 }
+
+int NetAPI::connectToServer(int port, char * IP)
+{
+       char request[30];
+       sprintf(request,"C%dP%s",m_Rxport,m_connectionPhrase);
+       char reply[50];
+       
+       // Set non-blocking 
+       long arg = fcntl(m_Txfd, F_GETFL, NULL); 
+       arg |= O_NONBLOCK; 
+       fcntl(m_Txfd, F_SETFL, arg);
+       
+       int n;
+       if ((n = this->send(port,IP,(char *)request,reply)) < 0)
+       { 
+              if (errno == EWOULDBLOCK) 
+              {
+	              printf("General:Connection in progress... : \t");
+	              int valopt; 
+                     long arg; 
+                     fd_set myset; 
+                     struct timeval tv; 
+                     socklen_t lon;
+                     
+	              tv.tv_sec = 0; 
+                     tv.tv_usec = 10000; 
+                     FD_ZERO(&myset); 
+                     FD_SET(m_Txfd, &myset); 
+                     if (select(m_Txfd+1, NULL, &myset, NULL, &tv) > 0) 
+                     { 
+                            lon = sizeof(int); 
+                            getsockopt(m_Txfd, SOL_SOCKET, SO_ERROR, (void*)(&valopt), &lon); 
+                            if(valopt==0)
+                            { 
+                                   printf("Connection established\n");
+                                   
+                                   //set back to blocking socket
+                                   arg = fcntl(m_Txfd, F_GETFL, NULL); 
+                                   arg &= (~O_NONBLOCK); 
+                                   fcntl(m_Txfd, F_SETFL, arg);
+                                    
+                                   recvfrom(m_Txfd, reply, BUFSIZE, 0, (struct sockaddr*)&m_Txaddr, &m_Txlen);
+                                   
+                            }
+                            else
+                                   printf("Connection failed.\n");  
+                            
+                     }
+                     else
+                         printf("Timeout reached.\n");     
+              }
+		
+       }
+       if(strcmp(reply,"accepted")==0)
+       {
+              /* build the server's Internet address */
+              m_Txdest = gethostbyname(IP);
+              bzero((char *) &m_Serveraddr, sizeof(m_Serveraddr));
+              m_Serveraddr.sin_family = AF_INET;
+              bcopy((char *)m_Txdest->h_addr, (char *)&m_Serveraddr.sin_addr.s_addr, m_Txdest->h_length);
+              m_Serveraddr.sin_port = htons(port);
+              if(m_verbose)
+                     printf("General:Connection success to %s:%d\n", inet_ntoa(m_Serveraddr.sin_addr), ntohs(m_Serveraddr.sin_port));
+              return 1;
+       }
+       else
+       {
+              if(m_verbose)
+                     printf("General:Connection fail to %s:%d\n", IP, port);
+              return 0;
+       }
+       
+       //set back to non bocking socket
+       arg = fcntl(m_Txfd, F_GETFL, NULL); 
+       arg &= (~O_NONBLOCK); 
+       fcntl(m_Txfd, F_SETFL, arg);
+       
+}
+
+
 
 int NetAPI::startReceiver(int port)
 {
@@ -161,10 +243,11 @@ int NetAPI::receiver()
 
               if(m_RxBufferIndex < NB_BUFFERS)
               {
+                     m_bufferMtx[++m_RxBufferIndex].lock();//lock the mutex of the new buffer
                      /*
                      * recvfrom: receive a UDP datagram from a client
                      */
-                     bzero(m_RxBuffer[++m_RxBufferIndex], BUFSIZE);
+                     bzero(m_RxBuffer[m_RxBufferIndex], BUFSIZE);
                      int n = recvfrom(m_Rxfd, m_RxBuffer[m_RxBufferIndex], BUFSIZE,MSG_WAITALL,(struct sockaddr *) m_claddr[m_clientIndex], &m_cllen);
                      
                      if (n < 0 && m_verbose)
@@ -180,7 +263,9 @@ int NetAPI::receiver()
                      {
                             case 'M'://message
                             {
-                            
+                                   processReceiverMessage(m_RxBuffer[m_RxBufferIndex]);
+                                   m_bufferMtx[m_RxBufferIndex].unlock();
+                                   strcpy(reply,"rcvd");
                             }break;
                             case 'C'://connection attempt :  C[portno]P[connectionPhrase]
                             {
@@ -212,13 +297,16 @@ int NetAPI::receiver()
                                           else
                                                  printf("Rx:Connection phrase incorect\n"); 
                                    }
-                                   m_RxBufferIndex--;
+                                   m_bufferMtx[m_RxBufferIndex--].unlock();
                                           
                             }break;
-                     
+                            default:
+                                   m_bufferMtx[m_RxBufferIndex--].unlock();
+                            
                             
                      
                      }
+                     
                      
                      /*    
                      * sendto: echo the input back to the client 
@@ -248,6 +336,19 @@ int NetAPI::endReceiver()
        send(m_Rxport,(char *)"127.0.0.1",(char *)"halt");
        if(m_ReceiverThread->joinable())
               m_ReceiverThread->join();
+}
+
+int NetAPI::getReceiverBuffer(char *buffer)
+{
+       if(m_RxBufferIndex>-1)
+       {
+              m_bufferMtx[m_RxBufferIndex].lock();
+              printf("test %s\n",m_RxBuffer[m_RxBufferIndex]);
+              strcpy(buffer,m_RxBuffer[m_RxBufferIndex]);
+              m_bufferMtx[m_RxBufferIndex--].unlock();
+              return m_RxBufferIndex;
+       }
+       return -2;
 }
 
 void NetAPI::setConnectionPhrase(char * conPhr)
