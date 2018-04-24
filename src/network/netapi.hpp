@@ -22,19 +22,26 @@ using namespace std;
 
 class NetAPI
 {
+       /*! \class NetAPI
+       * \brief This class is an API to interface different program through IP.
+       */
        public:
-              
+       
+       /*! \brief Constructor */
        NetAPI();
        
+       /*! \brief Destructor */
        ~NetAPI()
        {
               for(int i=0; i<m_claddr.size();i++)
                      m_claddr.pop_back();
        };
        
+       /*! \brief Scans the network by attempting to connect to servers whose IP addresses ranged from IPmin to IPmax on port port */
        int scan(int port,int IPmin =0,int IPmax=255 );
        
        //------ SENDING METHODES ---------// 
+       /*! \brief Sending methodes */
        int send(int port, char * IP, char * buf);
        int send(struct sockaddr_in *, char * buf);
        
@@ -53,23 +60,33 @@ class NetAPI
               
               
        //--------------- SERVER METHODES ------------//
+       /*! \brief Attempts to connect to the server. If the attempt is successful the address is set as the api server address. */
        int connectToServer(int port, char * IP);
        
+       /*! \brief Launch a thread managing the reception of message from other netapi */
        int startReceiver(int port);
        
+       /*! \brief vitual methode to implement in extented object in order to have a direct access to the message received by the receiver. The message need to start with a 'M' */
        virtual int processReceiverMessage(char * buffer){};
        
+       /*! \brief Store the last filled received buffer in the buffer passed in argument. and returns the number of unread buffer  */
        int getReceiverBuffer(char *buffer);
        
+       /*! \brief Stops the Receiver thread */
        int endReceiver();
        
+       /*! \brief Set the connection phrase use as a identification when trying to connect to other netapi */
        void setConnectionPhrase(char * conPhr);
        
+       /*! \brief returns the list of aknowledged clients */
        vector<struct sockaddr_in *> getClientAddr();
        
        
        //----------- OTHERS -------------//
+       /*! \brief Set the net api to printf info in the console */
        void verbose(){m_verbose=true;};
+       void setConnectable(){m_connectable=true;};
+       void unsetConnectable(){m_connectable=false;};
        
        protected:
        
@@ -89,10 +106,11 @@ class NetAPI
        int m_Rxfd;
        struct sockaddr_in m_Rxaddr;
        socklen_t m_Rxlen;
-       //listener thread
+       //Receiver thread
        thread* m_ReceiverThread;
        int m_Rxport;
        atomic<bool> m_ReceiverActive;
+       int m_connectable=false;
        
        int m_RxBufferIndex;
        char m_RxBuffer[NB_BUFFERS][BUFSIZE];
