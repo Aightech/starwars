@@ -4,11 +4,18 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <ctime>
 
 #include "../macro.txt"
 
 //using namespace sf;
 using namespace std;
+
+typedef struct _Request {
+	int type;
+	int val1;
+	int val2;
+}Request;
 
 
 
@@ -16,12 +23,12 @@ class Element
 {
        public:
        Element(){};
-       Element(int no, int px, int py):m_no(no),m_x(px),m_y(py){};
+       Element(int no, int px, int py):m_no(no),m_x(px),m_y(py){ m_clock = clock();};
        
        ~Element(){};
        
        //TODO tranform to return a action 
-       virtual int update()=0;
+       virtual Request update()=0;
        
        int x(){return m_x;};
        int y(){return m_y;};
@@ -29,7 +36,7 @@ class Element
        
        int getDamage(int damage)
        {
-              m_HP -= m_defense*damage;
+              m_HP -= damage/m_defense;
               updatePos();
               return m_HP;
        };
@@ -41,6 +48,9 @@ class Element
        static unsigned int*& map(){return s_map;};
        static int& mapHeight(){return s_mapHeight;};
        static int& mapWidth(){return s_mapWidth;};
+       
+       static bool isPlaceFree(int px,int py,int pw, int ph);
+       static bool placeAround(Element *fixed, Element *toPlaced,int *x, int *y);
        
        
        static Element* elementsType[NB_ELEMENT];
@@ -79,6 +89,9 @@ class Element
        int m_HP;
        float m_defense;
        static int s_team;
+       
+       clock_t m_clock;
+       int m_test =0;
 
        
        
@@ -87,5 +100,6 @@ class Element
 
 
 #include "building/warehouse.hpp"
+#include "unit/unit.hpp"
 
 #endif

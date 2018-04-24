@@ -3,8 +3,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>528</x>
-      <y>64</y>
+      <x>488</x>
+      <y>88</y>
       <w>240</w>
       <h>208</h>
     </coordinates>
@@ -30,12 +30,12 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1280</x>
-      <y>184</y>
+      <x>176</x>
+      <y>104</y>
       <w>168</w>
       <h>120</h>
     </coordinates>
-    <panel_attributes>NetworkInterface
+    <panel_attributes>NetAPI
 --
 - ListeningPort
 - nbClient
@@ -52,8 +52,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1304</x>
-      <y>0</y>
+      <x>1264</x>
+      <y>24</y>
       <w>168</w>
       <h>144</h>
     </coordinates>
@@ -75,8 +75,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>480</x>
-      <y>736</y>
+      <x>440</x>
+      <y>760</y>
       <w>80</w>
       <h>88</h>
     </coordinates>
@@ -91,8 +91,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>480</x>
-      <y>872</y>
+      <x>440</x>
+      <y>896</y>
       <w>80</w>
       <h>88</h>
     </coordinates>
@@ -107,8 +107,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>384</x>
-      <y>872</y>
+      <x>344</x>
+      <y>896</y>
       <w>80</w>
       <h>88</h>
     </coordinates>
@@ -123,8 +123,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>568</x>
-      <y>872</y>
+      <x>528</x>
+      <y>896</y>
       <w>80</w>
       <h>88</h>
     </coordinates>
@@ -133,6 +133,7 @@
 - _reach: int
 - _damages: int
 --
++ attack()
 
 </panel_attributes>
     <additional_attributes/>
@@ -140,8 +141,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>760</x>
-      <y>736</y>
+      <x>720</x>
+      <y>760</y>
       <w>360</w>
       <h>112</h>
     </coordinates>
@@ -153,7 +154,6 @@
 --
 + move()
 + attack()
-+ getDamage()
 
 
 
@@ -163,8 +163,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>528</x>
-      <y>320</y>
+      <x>488</x>
+      <y>344</y>
       <w>248</w>
       <h>320</h>
     </coordinates>
@@ -190,6 +190,7 @@
 + map(): static unsigned int*
 + mapHeight(): static int&amp;
 + mapWidth(): static int&amp;
++ getDamage()
 # updatePos(): void
 # updateID(): int
 </panel_attributes>
@@ -198,8 +199,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>760</x>
-      <y>872</y>
+      <x>720</x>
+      <y>896</y>
       <w>80</w>
       <h>88</h>
     </coordinates>
@@ -214,8 +215,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>912</x>
-      <y>64</y>
+      <x>872</x>
+      <y>88</y>
       <w>320</w>
       <h>352</h>
     </coordinates>
@@ -252,8 +253,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>696</x>
-      <y>632</y>
+      <x>656</x>
+      <y>656</y>
       <w>120</w>
       <h>120</h>
     </coordinates>
@@ -263,8 +264,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>512</x>
-      <y>632</y>
+      <x>472</x>
+      <y>656</y>
       <w>96</w>
       <h>120</h>
     </coordinates>
@@ -274,8 +275,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>416</x>
-      <y>816</y>
+      <x>376</x>
+      <y>840</y>
       <w>88</w>
       <h>72</h>
     </coordinates>
@@ -285,8 +286,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>536</x>
-      <y>816</y>
+      <x>496</x>
+      <y>840</y>
       <w>88</w>
       <h>72</h>
     </coordinates>
@@ -296,8 +297,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>512</x>
-      <y>816</y>
+      <x>472</x>
+      <y>840</y>
       <w>24</w>
       <h>72</h>
     </coordinates>
@@ -307,8 +308,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>792</x>
-      <y>840</y>
+      <x>752</x>
+      <y>864</y>
       <w>24</w>
       <h>48</h>
     </coordinates>
@@ -318,8 +319,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>640</x>
-      <y>264</y>
+      <x>600</x>
+      <y>288</y>
       <w>24</w>
       <h>72</h>
     </coordinates>
@@ -329,8 +330,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>760</x>
-      <y>152</y>
+      <x>720</x>
+      <y>176</y>
       <w>168</w>
       <h>24</h>
     </coordinates>

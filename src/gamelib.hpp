@@ -34,6 +34,8 @@ typedef struct _Player {
 
 
 
+
+
 class Game
 {
        /*! \class Game
@@ -63,6 +65,8 @@ class Game
        
        /*! \brief Wait the gui thread to end.*/
        bool endGUI(){m_guiTerminate=true;};
+       
+       bool request(Request* req,Element *from);
        
        /*! \brief */
        void addElement(Element * element);

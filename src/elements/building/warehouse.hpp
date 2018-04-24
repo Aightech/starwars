@@ -43,12 +43,14 @@ class Warehouse: public Element
               m_y -= m_height/2;
               
               
+              
+              
               updatePos();
        };
        
        ~Warehouse(){};
        
-       int update();
+       Request update();
        
        
        private:

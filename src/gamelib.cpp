@@ -96,16 +96,71 @@ void Game::addElement(Element * element)
        m_elementsIndex++;
        m_elements.push_back(element);
        m_elmtsMtx.unlock();
+       
+       
+}
+
+bool Game::request(Request* req,Element * elmt)
+{
+       switch(req->type)
+       {
+              case NO_REQUEST:     break;
+              
+              case R_CREATE_BUILDING:
+              case R_CREATE_WAREHOUSE:
+              case R_CREATE_FARM:
+              case R_CREATE_TOWER:
+              {
+              
+              }break;
+              
+              case R_CREATE_UNIT:
+              case R_CREATE_SUPERUNIT:
+              {
+                     switch(req->type)
+                     {
+                            case R_CREATE_UNIT:
+                            {
+                                   this->addElement(new Unit(m_elementsIndex,req->val1,req->val2));
+                                   cout << "request Building"<< endl;
+                            }break;
+                            case R_CREATE_SUPERUNIT:
+                            {
+                            
+                            }break;
+                     }
+              }break;
+              
+              case R_MOVE:
+              {
+                     ((Unit *)elmt)->move(req->val1,req->val2);
+                     cout << "request Unit"<< endl;
+                     
+              }break;
+              
+              case R_ACTION:
+              case R_HEAL:
+              case R_ATTACK:
+              {
+              
+              }break;
+       }
+       return true;
 }
 
 
 void Game::update()
 {
+       Request r={0,0,0};
        m_elmtsMtx.lock();
        for(list<Element*>::iterator it = m_elements.begin(); it !=  m_elements.end(); it++) 
        {
               m_elmtsMtx.unlock();
-              (*it)->update();
+              
+              r = (*it)->update();
+              
+              this->request(&r,(*it));
+              
               m_elmtsMtx.lock();
        }
        m_elmtsMtx.unlock();

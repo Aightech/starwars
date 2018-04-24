@@ -3,8 +3,8 @@
 #define MAP_WIDTH 950
 
 //Elements
-#define NB_ELEMENT 2
-#define ELEMENTS_ARRAY {new Warehouse(),new Warehouse()}
+#define NB_ELEMENT 4
+#define ELEMENTS_ARRAY {new Warehouse(),NULL,NULL,new Unit()}
 
 
 
@@ -34,3 +34,30 @@
 #define TOWER_HEIGHT 50
 #define TOWER_DEFENSE 5
 #define TOWER_COLOR 3
+
+//Unit dimensions
+#define UNIT_TYPE 4
+#define UNIT_HP 999
+#define UNIT_WIDTH 10
+#define UNIT_HEIGHT 10
+#define UNIT_DEFENSE 5
+#define UNIT_COLOR 10
+
+
+
+
+//Request type
+#define NO_REQUEST -1
+#define R_CREATE_BUILDING 0
+#define R_CREATE_WAREHOUSE 1
+#define R_CREATE_FARM 2
+#define R_CREATE_TOWER 3
+
+#define R_CREATE_UNIT 10
+#define R_CREATE_SUPERUNIT 11
+
+#define R_MOVE 20
+
+#define R_ACTION 30
+#define R_ATTACK 31
+#define R_HEAL 32
