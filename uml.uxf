@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><diagram program="umlet" version="13.3">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
   <zoom_level>8</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>488</x>
-      <y>88</y>
+      <x>376</x>
+      <y>72</y>
       <w>240</w>
       <h>208</h>
     </coordinates>
@@ -30,8 +31,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>176</x>
-      <y>104</y>
+      <x>64</x>
+      <y>88</y>
       <w>168</w>
       <h>120</h>
     </coordinates>
@@ -52,8 +53,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1264</x>
-      <y>24</y>
+      <x>96</x>
+      <y>264</y>
       <w>168</w>
       <h>144</h>
     </coordinates>
@@ -75,8 +76,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>440</x>
-      <y>760</y>
+      <x>328</x>
+      <y>744</y>
       <w>80</w>
       <h>88</h>
     </coordinates>
@@ -91,14 +92,14 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>440</x>
-      <y>896</y>
-      <w>80</w>
+      <x>304</x>
+      <y>880</y>
+      <w>128</w>
       <h>88</h>
     </coordinates>
     <panel_attributes>Warefare
 --
-- _target: int[2]
+- m_target: int[2]
 --
 + createUnit(): void
 </panel_attributes>
@@ -107,14 +108,14 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>344</x>
-      <y>896</y>
-      <w>80</w>
+      <x>184</x>
+      <y>880</y>
+      <w>104</w>
       <h>88</h>
     </coordinates>
     <panel_attributes>Farm
 --
-+ _nbPop: int
++ m_nbPop: int
 --
 
 </panel_attributes>
@@ -123,17 +124,21 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>528</x>
-      <y>896</y>
-      <w>80</w>
+      <x>440</x>
+      <y>880</y>
+      <w>120</w>
       <h>88</h>
     </coordinates>
     <panel_attributes>tower
 --
-- _reach: int
-- _damages: int
+- m_reach: int
+- m_damages: int
 --
-+ attack()
+- s_reach
+- s_damages
+--
++ findTarget(): Unit
++ attack(): void
 
 </panel_attributes>
     <additional_attributes/>
@@ -141,16 +146,16 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>720</x>
-      <y>760</y>
+      <x>608</x>
+      <y>744</y>
       <w>360</w>
       <h>112</h>
     </coordinates>
     <panel_attributes>Unit
 --
-- _speed: int (vitesse de déplacement sur la map en pixels/?)
-- _reach: int (portée)
-- _damages: int (dégâts infligés)
+- m_speed: int (vitesse de déplacement sur la map en pixels/?)
+- m_reach: int (portée)
+- m_damages: int (dégâts infligés)
 --
 + move()
 + attack()
@@ -163,10 +168,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>488</x>
-      <y>344</y>
+      <x>376</x>
+      <y>328</y>
       <w>248</w>
-      <h>320</h>
+      <h>328</h>
     </coordinates>
     <panel_attributes>/Element/
 --
@@ -183,7 +188,7 @@
 - m_height: int
 - m_HP: int
 - m_defense: float
-- s_team: static: int
+- s_team: static int
 --
 + Element()
 + Element(no: int, px: int, py: int)
@@ -191,6 +196,7 @@
 + mapHeight(): static int&amp;
 + mapWidth(): static int&amp;
 + getDamage()
++ update(): Request
 # updatePos(): void
 # updateID(): int
 </panel_attributes>
@@ -199,14 +205,14 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>720</x>
-      <y>896</y>
-      <w>80</w>
+      <x>608</x>
+      <y>880</y>
+      <w>216</w>
       <h>88</h>
     </coordinates>
     <panel_attributes>SuperUnit
 --
-- _mana: int
+- m_mana: int
 --
 + capacity(): void (quand full mana)
 </panel_attributes>
@@ -215,8 +221,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>872</x>
-      <y>88</y>
+      <x>760</x>
+      <y>72</y>
       <w>320</w>
       <h>352</h>
     </coordinates>
@@ -253,52 +259,52 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>656</x>
-      <y>656</y>
+      <x>544</x>
+      <y>648</y>
       <w>120</w>
-      <h>120</h>
+      <h>112</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;130.0;130.0</additional_attributes>
+    <additional_attributes>10.0;10.0;130.0;120.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>472</x>
-      <y>656</y>
+      <x>360</x>
+      <y>648</y>
       <w>96</w>
-      <h>120</h>
+      <h>112</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>100.0;10.0;10.0;130.0</additional_attributes>
+    <additional_attributes>100.0;10.0;10.0;120.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>376</x>
-      <y>840</y>
-      <w>88</w>
+      <x>240</x>
+      <y>824</y>
+      <w>112</w>
       <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>90.0;10.0;10.0;70.0</additional_attributes>
+    <additional_attributes>120.0;10.0;10.0;70.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>496</x>
-      <y>840</y>
-      <w>88</w>
+      <x>384</x>
+      <y>824</y>
+      <w>112</w>
       <h>72</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;90.0;70.0</additional_attributes>
+    <additional_attributes>10.0;10.0;120.0;70.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>472</x>
-      <y>840</y>
+      <x>360</x>
+      <y>824</y>
       <w>24</w>
       <h>72</h>
     </coordinates>
@@ -308,8 +314,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>752</x>
-      <y>864</y>
+      <x>640</x>
+      <y>848</y>
       <w>24</w>
       <h>48</h>
     </coordinates>
@@ -319,8 +325,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>600</x>
-      <y>288</y>
+      <x>488</x>
+      <y>272</y>
       <w>24</w>
       <h>72</h>
     </coordinates>
@@ -330,8 +336,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>720</x>
-      <y>176</y>
+      <x>608</x>
+      <y>160</y>
       <w>168</w>
       <h>24</h>
     </coordinates>
