@@ -25,6 +25,12 @@ public:
           m_color = s_color;
           m_reach = s_reach;
           m_damages = s_damages;
+
+          Texture t;
+          m_sprite.setTexture(t);
+          m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
+          m_sprite.setTextureRect(sf::IntRect(0, 0,m_width, m_height));
+          m_sprite.setColor(m_color);
           
           //to compensate mouse middle effect
           m_x -= m_width/2; 

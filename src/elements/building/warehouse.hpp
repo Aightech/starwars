@@ -14,26 +14,7 @@ class Warehouse: public Element
 {
 
        public:
-       Warehouse()
-       {
-              m_width = s_width;
-              m_height = s_height;
-              m_HP = s_HP;
-              m_defense = s_defense;
-              m_type = s_type;
-              m_color = s_color;
-
-              m_x =0;
-              m_y =0;
-              
-              Texture t;
-              m_sprite.setTexture(t);
-              m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
-              m_sprite.setTextureRect(sf::IntRect(0, 0,m_width, m_height));
-              m_sprite.setColor(sf::Color(255, 0, 0));
-              
-              //updatePos();
-       };
+       Warehouse(): Warehouse(-1,0,0){};
        Warehouse(int no, int px, int py): Element(no,px,py)
        { 
               

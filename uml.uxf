@@ -188,6 +188,7 @@
 - m_height: int
 - m_HP: int
 - m_defense: float
+- m_sprite: Sprite
 - s_team: static int
 --
 + Element()
