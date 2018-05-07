@@ -61,7 +61,7 @@ class Element
        static bool placeAround(Element *fixed, Element *toPlaced,int *x, int *y);
        
        
-       static Element* elementsType[NB_ELEMENT];
+       //static Element* elementsType[NB_ELEMENT];
        
        
        

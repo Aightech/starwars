@@ -358,7 +358,7 @@ void GUI::drawSelection()
               Texture t;// = new Texture();
               s.setTexture(t);
               
-              Element * e = Element::elementsType[m_elementSelectedType-1];
+              Element * e;// = Element::elementsType[m_elementSelectedType-1];
               
               int height = e->height();
               int width  = e->width();
