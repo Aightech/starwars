@@ -20,19 +20,8 @@ class Unit: public Element
 {
        public:
        
-       Unit()
-       {
-              m_width = s_width;
-              m_height = s_height;
-              m_HP = s_HP;
-              m_defense = s_defense;
-              m_type = s_type;
-              m_color = s_color;
-              
-              //to compensate mouse middle effect
-              m_x =0;
-              m_y =0;
-       };
+       Unit(): Unit(0,0,0){};
+       
        Unit(int no, int px, int py): Element(no,px,py)
        {
               m_width = s_width;

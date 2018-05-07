@@ -36,6 +36,7 @@ class Element
        int y(){return m_y;};
        int no(){return m_no;};
        int HP(){return m_HP;};
+       int type(){return m_type;}
        Sprite& getSprite(){return m_sprite;};
        
        

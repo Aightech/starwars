@@ -117,7 +117,8 @@ class GUI
        int m_state;
        
        //useful flags
-       int m_elementSelected;//use for drawMap
+       int m_elementSelectedType;//use for drawMap
+       Element * m_elementSelected;
        bool m_elementOk;
        
        

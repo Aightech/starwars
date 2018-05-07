@@ -36,7 +36,7 @@ GUI::GUI(unsigned long int * map, int width, int height)
        
        //////------- FLAGS SETTING ------- /////
        m_state=0;
-       m_elementSelected=0;
+       m_elementSelectedType=0;
        m_mapDraw = new unsigned char[m_mapHeight*m_mapWidth] ();//used in drawMap
        m_mapdrawVal = 0;
        
@@ -73,11 +73,11 @@ int GUI::start(void *pgame)
                      if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
                      {
                          
-                            if(m_elementSelected!=0)
+                            if(m_elementSelectedType!=0)
                             {
                                    if(m_elementOk)
                                    {
-                                          switch(m_elementSelected)
+                                          switch(m_elementSelectedType)
                                           {
                                                  case WAREHOUSE_TYPE:
                                                  {
@@ -108,13 +108,16 @@ int GUI::start(void *pgame)
                                           
                                           
                                           m_elementOk=false;
-                                          m_elementSelected=0;
+                                          m_elementSelectedType=0;
                                    }
                             }
-                            //TODO transform this in a method
+                            //TODO transform this in button
                             for(int i=0;i<3;i++)
                                    if(msPos.x > m_mapPosX +80*i && msPos.x < m_mapPosX + 60 +80*i && msPos.y > m_mapPosY + m_mapHeight && msPos.y < m_mapPosY + m_mapHeight + 60)
-                                          m_elementSelected = i+1;
+                                   {
+                                          m_elementSelectedType = i+1;
+                                          
+                                   }       
                                           
                             
                          
@@ -326,13 +329,13 @@ void GUI::drawMap()
                                    int u_width  = e->width();
                                    
                                    //draw HP
-                                   Sprite life;
+                                   /*Sprite life;
                                    Texture t;
                                    life.setTexture(t);
                                    life.setPosition(Vector2f(m_mapPosX+j+2,m_mapPosY+i+2));
                                    life.setTextureRect(sf::IntRect(0, 0, ((float)999/1000)*u_width-4, 8));
                                    life.setColor(sf::Color(255, 0, 0));
-                                   window.draw(life);
+                                   window.draw(life);*/
                                    
                                    
                                    
@@ -348,14 +351,14 @@ void GUI::drawMap()
 
 void GUI::drawUnitSelection()
 {
-       if(m_elementSelected)
+       if(m_elementSelectedType)
        {
               
               Sprite s;
               Texture t;// = new Texture();
               s.setTexture(t);
               
-              Element * e = Element::elementsType[m_elementSelected-1];
+              Element * e = Element::elementsType[m_elementSelectedType-1];
               
               int height = e->height();
               int width  = e->width();
@@ -377,7 +380,7 @@ void GUI::drawUnitSelection()
                                           placeFree = false;
                      if(placeFree)//if we're at free place
                      {       
-                            s.setColor(sf::Color(0, 100 + 50*m_elementSelected, 0));
+                            s.setColor(sf::Color(0, 100 + 50*m_elementSelectedType, 0));
                             m_elementOk = true;
                      }
                      else//if there're already somthing at the place

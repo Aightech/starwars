@@ -13,13 +13,13 @@ int Element::s_team = 0;
 
 //store one of each element to get access to them through Element class.
 Element* Element::elementsType[]= ELEMENTS_ARRAY;
-
 void Element::updatePos()
 {
        updateID();
        for(int ie = 0 ; ie < m_height ; ie++)//mark the whole area of the element as marked
               for(int je = 0; je < m_width ; je++)
                      s_map[(m_y+ie)*s_mapWidth + m_x + je] = (unsigned long int)this;//m_ID;
+       m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
               
 }
 
