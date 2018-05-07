@@ -1,4 +1,4 @@
-all: game server 
+all: game server clean
 
 game: bin/main.o bin/guilib.o bin/gamelib.o bin/playerlib.o bin/netapi.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/warehouse.o bin/unit.o
 	g++ -o game bin/main.o  bin/playerlib.o bin/guilib.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/unit.o bin/warehouse.o bin/gamelib.o bin/netapi.o  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lpthread

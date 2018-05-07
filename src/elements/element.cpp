@@ -12,7 +12,7 @@ int Element::s_team = 0;
 
 
 //store one of each element to get access to them through Element class.
-Element* Element::elementsType[]= ELEMENTS_ARRAY;
+//Element* Element::elementsType[]= ELEMENTS_ARRAY;
 void Element::updatePos()
 {
        updateID();
