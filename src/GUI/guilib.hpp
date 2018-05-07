@@ -79,7 +79,7 @@ class GUI
        */
        public:
        GUI(){};
-       GUI(unsigned int * map, int width, int height);
+       GUI(unsigned long int * map, int width, int height);
        
        int start(void * game);
        
@@ -121,7 +121,7 @@ class GUI
        bool m_elementOk;
        
        
-       unsigned int *m_map;//refer to the game map
+       unsigned long int *m_map;//refer to the game map
        int m_mapHeight;
        int m_mapWidth;
        

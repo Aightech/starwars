@@ -1,5 +1,7 @@
 #include "unit.hpp"
 
+const Color Unit::s_color = UNIT_COLOR;
+
 Request Unit::update()
 {
        

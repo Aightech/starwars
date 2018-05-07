@@ -2,7 +2,7 @@
 #define GAME_LIB_H
 
 
-//#include "netlib.hpp"
+#include "network/netapi.hpp"
 
 #include "GUI/guilib.hpp"
 #include "elements/element.hpp"
@@ -36,7 +36,7 @@ typedef struct _Player {
 
 
 
-class Game
+class Game: public  NetAPI
 {
        /*! \class Game
        * \brief This class represent the game application.
@@ -58,7 +58,7 @@ class Game
        
        
        /*! \brief launch an online game. The game have to be setted (through menu() )*/
-       void start();
+       void startGUI();
        
        /*! \brief Wait the gui thread to end.*/
        bool GUIactive(){return !m_guiTerminate;};
@@ -79,6 +79,12 @@ class Game
        //TODO: finish method
        void update();
        
+       int processReceiverMessage(char * buffer){};
+       
+       void setOnline(int port);
+       
+       void sendRequest(Request * req,Element * elmt);
+       
        
        
        private:
@@ -86,7 +92,7 @@ class Game
        thread* m_gui_thread;
        
        /*! \brief represent the map and all its elements (each pixel contain 0 or the ID of the element it shows)*/
-       unsigned int *m_map;
+       unsigned long int *m_map;
        int m_mapHeight;
        int m_mapWidth;
        
@@ -96,6 +102,11 @@ class Game
        
        atomic<bool> m_guiTerminate;
        mutex m_elmtsMtx;
+
+       
+       bool m_online=false;
+       
+      
        
 };
 

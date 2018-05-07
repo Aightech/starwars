@@ -6,9 +6,11 @@
 #include <vector>
 #include <ctime>
 
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
 #include "../macro.txt"
 
-//using namespace sf;
+using namespace sf;
 using namespace std;
 
 typedef struct _Request {
@@ -32,7 +34,10 @@ class Element
        
        int x(){return m_x;};
        int y(){return m_y;};
+       int no(){return m_no;};
        int HP(){return m_HP;};
+       Sprite& getSprite(){return m_sprite;};
+       
        
        int getDamage(int damage)
        {
@@ -45,9 +50,11 @@ class Element
        int height(){return m_height;}
        
        
-       static unsigned int*& map(){return s_map;};
+       static unsigned long int*& map(){return s_map;};
        static int& mapHeight(){return s_mapHeight;};
        static int& mapWidth(){return s_mapWidth;};
+       static int& mapOffsetY(){return s_mapOffsetY;};
+       static int& mapOffsetX(){return s_mapOffsetX;};
        
        static bool isPlaceFree(int px,int py,int pw, int ph);
        static bool placeAround(Element *fixed, Element *toPlaced,int *x, int *y);
@@ -73,13 +80,16 @@ class Element
        unsigned int m_ID;
        int m_no;
        int m_type;
-       int m_color;
+       Color m_color;
        
-       static unsigned int * s_map;
+       static unsigned long int * s_map;
+       
        static int s_mapHeight;
        static int s_mapWidth;
+       static int s_mapOffsetY;
+       static int s_mapOffsetX;
        
-       
+       Sprite m_sprite;
        
        int m_x;
        int m_y;

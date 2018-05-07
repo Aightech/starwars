@@ -20,6 +20,7 @@
 
 using namespace std;
 
+
 class NetAPI
 {
        /*! \class NetAPI
@@ -79,7 +80,9 @@ class NetAPI
        void setConnectionPhrase(char * conPhr);
        
        /*! \brief returns the list of aknowledged clients */
-       vector<struct sockaddr_in *> getClientAddr();
+       const vector<struct sockaddr_in *>& getClientAddr() const;
+       
+       
        
        
        //----------- OTHERS -------------//
@@ -116,6 +119,7 @@ class NetAPI
        char m_RxBuffer[NB_BUFFERS][BUFSIZE];
        
        //clients addresses and their lenght
+       struct sockaddr_in m_clientaddr;
        vector<struct sockaddr_in *> m_claddr;
        int m_clientIndex;
        socklen_t m_cllen;
@@ -123,8 +127,11 @@ class NetAPI
        char *m_connectionPhrase=NULL;
        
        mutex m_bufferMtx[NB_BUFFERS];
+       mutex m_verboseMtx;
 
 };
+
+
 
 
 #endif /* guard */

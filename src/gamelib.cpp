@@ -46,12 +46,7 @@ Game::Game()
        m_mapHeight = MAP_HEIGHT;
        m_mapWidth = MAP_WIDTH;
        //allocate the int array representing the map 
-       m_map = new unsigned int[m_mapHeight*m_mapWidth] ();
-       
-       
-       //////------- GUI SETTING ------- /////
-       //allocate a new GUI and share with it the new map and its dimensions.
-       m_gui = new GUI(m_map,m_mapWidth,m_mapHeight);
+       m_map = new unsigned long int[m_mapHeight*m_mapWidth] ();
        
        
        
@@ -72,8 +67,12 @@ void Game::test()
        (*it)->getDamage(1);
 }
 
-void Game::start()
+void Game::startGUI()
 {
+       
+       //////------- GUI SETTING ------- /////
+       //allocate a new GUI and share with it the new map and its dimensions.
+       m_gui = new GUI(m_map,m_mapWidth,m_mapHeight);
        
        //DEBUG: set the context to debug the game mode
        m_gui->getState()=GAME_CONTEXT;
@@ -83,6 +82,13 @@ void Game::start()
        //start a new thread for the GUI
        m_gui_thread = new std::thread(&GUI::start, m_gui,(void*)this);
            
+}
+
+void Game::setOnline(int port)
+{
+       setConnectionPhrase((char*)CONNECTION_PHRASE);
+       startReceiver(port);
+       m_online = true;
 }
 
 void Game::addElement(Element * element)
@@ -100,50 +106,65 @@ void Game::addElement(Element * element)
        
 }
 
+void Game::sendRequest(Request * req,Element * elmt)
+{
+       char buffReq[1024];
+       sprintf(buffReq,"MR%dE%dV%dW%d",req->type,elmt->no(),req->val1,req->val2);
+       this->sentToServer(buffReq);
+}
+
 bool Game::request(Request* req,Element * elmt)
 {
-       switch(req->type)
+       if(m_online)
        {
-              case NO_REQUEST:     break;
-              
-              case R_CREATE_BUILDING:
-              case R_CREATE_WAREHOUSE:
-              case R_CREATE_FARM:
-              case R_CREATE_TOWER:
+              if(req->type!=NO_REQUEST)
+                     sendRequest(req,elmt);
+       }
+       else
+       {
+              switch(req->type)
               {
-              
-              }break;
-              
-              case R_CREATE_UNIT:
-              case R_CREATE_SUPERUNIT:
-              {
-                     switch(req->type)
-                     {
-                            case R_CREATE_UNIT:
-                            {
-                                   this->addElement(new Unit(m_elementsIndex,req->val1,req->val2));
-                                   cout << "request Building"<< endl;
-                            }break;
-                            case R_CREATE_SUPERUNIT:
-                            {
-                            
-                            }break;
-                     }
-              }break;
-              
-              case R_MOVE:
-              {
-                     ((Unit *)elmt)->move(req->val1,req->val2);
-                     cout << "request Unit"<< endl;
+                     case NO_REQUEST:     break;
                      
-              }break;
-              
-              case R_ACTION:
-              case R_HEAL:
-              case R_ATTACK:
-              {
-              
-              }break;
+                     case R_CREATE_BUILDING:
+                     case R_CREATE_WAREHOUSE:
+                     case R_CREATE_FARM:
+                     case R_CREATE_TOWER:
+                     {
+                     
+                     }break;
+                     
+                     case R_CREATE_UNIT:
+                     case R_CREATE_SUPERUNIT:
+                     {
+                            switch(req->type)
+                            {
+                                   case R_CREATE_UNIT:
+                                   {
+                                          this->addElement(new Unit(m_elementsIndex,req->val1,req->val2));
+                                          cout << "request Building"<< endl;
+                                          
+                                   }break;
+                                   case R_CREATE_SUPERUNIT:
+                                   {
+                                   
+                                   }break;
+                            }
+                     }break;
+                     
+                     case R_MOVE:
+                     {
+                            ((Unit *)elmt)->move(req->val1,req->val2);
+                            
+                     }break;
+                     
+                     case R_ACTION:
+                     case R_HEAL:
+                     case R_ATTACK:
+                     {
+                     
+                     }break;
+              }
        }
        return true;
 }

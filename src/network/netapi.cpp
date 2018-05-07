@@ -11,7 +11,11 @@
 
 #include <fcntl.h>
 
-
+int waitSec(float sec)
+{
+       clock_t start=clock();
+       while(clock()-start < sec*CLOCKS_PER_SEC){}
+}
 
 NetAPI::NetAPI()
 {
@@ -35,7 +39,11 @@ int NetAPI::send(int port, char * hostname, char * buf)
        /* gethostbyname: get the server's DNS entry */
        m_Txdest = gethostbyname(hostname);
        if (m_Txdest == NULL && m_verbose)
+       {
+              m_verboseMtx.lock();
               printf("Tx:ERROR, no such host as %s\n", hostname);
+              m_verboseMtx.unlock();
+       }
        
 
        /* build the server's Internet address */
@@ -56,10 +64,12 @@ int NetAPI::send(struct sockaddr_in * addr, char * buf)
        m_Txlen = sizeof(*addr);
        int n = sendto(m_Txfd, buf, strlen(buf), MSG_DONTWAIT, (struct sockaddr *)addr, m_Txlen);
        
+       m_verboseMtx.lock();
        if (n < 0 && m_verbose) 
               printf("Tx:ERROR in sendto\n");
        if(m_verbose)
               printf("Tx:Sent [%s], to %s:%d\n", buf, inet_ntoa(addr->sin_addr), ntohs(addr->sin_port));
+       m_verboseMtx.unlock();
        
        
        return n;
@@ -76,10 +86,12 @@ int NetAPI::send(int port, char * hostname, char * buf, char recvBuff[])
        
        if(m_verbose)
        {
+              m_verboseMtx.lock();
               if (m < 0) 
                      printf("Tx:ERROR in recvfrom\n");
               else
                      printf("Tx:data from server: [%s]\n", recvBuff);
+              m_verboseMtx.unlock();
        }
        return m;
 }
@@ -96,10 +108,12 @@ int NetAPI::send(struct sockaddr_in * addr, char * buf, char recvBuff[])
        
        if(m_verbose)
        {
+              m_verboseMtx.lock();
               if (m < 0) 
                      printf("Tx:ERROR in recvfrom\n");
               else
                      printf("Tx:data from server: [%s]\n", recvBuff);
+              m_verboseMtx.unlock();
        }
        return m;
 }
@@ -121,6 +135,7 @@ int NetAPI::connectToServer(int port, char * IP)
               //the socket is not blocking so it doesn't have the time to read the reply of the buffer
               if (errno == EWOULDBLOCK)
               {
+	              m_verboseMtx.lock();
 	              printf("General:Connection in progress... : \t");
 	              int valopt; 
                      long arg; 
@@ -153,7 +168,8 @@ int NetAPI::connectToServer(int port, char * IP)
                             
                      }
                      else
-                         printf("Timeout reached.\n");     
+                         printf("Timeout reached.\n"); 
+                     m_verboseMtx.unlock();    
               }
 		
        }
@@ -167,13 +183,21 @@ int NetAPI::connectToServer(int port, char * IP)
               bcopy((char *)m_Txdest->h_addr, (char *)&m_Serveraddr.sin_addr.s_addr, m_Txdest->h_length);
               m_Serveraddr.sin_port = htons(port);
               if(m_verbose)
+              {
+                     m_verboseMtx.lock();
                      printf("General:Connection success to %s:%d\n", inet_ntoa(m_Serveraddr.sin_addr), ntohs(m_Serveraddr.sin_port));
+                     m_verboseMtx.unlock();
+              }
               return 1;
        }
        else
        {
               if(m_verbose)
+              {      
+                     m_verboseMtx.lock();
                      printf("General:Connection fail to %s:%d\n", IP, port);
+                     m_verboseMtx.unlock();
+              }
               return 0;
        }
        
@@ -195,10 +219,16 @@ int NetAPI::startReceiver(int port)
        */
        m_Txfd = socket(AF_INET, SOCK_DGRAM, 0);
        if (m_Txfd < 0 && m_verbose) 
+       {
+              m_verboseMtx.lock();
               printf("ERROR opening Tx socket\n");
+              m_verboseMtx.unlock();
+       }
               
        //start the receiver thread
        m_ReceiverThread = new std::thread(&NetAPI::receiver, this);
+       
+       waitSec(1.5);
        
        
 }
@@ -225,67 +255,92 @@ int NetAPI::receiver()
        * bind: associate the parent socket with a port 
        */
        if(bind(m_Rxfd, (struct sockaddr *) &m_Rxaddr, sizeof(m_Rxaddr)) < 0 && m_verbose) 
+       {
+              m_verboseMtx.lock();
               printf("Rx:ERROR on binding\n");
+              m_verboseMtx.unlock();
+       }
 
        /* 
        * main loop: wait for a datagram, then echo it
        */
-       m_claddr.push_back(new struct sockaddr_in);
-       m_cllen = sizeof(&m_claddr[0]);
+       m_cllen = sizeof(&m_clientaddr);
        
        m_ReceiverActive = true;
        if(m_verbose)
+       {
+              m_verboseMtx.lock();
               printf("Rx: Receiver started listening on port %d:\n", m_Rxport);
+              m_verboseMtx.unlock();
+       }
 
        m_RxBufferIndex = -1;
        m_clientIndex =0;
+       char tempBuf[BUFSIZE];
        
        while (m_ReceiverActive) 
        {
 
               if(m_RxBufferIndex < NB_BUFFERS)
               {
-                     m_bufferMtx[++m_RxBufferIndex].lock();//lock the mutex of the new buffer
+                     
+                     
                      /*
                      * recvfrom: receive a UDP datagram from a client
                      */
-                     bzero(m_RxBuffer[m_RxBufferIndex], BUFSIZE);
-                     int n = recvfrom(m_Rxfd, m_RxBuffer[m_RxBufferIndex], BUFSIZE,MSG_WAITALL,(struct sockaddr *) m_claddr[m_clientIndex], &m_cllen);
+                     bzero(tempBuf, BUFSIZE);
+                     int n = recvfrom(m_Rxfd, tempBuf, BUFSIZE,MSG_WAITALL,(struct sockaddr *)& m_clientaddr, &m_cllen);
                      
+                     m_verboseMtx.lock();
                      if (n < 0 && m_verbose)
                             printf("Rx:ERROR in recvfrom\n");
                      if(m_verbose)
-                            printf("Rx:Received packet from %s:%d\nRx:Buffer[%d]: [%s]\n\n", inet_ntoa(m_claddr[m_clientIndex]->sin_addr), ntohs(m_claddr[m_clientIndex]->sin_port),m_RxBufferIndex,m_RxBuffer[m_RxBufferIndex]);
+                            printf("Rx:Received packet from %s:%d\nRx:Buffer temp: [%s]\n\n", inet_ntoa(m_clientaddr.sin_addr), ntohs(m_clientaddr.sin_port),tempBuf);
+                     m_verboseMtx.unlock();
                      
                      char reply[50]="nope";
                      
-                     int current = m_clientIndex;
                      int port;
-                     switch(m_RxBuffer[m_RxBufferIndex][0])
+                     switch(tempBuf[0])
                      {
                             case 'M'://message
                             {
-                                   processReceiverMessage(m_RxBuffer[m_RxBufferIndex]);
+                                   m_RxBufferIndex++;
+                                   m_bufferMtx[m_RxBufferIndex].lock();//lock the mutex of the new buffer
+                                   strcpy(m_RxBuffer[m_RxBufferIndex],tempBuf);
                                    m_bufferMtx[m_RxBufferIndex].unlock();
+                                   processReceiverMessage(tempBuf);
+                                   printf("Rx:Buffer[%d]: [%s]\n\n",m_RxBufferIndex, m_RxBuffer[m_RxBufferIndex]);
                                    strcpy(reply,"rcvd");
                             }break;
                             case 'C'://connection attempt :  C[portno]P[connectionPhrase]
                             {
                                    if(m_connectable)//if the connections are allowed
                                    {
-                                          port = atoi(m_RxBuffer[m_RxBufferIndex]+1);
-                                          if(m_connectionPhrase != NULL && strcmp(strchr(m_RxBuffer[m_RxBufferIndex],'P')+1,m_connectionPhrase)==0)
+                                          port = atoi(tempBuf+1);
+                                          if(m_connectionPhrase != NULL && strcmp(strchr(tempBuf,'P')+1,m_connectionPhrase)==0)
                                           {
                                                  if(m_clientIndex<NB_MAX_CLIENT)
                                                  {
                                                         strcpy(reply,"accepted");
-                                                        if(m_verbose) 
-                                                               printf("Rx:Client %s:%d accepted.\n", inet_ntoa(m_claddr[m_clientIndex]->sin_addr),port);
-                                                        
-                                                        
                                                         
                                                         m_claddr.push_back(new struct sockaddr_in);
+                                                        bzero((char *) m_claddr[m_clientIndex], sizeof(&m_claddr[m_clientIndex]));
+                                                        m_claddr[m_clientIndex]->sin_family = AF_INET;
+                                                        m_claddr[m_clientIndex]->sin_addr.s_addr = m_clientaddr.sin_addr.s_addr;
+                                                        m_claddr[m_clientIndex]->sin_port = htons((unsigned short)port);
+                                                        
+                                                        
+                                                        
+                                                        if(m_verbose) 
+                                                        {
+                                                               m_verboseMtx.lock();
+                                                               printf("Rx:Client %s:%d accepted.\n", inet_ntoa(m_claddr[m_clientIndex]->sin_addr),port);
+                                                               m_verboseMtx.unlock();
+                                                        }
                                                         m_clientIndex++;
+                                                        
+                                                        
                                                  }
                                                  else
                                                  {
@@ -295,19 +350,26 @@ int NetAPI::receiver()
                                           }
                                           else
                                           {
+                                                 m_verboseMtx.lock();
                                                  if(m_connectionPhrase == NULL)
                                                         printf("Rx:Connection phrase need to be set.\n");
                                                  else
                                                         printf("Rx:Connection phrase incorect\n"); 
+                                                 m_verboseMtx.unlock();
                                           }
                                    }
                                    else if(m_verbose)
-                                          printf("Rx:Api is not connectable. \n"); 
-                                   m_bufferMtx[m_RxBufferIndex--].unlock();
+                                   {
+                                          m_verboseMtx.lock();
+                                          printf("Rx:Api is not connectable. \n");
+                                          m_verboseMtx.unlock(); 
+                                   }
                                           
                             }break;
                             default:
-                                   m_bufferMtx[m_RxBufferIndex--].unlock();
+                            {
+                                   
+                            }
                             
                             
                      
@@ -317,20 +379,25 @@ int NetAPI::receiver()
                      /*    
                      * sendto: echo the input back to the client 
                      */
-                     n = sendto(m_Rxfd, reply, sizeof(reply), 0, (struct sockaddr *) m_claddr[current], m_cllen);
+                     n = sendto(m_Rxfd, reply, sizeof(reply), 0, (struct sockaddr *) &m_clientaddr, m_cllen);
+                     m_verboseMtx.lock();
                      if (n < 0 && m_verbose) 
                             printf("Rx:ERROR in sendto\n");
                      else if(m_verbose)
-                            printf("Rx:Replied to %s: [%s]\n", inet_ntoa(m_claddr[current]->sin_addr),reply);
+                            printf("Rx:Replied to %s: [%s]\n", inet_ntoa(m_clientaddr.sin_addr),reply);
+                     m_verboseMtx.unlock();
                             
-                     if(current!=m_clientIndex)
-                            m_claddr[current]->sin_port = htons(port);
+                     
                      
                     
               }
        }
        if(m_verbose)
+       {
+              m_verboseMtx.lock();
               printf("Rx:Receiver stoped listening port %d\n", m_Rxport);
+              m_verboseMtx.unlock();
+       }
               
        return 0;
 
@@ -349,8 +416,8 @@ int NetAPI::getReceiverBuffer(char *buffer)
        if(m_RxBufferIndex>-1)//if some buffer is unread
        {
               m_bufferMtx[m_RxBufferIndex].lock();//mutex to ensure the well being of the data
-              printf("test %s\n",m_RxBuffer[m_RxBufferIndex]);//copy the buffer
-              strcpy(buffer,m_RxBuffer[m_RxBufferIndex]);
+              printf("Buffer [%d]: %s  \n",m_RxBufferIndex,m_RxBuffer[m_RxBufferIndex]);
+              strcpy(buffer,m_RxBuffer[m_RxBufferIndex]);//copy the buffer
               m_bufferMtx[m_RxBufferIndex--].unlock();
               return m_RxBufferIndex+1;
        }
@@ -364,10 +431,15 @@ void NetAPI::setConnectionPhrase(char * conPhr)
        strcpy(m_connectionPhrase,conPhr);
 }
 
-vector<struct sockaddr_in *> NetAPI::getClientAddr()
+const vector<struct sockaddr_in *>& NetAPI::getClientAddr() const
 {
-       printf("General:Client Listing\n");
-       for(int i=0; i<m_claddr.size()-1;i++)
-              printf("General:Client n°%d : %s:%d \n",i,  inet_ntoa(m_claddr[i]->sin_addr), ntohs(m_claddr[i]->sin_port)); 
+       if(m_verbose)
+       {
+              (const_cast<NetAPI*> (this))->m_verboseMtx.lock();
+              printf("General:Client Listing (%d clients)\n",(int)m_claddr.size());
+              for(int i=0; i<m_claddr.size();i++)
+                     printf("General:Client n°%d : %s:%d \n",i,  inet_ntoa(m_claddr[i]->sin_addr), ntohs(m_claddr[i]->sin_port));
+              (const_cast<NetAPI*> (this))->m_verboseMtx.unlock();
+       } 
        return   m_claddr;
 }

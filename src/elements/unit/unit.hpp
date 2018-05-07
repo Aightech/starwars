@@ -42,6 +42,12 @@ class Unit: public Element
               m_type = s_type;
               m_color = s_color;
               
+              Texture t;
+              m_sprite.setTexture(t);
+              m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
+              m_sprite.setTextureRect(sf::IntRect(0, 0,m_width, m_height));
+              m_sprite.setColor(m_color);
+              
               
               updatePos();
        };
@@ -63,7 +69,7 @@ class Unit: public Element
        const static int s_height = UNIT_HEIGHT;
        const static int s_HP = UNIT_HP;
        const static int s_defense = UNIT_DEFENSE;
-       const static int s_color = UNIT_COLOR;
+       const static Color s_color;
 };
 
 #endif

@@ -12,7 +12,7 @@
 using namespace sf;
 using namespace std;
 
-GUI::GUI(unsigned int * map, int width, int height)
+GUI::GUI(unsigned long int * map, int width, int height)
 {
        
        //////------- Loading different fonts ------- /////
@@ -28,6 +28,11 @@ GUI::GUI(unsigned int * map, int width, int height)
        m_mapWidth = width;
        m_mapPosX = window.getSize().x-m_mapWidth - 10;//set the position of the map on the window
        m_mapPosY = 10;
+       
+       Element::mapOffsetY()=m_mapPosY;
+       Element::mapOffsetX()=m_mapPosX;
+       
+       
        
        //////------- FLAGS SETTING ------- /////
        m_state=0;
@@ -306,31 +311,31 @@ void GUI::drawMap()
                      if(m_mapDraw[i*m_mapWidth + j] != m_mapdrawVal)// if the pixel hasn't been drawn
                      {
                             m_mapDraw[i*m_mapWidth + j] = m_mapdrawVal; // mark the pixel as drawn
-                            if(m_map[i*m_mapWidth + j]!=0)//if a elemen is present on the pixel
+                            if(m_map[i*m_mapWidth + j]!=0)//if a element is present on the pixel
                             {
-                                   int type = m_map[i*m_mapWidth + j]%10;//get the type of the element to draw
-                                   int hp = m_map[i*m_mapWidth + j]/100%1000;//get the hp of the element to draw
+                                   //int type = m_map[i*m_mapWidth + j]%10;//get the type of the element to draw
+                                   //int hp = m_map[i*m_mapWidth + j]/100%1000;//get the hp of the element to draw
                                    
-                                   Element * e = Element::elementsType[type-1];
+                                   Element * e = (Element*) m_map[i*m_mapWidth + j];//::elementsType[type-1];
+                                   
+                                   //draw element
+                                   Sprite s = e->getSprite();
+                                   window.draw(s);
                                    
                                    int u_height = e->height();
                                    int u_width  = e->width();
                                    
-                                   Sprite s;
-                                   Texture t;
-                                   s.setTexture(t);
-                                   
-                                   //draw element
-                                   s.setTextureRect(sf::IntRect(0, 0, u_width, u_height));
-                                   s.setPosition(Vector2f(m_mapPosX+j,m_mapPosY+i));
-                                   s.setColor(sf::Color(0, 100 + 50*type , 0));
-                                   window.draw(s);
-                                   
                                    //draw HP
-                                   s.setPosition(Vector2f(m_mapPosX+j+2,m_mapPosY+i+2));
-                                   s.setTextureRect(sf::IntRect(0, 0, ((float)hp/1000)*u_width-4, 8));
-                                   s.setColor(sf::Color(255, 0, 0));
-                                   window.draw(s);
+                                   Sprite life;
+                                   Texture t;
+                                   life.setTexture(t);
+                                   life.setPosition(Vector2f(m_mapPosX+j+2,m_mapPosY+i+2));
+                                   life.setTextureRect(sf::IntRect(0, 0, ((float)999/1000)*u_width-4, 8));
+                                   life.setColor(sf::Color(255, 0, 0));
+                                   window.draw(life);
+                                   
+                                   
+                                   
                                    for(int iu = 0 ; iu < u_height ; iu++)//mark the whole area of the element as marked
                                           for(int ju = 0; ju < u_width ; ju++)
                                                  m_mapDraw[(i+iu)*m_mapWidth + j + ju] = m_mapdrawVal;

@@ -22,10 +22,16 @@ class Warehouse: public Element
               m_defense = s_defense;
               m_type = s_type;
               m_color = s_color;
-              
-              //to compensate mouse middle effect
+
               m_x =0;
               m_y =0;
+              
+              Texture t;
+              m_sprite.setTexture(t);
+              m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
+              m_sprite.setTextureRect(sf::IntRect(0, 0,m_width, m_height));
+              m_sprite.setColor(sf::Color(255, 0, 0));
+              
               //updatePos();
        };
        Warehouse(int no, int px, int py): Element(no,px,py)
@@ -42,8 +48,11 @@ class Warehouse: public Element
               m_x -= m_width/2; 
               m_y -= m_height/2;
               
-              
-              
+              Texture t;
+              m_sprite.setTexture(t);
+              m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
+              m_sprite.setTextureRect(sf::IntRect(0, 0,m_width, m_height));
+              m_sprite.setColor(m_color);
               
               updatePos();
        };
@@ -57,12 +66,13 @@ class Warehouse: public Element
        void setSize(int pw,int ph){};
        void setID(int pw,int ph){};
        
+       const static Texture s_texture;
        const static int s_type = WAREHOUSE_TYPE;
        const static int s_width = WAREHOUSE_WIDTH;
        const static int s_height = WAREHOUSE_HEIGHT;
        const static int s_HP = WAREHOUSE_HP;
        const static int s_defense = WAREHOUSE_DEFENSE;
-       const static int s_color = WAREHOUSE_COLOR;
+       const static Color s_color;
        
        
 };

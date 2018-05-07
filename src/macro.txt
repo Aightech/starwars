@@ -1,6 +1,7 @@
 //map dimension
 #define MAP_HEIGHT 600
 #define MAP_WIDTH 950
+#define CONNECTION_PHRASE "game"
 
 //Elements
 #define NB_ELEMENT 4
@@ -17,7 +18,7 @@
 #define WAREHOUSE_WIDTH 50
 #define WAREHOUSE_HEIGHT 50
 #define WAREHOUSE_DEFENSE 5
-#define WAREHOUSE_COLOR 1
+#define WAREHOUSE_COLOR Color(0,0,255)
 
 //Farm dimensions
 #define FARM_TYPE 2
@@ -41,7 +42,7 @@
 #define UNIT_WIDTH 10
 #define UNIT_HEIGHT 10
 #define UNIT_DEFENSE 5
-#define UNIT_COLOR 10
+#define UNIT_COLOR Color(0,255,0)
 
 
 

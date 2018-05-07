@@ -1,10 +1,19 @@
-all: game clean
+all: game server clean
 
 game: bin/main.o bin/guilib.o bin/gamelib.o bin/playerlib.o bin/netapi.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/warehouse.o bin/unit.o
 	g++ -o game bin/main.o  bin/playerlib.o bin/guilib.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/unit.o bin/warehouse.o bin/gamelib.o bin/netapi.o  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lpthread
 
+server: bin/server.o bin/guilib.o bin/gamelib.o bin/playerlib.o bin/netapi.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/warehouse.o bin/unit.o
+	g++ -o server bin/server.o  bin/playerlib.o bin/guilib.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/unit.o bin/warehouse.o bin/gamelib.o bin/netapi.o  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lpthread
+
+
+bin/server.o: server.cpp 
+	g++ -c server.cpp -std=c++0x -lpthread -o bin/server.o
+
 bin/main.o: main.cpp 
 	g++ -c main.cpp -std=c++0x -lpthread -o bin/main.o
+	
+
 	
 bin/netapi.o: src/network/netapi.cpp src/network/netapi.hpp 
 	g++ -c src/network/netapi.cpp -std=c++0x -lpthread -o bin/netapi.o
