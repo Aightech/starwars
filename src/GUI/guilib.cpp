@@ -116,7 +116,7 @@ int GUI::start(void *pgame)
                                    if(msPos.x > m_mapPosX +80*i && msPos.x < m_mapPosX + 60 +80*i && msPos.y > m_mapPosY + m_mapHeight && msPos.y < m_mapPosY + m_mapHeight + 60)
                                    {
                                           m_elementSelectedType = i+1;
-                                          
+                                          m_elementSelected = new Warehouse(0,msPos.x,msPos.y);
                                    }       
                                           
                             
@@ -155,7 +155,7 @@ int GUI::start(void *pgame)
               
               /////------- DRAWING MAP ------- /////
               drawMap();
-              drawUnitSelection();
+              drawSelection();
               
               /////------- GET BUTTON'S STATES ------- /////
               int select=0,s=0;
@@ -349,12 +349,12 @@ void GUI::drawMap()
 }
 
 
-void GUI::drawUnitSelection()
+void GUI::drawSelection()
 {
        if(m_elementSelectedType)
        {
               
-              Sprite s;
+              Sprite s ;//= m_elementSelected.getS;
               Texture t;// = new Texture();
               s.setTexture(t);
               

@@ -96,7 +96,7 @@ class GUI
        void drawMap();
        
        /*! \brief draw the selected unit at the mouse position. colored the Unit to indicate the validity of the position*/
-       void drawUnitSelection();
+       void drawSelection();
        
        
        //the window of the gui
