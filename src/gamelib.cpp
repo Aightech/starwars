@@ -93,80 +93,82 @@ void Game::setOnline(int port)
 
 void Game::addElement(Element * element)
 {
-       cout << "Element added" << endl;
-       cout << m_elementsIndex <<  endl;
-       
-        cout << "++++++++++++" << endl;
-        
-       m_elmtsMtx.lock();
-       m_elementsIndex++;
-       m_elements.push_back(element);
-       m_elmtsMtx.unlock();
-       
-       
+	cout << "Element added" << endl;
+	cout << m_elementsIndex <<  endl;
+
+	cout << "++++++++++++" << endl;
+
+	m_elmtsMtx.lock();
+	m_elementsIndex++;
+	m_elements.push_back(element);
+	m_elmtsMtx.unlock();
+	cout << "++++++++++++" << endl;
+
+
 }
 
 void Game::sendRequest(Request * req,Element * elmt)
 {
-       char buffReq[1024];
-       sprintf(buffReq,"MR%dE%dV%dW%d",req->type,elmt->no(),req->val1,req->val2);
-       this->sentToServer(buffReq);
+	char buffReq[1024];
+	sprintf(buffReq,"MR%dE%dV%dW%d",req->type,elmt->no(),req->val1,req->val2);
+	this->sentToServer(buffReq);
 }
 
 bool Game::request(Request* req,Element * elmt)
 {
-       if(m_online)
-       {
-              if(req->type!=NO_REQUEST)
-                     sendRequest(req,elmt);
-       }
-       else
-       {
-              switch(req->type)
-              {
-                     case NO_REQUEST:     break;
-                     
-                     case R_CREATE_BUILDING:
-                     case R_CREATE_WAREHOUSE:
-                     case R_CREATE_FARM:
-                     case R_CREATE_TOWER:
-                     {
-                     
-                     }break;
-                     
-                     case R_CREATE_UNIT:
-                     case R_CREATE_SUPERUNIT:
-                     {
-                            switch(req->type)
-                            {
-                                   case R_CREATE_UNIT:
-                                   {
-                                          this->addElement(new Unit(m_elementsIndex,req->val1,req->val2));
-                                          cout << "request Building"<< endl;
-                                          
-                                   }break;
-                                   case R_CREATE_SUPERUNIT:
-                                   {
-                                   
-                                   }break;
-                            }
-                     }break;
-                     
-                     case R_MOVE:
-                     {
-                            ((Unit *)elmt)->move(req->val1,req->val2);
-                            
-                     }break;
-                     
-                     case R_ACTION:
-                     case R_HEAL:
-                     case R_ATTACK:
-                     {
-                     
-                     }break;
-              }
-       }
-       return true;
+	if(m_online)
+	{
+		if(req->type!=NO_REQUEST)
+			sendRequest(req,elmt);
+	}
+	else
+	{
+		switch(req->type)
+		{
+			case NO_REQUEST:     break;
+
+			case R_CREATE_BUILDING:
+			case R_CREATE_WAREHOUSE:
+			case R_CREATE_FARM:
+			case R_CREATE_TOWER:
+			{
+
+			}break;
+
+			case R_CREATE_UNIT:
+			case R_CREATE_SUPERUNIT:
+			{
+				switch(req->type)
+				{
+					case R_CREATE_UNIT:
+					{
+						cout << "request Unit"<< endl;
+						this->addElement(new Unit(m_elementsIndex,req->val1,req->val2));
+
+
+					}break;
+					case R_CREATE_SUPERUNIT:
+					{
+
+					}break;
+				}
+			}break;
+
+			case R_MOVE:
+			{
+				((Unit *)elmt)->move(req->val1,req->val2);
+
+			}break;
+
+			case R_ACTION:
+			case R_HEAL:
+			case R_ATTACK:
+			{
+
+			}break;
+		}
+	}
+	return true;
 }
 
 
@@ -184,7 +186,7 @@ void Game::update()
               
               m_elmtsMtx.lock();
        }
-       m_elmtsMtx.unlock();
+       m_elmtsMtx.unlock(); 
        //cout << "----"<< endl;
 }
 

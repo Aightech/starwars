@@ -1,7 +1,7 @@
 all: game server clean
 
 game: bin/main.o bin/guilib.o bin/gamelib.o bin/playerlib.o bin/netapi.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/warehouse.o bin/unit.o
-	g++ -o game bin/main.o  bin/playerlib.o bin/guilib.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/unit.o bin/warehouse.o bin/gamelib.o bin/netapi.o  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lpthread
+	g++ -o game bin/main.o  bin/playerlib.o bin/guilib.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/unit.o bin/warehouse.o bin/gamelib.o bin/netapi.o  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lpthread -g
 
 server: bin/server.o bin/guilib.o bin/gamelib.o bin/playerlib.o bin/netapi.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/warehouse.o bin/unit.o
 	g++ -o server bin/server.o  bin/playerlib.o bin/guilib.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/unit.o bin/warehouse.o bin/gamelib.o bin/netapi.o  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lpthread
@@ -31,13 +31,13 @@ bin/textboxlib.o: src/GUI/textboxlib.cpp src/GUI/textboxlib.hpp
 	
 #element files
 bin/element.o: src/elements/element.cpp src/elements/element.hpp
-	g++ -c src/elements/element.cpp -o bin/element.o	
+	g++ -c src/elements/element.cpp -o bin/element.o -std=c++11
 	
 bin/warehouse.o: src/elements/element.cpp src/elements/element.hpp src/elements/building/warehouse.cpp src/elements/building/warehouse.hpp
-	g++ -c src/elements/building/warehouse.cpp -o bin/warehouse.o	
+	g++ -c src/elements/building/warehouse.cpp -o bin/warehouse.o -std=c++11
 	
 bin/unit.o: src/elements/element.hpp src/elements/unit/unit.cpp src/elements/unit/unit.hpp
-	g++ -c src/elements/unit/unit.cpp -o bin/unit.o	
+	g++ -c src/elements/unit/unit.cpp -o bin/unit.o -std=c++11
 
 bin/playerlib.o: src/player/playerlib.cpp src/player/playerlib.hpp 
 	g++ -c src/player/playerlib.cpp -std=c++0x -lpthread -o bin/playerlib.o
