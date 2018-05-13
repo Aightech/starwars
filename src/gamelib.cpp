@@ -145,7 +145,6 @@ bool Game::request(Request* req,Element * elmt)
 						cout << "request Unit"<< endl;
 						this->addElement(new Unit(m_elementsIndex,req->val1,req->val2));
 
-
 					}break;
 					case R_CREATE_SUPERUNIT:
 					{
