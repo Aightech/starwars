@@ -13,10 +13,15 @@
 using namespace sf;
 using namespace std;
 
+class Element;
+
 typedef struct _Request {
 	int type;
 	int val1;
 	int val2;
+	int val3;
+	unsigned long int e1;
+	unsigned long int e2;
 }Request;
 
 
@@ -32,10 +37,10 @@ class Element
 	//TODO tranform to return a action 
 	virtual Request update()=0;
 
-	int x(){return m_x;};
-	int y(){return m_y;};
+	int& x(){return m_x;};
+	int& y(){return m_y;};
 	int no(){return m_no;};
-	int HP(){return m_HP;};
+	int& HP(){return m_HP;};
 	int type(){return m_type;}
 	Sprite& sprite(){return m_sprite;};
 	Color& color(){return m_color;};
@@ -60,10 +65,10 @@ class Element
 
 	static bool isPlaceFree(int px,int py,int pw, int ph);
 	static bool placeAround(Element *fixed, Element *toPlaced,int *x, int *y);
-
+	void updatePos();
 
 	protected:
-	void updatePos();
+	
 
 	//     team numero  HP  type
 	// ID:    4| 999 9|99 9|99

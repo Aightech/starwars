@@ -37,6 +37,10 @@ using namespace std;
 
 int WATCHPORT;
 
+int parseNumber(char * buffer, char key, int ifNot)
+{
+	return ((buffer=strchr(buffer,key))!=NULL)?atoi(buffer+1):ifNot;
+}
 
 Game::Game()
 {
@@ -45,10 +49,11 @@ Game::Game()
 	//set the map dimensions thanks to the macros define in macro.txt file
 	m_mapHeight = MAP_HEIGHT;
 	m_mapWidth = MAP_WIDTH;
-	//allocate the int array representing the map 
+	//allocate the int array represending the map 
 	m_map = new unsigned long int[m_mapHeight*m_mapWidth] ();
 
-
+	m_online = false;
+	m_isServer = false;
 
 	m_elementsIndex =0;
 
@@ -91,15 +96,22 @@ void Game::setOnline(int port)
 	m_online = true;
 }
 
+void Game::setServer(int port)
+{
+	setConnectionPhrase((char*)CONNECTION_PHRASE);
+	startReceiver(port,(char*)"TCP");
+	m_online = true;
+	m_isServer = true;
+}
+
 void Game::addElement(Element * element)
 {
 	cout << "Element added" << endl;
-	cout << m_elementsIndex <<  endl;
+	cout << element->no() <<  endl;
 
 	cout << "++++++++++++" << endl;
-
+	 m_elementsIndex++;
 	m_elmtsMtx.lock();
-	m_elementsIndex++;
 	m_elements.push_back(element);
 	m_elmtsMtx.unlock();
 	cout << "++++++++++++" << endl;
@@ -107,79 +119,106 @@ void Game::addElement(Element * element)
 
 }
 
-void Game::sendRequest(Request * req,Element * elmt)
+bool Game::sendRequest(Request * req)
 {
-	char buffReq[1024];
-	sprintf(buffReq,"MR%dE%dV%dW%d",req->type,elmt->no(),req->val1,req->val2);
-	this->sentToServerTCP(buffReq);
+	char buffReq[1024],reply[1024];
+	sprintf(buffReq,"MR%dE%dU%dV%d",req->type,(req->e1!=0)?((Element *)req->e1)->no():-1,req->val1,req->val2);
+	this->sendToServerTCP(buffReq,reply);
+	return (strcmp(reply,"rcvd") == 0)?true:false;
 }
 
-bool Game::request(Request* req,Element * elmt)
+bool Game::request(Request* req)
 {
-	if(m_online)
+	if(m_online && !m_isServer)
 	{
 		if(req->type!=NO_REQUEST)
-			sendRequest(req,elmt);
+			sendRequest(req);
 	}
 	else
 	{
-		switch(req->type)
-		{
-			case NO_REQUEST:     break;
-
-			case R_CREATE_BUILDING:
-			case R_CREATE_WAREHOUSE:
-			case R_CREATE_FARM:
-			case R_CREATE_TOWER:
-			{
-
-			}break;
-
-			case R_CREATE_UNIT:
-			case R_CREATE_SUPERUNIT:
-			{
-				switch(req->type)
-				{
-					case R_CREATE_UNIT:
-					{
-						cout << "request Unit"<< endl;
-						this->addElement(new Unit(m_elementsIndex,req->val1,req->val2));
-
-					}break;
-					case R_CREATE_SUPERUNIT:
-					{
-
-					}break;
-				}
-			}break;
-
-			case R_MOVE:
-			{
-				((Unit *)elmt)->move(req->val1,req->val2);
-
-			}break;
-
-			case R_ACTION:
-			case R_HEAL:
-			case R_ATTACK:
-			{
-
-			}break;
-		}
+		processRequest(req);
 	}
+	return true;
+}
+
+bool Game::processRequest(Request* req)
+{
+	switch(req->type)
+	{
+		case NO_REQUEST:     break;
+
+		case R_CREATE_BUILDING:
+		case R_CREATE_WAREHOUSE:
+		case R_CREATE_FARM:
+		case R_CREATE_TOWER:
+		{
+			Element * e;
+			switch(req->type)
+			{
+				case R_CREATE_WAREHOUSE:
+				{
+					cout << "request Warehouse : " << ((req->e1==0)?m_elementsIndex:(req->e1)) << endl;
+					e = new Warehouse((req->e1==0)?m_elementsIndex:(req->e1),req->val1,req->val2);
+				}break;
+				case R_CREATE_FARM:
+				{
+
+				}break;
+				case R_CREATE_TOWER:
+				{
+
+				}break;
+			}
+			if(req->val3 != -1)
+				e->HP() = req->val3;
+			this->addElement(e);
+
+		}break;
+
+		case R_CREATE_UNIT:
+		case R_CREATE_SUPERUNIT:
+		{
+			Element * e;
+			switch(req->type)
+			{
+				case R_CREATE_UNIT:
+				{
+					cout << "request Unit"<< endl;
+					e = new Unit((req->e1==0)?m_elementsIndex:(req->e1),req->val1,req->val2);
+				}break;
+				case R_CREATE_SUPERUNIT:
+				{
+
+				}break;
+			}
+			if(req->val3 != -1)
+				e->HP() = req->val3;
+			this->addElement(e);
+		}break;
+
+		case R_MOVE:
+		{
+			((Unit *)(req->e1))->move(req->val1,req->val2);
+
+		}break;
+
+		case R_ACTION:
+		case R_HEAL:
+		case R_ATTACK:
+		{
+
+		}break;
+	}
+	
 	return true;
 }
 
 
 void Game::update()
 {
-	if(m_online)
+	if(!m_online || m_isServer)
 	{
-		//get upodate
-	}
-	else
-	{
-		Request r={0,0,0};
+		Request r={0,0,0,0};
 		m_elmtsMtx.lock();
 		for(list<Element*>::iterator it = m_elements.begin(); it !=  m_elements.end(); it++) 
 		{
@@ -187,13 +226,70 @@ void Game::update()
 
 			r = (*it)->update();
 
-			this->request(&r,(*it));
-
+			this->request(&r);
+			if(m_isServer)
+			{
+				char up[1024],buff[1024];
+				sprintf(up,"MUE%dT%dX%dY%dH%d",(*it)->no(),(*it)->type(),(*it)->x(),(*it)->y(),(*it)->HP());
+				sendToClientUDP(0,up);
+			}
 			m_elmtsMtx.lock();
 		}
 		m_elmtsMtx.unlock(); 
 	}
+	else
+	{
+		char enter[1024];
+		if(getReceiverBuffer(enter)>-1)
+		{
+			processServerUpdate(enter);
+		}
+	}
 }
 
+int Game::processReceiverMessage(char * buffer, char* reply)
+{
+	strcpy(reply,"rcvd");
+}
+
+int Game::processPlayerRequest(char * buffer)
+{
+	Request r = {parseNumber(buffer,'R',NO_REQUEST),parseNumber(buffer,'U',10),parseNumber(buffer,'V',10),parseNumber(buffer,'W',-1)};
+	processRequest(&r);
+}
+
+int Game::processServerUpdate(char * buffer)
+{
+	if(buffer[1] == 'U' && buffer[2] == 'E')
+	{
+		int no = parseNumber(buffer,'E',-1);
+		
+		if(no == -1)
+			return -1;
+			
+		for(list<Element*>::iterator it = m_elements.begin(); it !=  m_elements.end(); it++) 
+		{
+			if((*it)->no()== no)
+			{
+				(*it)->x()  = parseNumber(buffer,'X',(*it)->x());
+				(*it)->y()  = parseNumber(buffer,'Y',(*it)->y());
+				(*it)->HP() = parseNumber(buffer,'H',(*it)->HP());
+				//(*it)->updatePos();
+				return 1;
+			}
+			//std::cout << "element:"<< (*it)->no() << std::endl;
+		}
+		//std::cout << "new element:"<< no << std::endl;
+		Request r = {	parseNumber(buffer,'T',NO_REQUEST),
+				parseNumber(buffer,'X',10),
+				parseNumber(buffer,'Y',10),
+				parseNumber(buffer,'H',-1),
+				(unsigned long int )no		};
+		processRequest(&r);
+		return 1;
+		
+	}
+	return -1;
+}
 
 

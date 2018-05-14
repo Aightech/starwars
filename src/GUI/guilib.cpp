@@ -85,7 +85,9 @@ int GUI::start(void *pgame)
 							//int width  = Warehouse::width();
 							//add a ellement on the map
 							cout << "CLICKED" << endl;
-							game->addElement(new Warehouse(game->elmtListIndex(),msPos.x-m_mapPosX,msPos.y-m_mapPosY));
+							Request r={R_CREATE_WAREHOUSE,msPos.x-m_mapPosX,msPos.y-m_mapPosY};
+							game->request(&r);
+							//game->addElement(new Warehouse(game->elmtListIndex(),msPos.x-m_mapPosX,msPos.y-m_mapPosY));
 
 							}break;
 

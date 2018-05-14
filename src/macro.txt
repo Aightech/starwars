@@ -43,7 +43,7 @@
 
 
 //Unit dimensions
-#define UNIT_TYPE 4
+#define UNIT_TYPE 10
 #define UNIT_HP 999
 #define UNIT_WIDTH 10
 #define UNIT_HEIGHT 10
@@ -54,11 +54,11 @@
 //Request type
 #define NO_REQUEST -1
 #define R_CREATE_BUILDING 0
-#define R_CREATE_WAREHOUSE 1
-#define R_CREATE_FARM 2
-#define R_CREATE_TOWER 3
+#define R_CREATE_WAREHOUSE WAREHOUSE_TYPE
+#define R_CREATE_FARM FARM_TYPE
+#define R_CREATE_TOWER TOWER_TYPE
 
-#define R_CREATE_UNIT 10
+#define R_CREATE_UNIT UNIT_TYPE
 #define R_CREATE_SUPERUNIT 11
 
 #define R_MOVE 20

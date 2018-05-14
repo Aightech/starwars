@@ -18,30 +18,30 @@
 
 int main(int argc,char ** argv)
 {
-       srand(time(NULL));
-       
-       Game game;
-       game.verbose();
-       game.setConnectable();
-       
-       game.setOnline(2000);
-       
-       //game.startGUI();
-       char enter[1024];
-       int n;
-       
-       while(1)
-       {
-              
-              //update game
-              //game.update();
-               while((n=game.getReceiverBuffer(enter))>-1)
-              {
-                     
-              }
-       }
-       
-       cout << "Game ended" <<endl;
-             
-       return 0;
-}
+	srand(time(NULL));
+
+	Game game;
+	//game.verbose();
+	game.setConnectable();
+
+	game.setServer(2000);
+
+	//game.startGUI();
+	char enter[1024];
+	int n;
+	
+
+	while(1)
+	{
+		if(game.getReceiverBuffer(enter)>-1)
+		{
+			cout << "buffer n°"<< n<< ": "<<enter<< endl;
+			game.processPlayerRequest(enter);
+		}
+		game.update();
+	}
+
+	cout << "Game ended" <<endl;
+
+	return 0;
+	}

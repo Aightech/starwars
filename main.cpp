@@ -16,11 +16,12 @@ int main(int argc,char ** argv)
 
 	Game game;
 
-	game.verbose();
+	//game.verbose();
 
-	//game.setOnline(2001);
+	game.setOnline(2001);
+	
 
-	//game.connectToServer(2000,(char *)"127.0.0.1");
+	game.connectToServer(2000,(char *)"127.0.0.1");
 	//game.sentToServer((char*)"MR10V21W20");
 	//game.sentToServer((char*)"Mhoyy");
 	//game.sentToServer((char*)"Mhoazda");

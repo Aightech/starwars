@@ -8,7 +8,7 @@ const Color Warehouse::s_color = WAREHOUSE_COLOR;
 Request Warehouse::update()
 {
 	//create unit
-	Request req={-1,0,0};
+	Request req={NO_REQUEST,0,0,0,0,(unsigned long int)this};
 	updatePos();
 	if(clock()-m_clock>CLOCKS_PER_SEC && m_test < 5)
 	{

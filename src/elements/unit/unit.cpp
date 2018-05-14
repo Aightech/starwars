@@ -5,7 +5,7 @@ const Color Unit::s_color = UNIT_COLOR;
 Request Unit::update()
 {
 
-	Request req={-1,0,0};
+	Request req={NO_REQUEST,0,0,0,(unsigned long int)this};
 	updatePos();
 	if(clock()-m_clock>CLOCKS_PER_SEC/8)
 	{

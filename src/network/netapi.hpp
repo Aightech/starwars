@@ -49,13 +49,13 @@ class NetAPI
 	int sendUDP(int port, char * IP, char * buf, char receivingBuf[]);
 	int sendUDP(struct sockaddr_in *, char * buf, char receivingBuf[]);
 	
-	int sentToServerUDP(char * buf){return sendUDP(&m_Serveraddr,buf);};
-	int sentToServerUDP(char * buf,char receivingBuf[]){return sendUDP(&m_Serveraddr,buf,receivingBuf);};
+	int sendToServerUDP(char * buf){return sendUDP(&m_Serveraddr,buf);};
+	int sendToServerUDP(char * buf,char receivingBuf[]){return sendUDP(&m_Serveraddr,buf,receivingBuf);};
 
-	int sentToClientUDP(int index, char * buf){
+	int sendToClientUDP(int index, char * buf){
 		if(m_claddr.size()>index)   return sendUDP(m_claddr[index],buf);
 		else return -1;};
-	int sentToClientUDP(int index, char * buf,char receivingBuf[]){
+	int sendToClientUDP(int index, char * buf,char receivingBuf[]){
 		if(m_claddr.size()>index)   return sendUDP(m_claddr[index],buf,receivingBuf);
 		else return -1;};
 
@@ -66,13 +66,13 @@ class NetAPI
 	int sendTCP(int port, char * IP, char * buf, char receivingBuf[]);
 	int sendTCP(struct sockaddr_in *, char * buf, char receivingBuf[]);
 
-	int sentToServerTCP(char * buf){return sendTCP(&m_Serveraddr,buf);};
-	int sentToServerTCP(char * buf,char receivingBuf[]){return sendTCP(&m_Serveraddr,buf,receivingBuf);};
+	int sendToServerTCP(char * buf){return sendTCP(&m_Serveraddr,buf);};
+	int sendToServerTCP(char * buf,char receivingBuf[]){return sendTCP(&m_Serveraddr,buf,receivingBuf);};
 
-	int sentToClientTCP(int index, char * buf){
+	int sendToClientTCP(int index, char * buf){
 		if(m_claddr.size()>index)   return sendTCP(m_claddr[index],buf);
 		else return -1;};
-	int sentToClientTCP(int index, char * buf,char receivingBuf[]){
+	int sendToClientTCP(int index, char * buf,char receivingBuf[]){
 		if(m_claddr.size()>index)   return sendTCP(m_claddr[index],buf,receivingBuf);
 		else return -1;};
 
@@ -85,7 +85,7 @@ class NetAPI
 	int startReceiver(int port,char* protocol);
 
 	/*! \brief vitual methode to implement in extented object in order to have a direct access to the message received by the receiver. The message need to start with a 'M' */
-	virtual int processReceiverMessage(char * buffer){};
+	virtual int processReceiverMessage(char * buffer, char * reply){strcpy(reply,"rcvd");};
 
 	/*! \brief Store the last filled received buffer in the buffer passed in argument. and returns the number of unread buffer  */
 	int getReceiverBuffer(char *buffer);
@@ -138,6 +138,7 @@ class NetAPI
 
 	int m_RxBufferIndex;
 	char m_RxBuffer[NB_BUFFERS][BUFSIZE];
+	bool m_RxBufferFilled[NB_BUFFERS];
 
 	//clients addresses and their lenght
 	struct sockaddr_in m_clientaddr;
