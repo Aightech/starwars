@@ -28,10 +28,7 @@ int main(int argc,char ** argv)
 	game.startGUI();
 
 	while(game.GUIactive())
-	{
-		//get server info
-
-		//update game
+	{//update game
 		game.update();
 	}
 

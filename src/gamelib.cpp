@@ -40,55 +40,55 @@ int WATCHPORT;
 
 Game::Game()
 {
-       
-       //////------- MAP SETTING ------- /////
-       //set the map dimensions thanks to the macros define in macro.txt file
-       m_mapHeight = MAP_HEIGHT;
-       m_mapWidth = MAP_WIDTH;
-       //allocate the int array representing the map 
-       m_map = new unsigned long int[m_mapHeight*m_mapWidth] ();
-       
-       
-       
-       m_elementsIndex =0;
-       
-       
-       //////------- ELEMENT SETTING ------- /////
-       Element::map()=m_map;
-       Element::mapHeight()=m_mapHeight;
-       Element::mapWidth()=m_mapWidth;
+
+	//////------- MAP SETTING ------- /////
+	//set the map dimensions thanks to the macros define in macro.txt file
+	m_mapHeight = MAP_HEIGHT;
+	m_mapWidth = MAP_WIDTH;
+	//allocate the int array representing the map 
+	m_map = new unsigned long int[m_mapHeight*m_mapWidth] ();
+
+
+
+	m_elementsIndex =0;
+
+
+	//////------- ELEMENT SETTING ------- /////
+	Element::map()=m_map;
+	Element::mapHeight()=m_mapHeight;
+	Element::mapWidth()=m_mapWidth;
 
 }
 
 //No current use
 void Game::test()
-{   
-       list<Element*>::iterator it = m_elements.begin();
-       (*it)->getDamage(1);
+{
+	list<Element*>::iterator it = m_elements.begin();
+	(*it)->getDamage(1);
 }
 
 void Game::startGUI()
 {
-       
-       //////------- GUI SETTING ------- /////
-       //allocate a new GUI and share with it the new map and its dimensions.
-       m_gui = new GUI(m_map,m_mapWidth,m_mapHeight);
-       
-       //DEBUG: set the context to debug the game mode
-       m_gui->getState()=GAME_CONTEXT;
-       
-       m_guiTerminate=false;
-       
-       //start a new thread for the GUI
-       m_gui_thread = new std::thread(&GUI::start, m_gui,(void*)this);
-           
+
+	//////------- GUI SETTING ------- /////
+	//allocate a new GUI and share with it the new map and its dimensions.
+	m_gui = new GUI(m_map,m_mapWidth,m_mapHeight);
+
+	//DEBUG: set the context to debug the game mode
+	m_gui->getState()=GAME_CONTEXT;
+
+	m_guiTerminate=false;
+
+	//start a new thread for the GUI
+	m_gui_thread = new std::thread(&GUI::start, m_gui,(void*)this);
+
 }
 
 void Game::setOnline(int port)
 {
-       setConnectionPhrase((char*)CONNECTION_PHRASE);
-       startReceiver(port);
-       m_online = true;
+	setConnectionPhrase((char*)CONNECTION_PHRASE);
+	startReceiver(port,(char*)"UDP");
+	m_online = true;
 }
 
 void Game::addElement(Element * element)
@@ -111,7 +111,7 @@ void Game::sendRequest(Request * req,Element * elmt)
 {
 	char buffReq[1024];
 	sprintf(buffReq,"MR%dE%dV%dW%d",req->type,elmt->no(),req->val1,req->val2);
-	this->sentToServer(buffReq);
+	this->sentToServerTCP(buffReq);
 }
 
 bool Game::request(Request* req,Element * elmt)
@@ -173,20 +173,26 @@ bool Game::request(Request* req,Element * elmt)
 
 void Game::update()
 {
-       Request r={0,0,0};
-       m_elmtsMtx.lock();
-       for(list<Element*>::iterator it = m_elements.begin(); it !=  m_elements.end(); it++) 
-       {
-              m_elmtsMtx.unlock();
-              
-              r = (*it)->update();
-              
-              this->request(&r,(*it));
-              
-              m_elmtsMtx.lock();
-       }
-       m_elmtsMtx.unlock(); 
-       //cout << "----"<< endl;
+	if(m_online)
+	{
+		//get upodate
+	}
+	else
+	{
+		Request r={0,0,0};
+		m_elmtsMtx.lock();
+		for(list<Element*>::iterator it = m_elements.begin(); it !=  m_elements.end(); it++) 
+		{
+			m_elmtsMtx.unlock();
+
+			r = (*it)->update();
+
+			this->request(&r,(*it));
+
+			m_elmtsMtx.lock();
+		}
+		m_elmtsMtx.unlock(); 
+	}
 }
 
 
