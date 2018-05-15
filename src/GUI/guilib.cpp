@@ -85,7 +85,7 @@ int GUI::start(void *pgame)
 							//int width  = Warehouse::width();
 							//add a ellement on the map
 							cout << "CLICKED" << endl;
-							Request r={R_CREATE_WAREHOUSE,msPos.x-m_mapPosX,msPos.y-m_mapPosY};
+							Request r={R_CREATE_WAREHOUSE,msPos.x-m_mapPosX-Warehouse::width()/2,msPos.y-m_mapPosY-Warehouse::height()/2};
 							game->request(&r);
 							//game->addElement(new Warehouse(game->elmtListIndex(),msPos.x-m_mapPosX,msPos.y-m_mapPosY));
 
@@ -118,7 +118,7 @@ int GUI::start(void *pgame)
 				if(msPos.x > m_mapPosX +80*i && msPos.x < m_mapPosX + 60 +80*i && msPos.y > m_mapPosY + m_mapHeight && msPos.y < m_mapPosY + m_mapHeight + 60)
 				{
 					m_elementSelectedType = i+1;
-					m_elementSelected = new Warehouse(-1,msPos.x,msPos.y);
+					m_elementSelected = new Warehouse(-1,msPos.x-50/2,msPos.y-50/2);
 				}
 
 
@@ -357,7 +357,7 @@ void GUI::drawSelection()
 		int height = m_elementSelected->height();
 		int width  = m_elementSelected->width();
 
-		s.setTextureRect(sf::IntRect(0, 0, width,height ));
+		//s.setTextureRect(sf::IntRect(0, 0, width,height ));
 		s.setPosition(Vector2f(msPos.x-width/2,msPos.y-height/2));
 
 		//if we're in the map
@@ -375,7 +375,7 @@ void GUI::drawSelection()
 
 			if(placeFree)//if we're at free place
 			{
-				s.setColor(m_elementSelected->color());
+				s.setColor(sf::Color(255, 255 , 255, 255));//m_elementSelected->color());
 				m_elementOk = true;
 			}
 			else//if there're already somthing at the place

@@ -4,6 +4,8 @@
 using namespace sf;
 
 const Color Warehouse::s_color = WAREHOUSE_COLOR;
+const Texture* Warehouse::s_texture = new Texture();
+
 
 Request Warehouse::update()
 {

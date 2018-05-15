@@ -62,6 +62,8 @@ Game::Game()
 	Element::map()=m_map;
 	Element::mapHeight()=m_mapHeight;
 	Element::mapWidth()=m_mapWidth;
+	
+	Warehouse::setTexture();
 
 }
 

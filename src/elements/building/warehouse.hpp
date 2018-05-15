@@ -27,22 +27,13 @@ class Warehouse: public Element
 
 
 		//to compensate mouse middle effect
-		m_x -= m_width/2; 
-		m_y -= m_height/2;
+//		m_x -= m_width/2; 
+//		m_y -= m_height/2;
 		
-		Image im;
-		if (!im.loadFromFile("media/elements/warehouse.jpg"))
-		{
-			cout << "Erreur chargement image!"<< endl;
-			// return
-		}
-		//im.createMaskFromColor(Color::White);
-
-		Texture t;
-		t.loadFromImage(im);
 		
-		m_sprite.setTexture(t);
-		//m_sprite.setScale(Vector2f(50,50));
+		
+		m_sprite.setTexture(*s_texture);
+		m_sprite.setScale(Vector2f(0.25,0.25));
 		m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
 		//m_sprite.setTextureRect(sf::IntRect(0, 0,m_width, m_height));
 		//m_sprite.setColor(m_color);
@@ -54,13 +45,28 @@ class Warehouse: public Element
 	~Warehouse(){};
 
 	Request update();
-
+	
+	static void setTexture()
+	{
+		Image im;
+		if (!im.loadFromFile("media/elements/warehouse.jpg"))
+		{
+			cout << "Erreur chargement image!"<< endl;
+			// return
+		}
+		im.createMaskFromColor(Color::White);
+		
+		const_cast<Texture*>(s_texture)->loadFromImage(im);
+	}
+	
+	const static int width(){return s_width;}
+	const static int height(){return s_height;}
 
 	private:
 	void setSize(int pw,int ph){};
 	void setID(int pw,int ph){};
 
-	const static Texture s_texture;
+	const static Texture * s_texture;
 	const static int s_type = WAREHOUSE_TYPE;
 	const static int s_width = WAREHOUSE_WIDTH;
 	const static int s_height = WAREHOUSE_HEIGHT;
