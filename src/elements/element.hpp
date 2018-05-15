@@ -65,10 +65,10 @@ class Element
 
 	static bool isPlaceFree(int px,int py,int pw, int ph);
 	static bool placeAround(Element *fixed, Element *toPlaced,int *x, int *y);
-	void updatePos();
+	void updateStatut(int x, int y, int hp);
 
 	protected:
-	
+	void updatePos();
 
 	//     team numero  HP  type
 	// ID:    4| 999 9|99 9|99

@@ -18,7 +18,7 @@ int main(int argc,char ** argv)
 
 	//game.verbose();
 
-	game.setOnline(2001);
+	game.setOnline(atoi(argv[1]));
 	
 
 	game.connectToServer(2000,(char *)"127.0.0.1");

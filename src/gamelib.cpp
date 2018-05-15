@@ -198,6 +198,7 @@ bool Game::processRequest(Request* req)
 
 		case R_MOVE:
 		{
+			//std::cout << "moving" << std::endl;
 			((Unit *)(req->e1))->move(req->val1,req->val2);
 
 		}break;
@@ -231,7 +232,8 @@ void Game::update()
 			{
 				char up[1024],buff[1024];
 				sprintf(up,"MUE%dT%dX%dY%dH%d",(*it)->no(),(*it)->type(),(*it)->x(),(*it)->y(),(*it)->HP());
-				sendToClientUDP(0,up);
+				for(int i = 0; i < getClientAddr().size(); i++)
+					sendToClientUDP(i,up);
 			}
 			m_elmtsMtx.lock();
 		}
@@ -271,10 +273,11 @@ int Game::processServerUpdate(char * buffer)
 		{
 			if((*it)->no()== no)
 			{
-				(*it)->x()  = parseNumber(buffer,'X',(*it)->x());
-				(*it)->y()  = parseNumber(buffer,'Y',(*it)->y());
-				(*it)->HP() = parseNumber(buffer,'H',(*it)->HP());
-				//(*it)->updatePos();
+//				(*it)->x()  = parseNumber(buffer,'X',(*it)->x());
+//				(*it)->y()  = parseNumber(buffer,'Y',(*it)->y());
+//				(*it)->HP() = parseNumber(buffer,'H',(*it)->HP());
+				(*it)->updateStatut(parseNumber(buffer,'X',(*it)->x()), parseNumber(buffer,'Y',(*it)->y()), parseNumber(buffer,'H',(*it)->HP()));
+				//std::cout << "element:"<< (*it)->no() << std::endl;
 				return 1;
 			}
 			//std::cout << "element:"<< (*it)->no() << std::endl;

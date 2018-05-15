@@ -28,6 +28,15 @@ void Element::updatePos()
 	}
 }
 
+void Element::updateStatut(int x, int y, int hp)
+{
+	m_x=x;
+	m_y=y;
+	m_HP = hp;
+	updatePos();
+}
+
+
 bool Element::isPlaceFree(int px,int py,int pw, int ph)
 {
 	bool placeFree = false;
