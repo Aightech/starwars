@@ -2,6 +2,12 @@
 
 const Color Unit::s_color = UNIT_COLOR;
 
+void Unit::setting()
+{
+	//Unit:setTexture();
+	Element::elements()[UNIT_TYPE] = new Unit();
+};
+
 Request Unit::update()
 {
 

@@ -62,9 +62,9 @@ Game::Game()
 	Element::map()=m_map;
 	Element::mapHeight()=m_mapHeight;
 	Element::mapWidth()=m_mapWidth;
+	Warehouse::setting();
+	Unit::setting();
 	
-	Warehouse::setTexture();
-
 }
 
 //No current use
@@ -145,72 +145,32 @@ bool Game::request(Request* req)
 
 bool Game::processRequest(Request* req)
 {
-	switch(req->type)
+	if(req->type == NO_REQUEST)
+		return false;
+	if(req->type/NB_MAX_ELEMENT==0)//request of element creation
 	{
-		case NO_REQUEST:     break;
-
-		case R_CREATE_BUILDING:
-		case R_CREATE_WAREHOUSE:
-		case R_CREATE_FARM:
-		case R_CREATE_TOWER:
+		Element * e= Element::factory(req->type, (req->e1==0)?m_elementsIndex:(req->e1), req->val1, req->val2);;
+		if(e==NULL)	return false;
+		if(req->val3 != -1)
+			e->HP() = req->val3;
+		this->addElement(e);
+	}
+	else
+	{
+		switch(req->type)
 		{
-			Element * e;
-			switch(req->type)
+			case R_MOVE:
 			{
-				case R_CREATE_WAREHOUSE:
-				{
-					cout << "request Warehouse : " << ((req->e1==0)?m_elementsIndex:(req->e1)) << endl;
-					e = new Warehouse((req->e1==0)?m_elementsIndex:(req->e1),req->val1,req->val2);
-				}break;
-				case R_CREATE_FARM:
-				{
+				((Unit *)(req->e1))->move(req->val1,req->val2);
+			}break;
 
-				}break;
-				case R_CREATE_TOWER:
-				{
-
-				}break;
-			}
-			if(req->val3 != -1)
-				e->HP() = req->val3;
-			this->addElement(e);
-
-		}break;
-
-		case R_CREATE_UNIT:
-		case R_CREATE_SUPERUNIT:
-		{
-			Element * e;
-			switch(req->type)
+			case R_ACTION:
+			case R_HEAL:
+			case R_ATTACK:
 			{
-				case R_CREATE_UNIT:
-				{
-					cout << "request Unit"<< endl;
-					e = new Unit((req->e1==0)?m_elementsIndex:(req->e1),req->val1,req->val2);
-				}break;
-				case R_CREATE_SUPERUNIT:
-				{
 
-				}break;
-			}
-			if(req->val3 != -1)
-				e->HP() = req->val3;
-			this->addElement(e);
-		}break;
-
-		case R_MOVE:
-		{
-			//std::cout << "moving" << std::endl;
-			((Unit *)(req->e1))->move(req->val1,req->val2);
-
-		}break;
-
-		case R_ACTION:
-		case R_HEAL:
-		case R_ATTACK:
-		{
-
-		}break;
+			}break;
+		}
 	}
 	
 	return true;

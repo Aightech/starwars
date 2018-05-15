@@ -6,7 +6,11 @@ using namespace sf;
 const Color Warehouse::s_color = WAREHOUSE_COLOR;
 const Texture* Warehouse::s_texture = new Texture();
 
-//Element ** test= Element::elementType()[WAREHOUSE_TYPE];// = (Element*)(new Element(0,0,0));
+void Warehouse::setting()
+{
+	Warehouse::setTexture();
+	Element::elements()[WAREHOUSE_TYPE] = new Warehouse();
+};
 
 
 Request Warehouse::update()

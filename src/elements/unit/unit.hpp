@@ -41,7 +41,7 @@ class Unit: public Element
 	int move(int dx,int dy);
 	int attack(){};
 
-
+	static void setting();
 	Request update();
 	Element * builder(int pno, int px, int py){return new Unit(pno,px,py);};
 

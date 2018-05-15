@@ -9,9 +9,8 @@ int Element::s_mapOffsetX = 0;
 int Element::s_mapOffsetY = 0;
 
 int Element::s_team = 0;
-
-
-
+Element ** Element::s_elements = new Element*[NB_MAX_ELEMENT]();
+Element ** Element::elements(){ return s_elements;}
 
 
 //store one of each element to get access to them through Element class.

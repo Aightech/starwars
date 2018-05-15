@@ -36,6 +36,7 @@ class Element
 
 	//TODO tranform to return a action 
 	virtual Request update()=0;
+	//virtual void setting() = 0;
 	virtual Element* builder(int pno, int px, int py)=0;
 
 	int& x(){return m_x;};
@@ -68,12 +69,14 @@ class Element
 	static bool placeAround(Element *fixed, Element *toPlaced,int *x, int *y);
 	void updateStatut(int x, int y, int hp);
 	
-	static Element ** elements(){ return s_elements;};
-	static Element * factory(int elementType,int pno, int px, int py){ return s_elements[elementType]->builder(pno, px, py);}
+	static Element ** elements();
+	static Element * factory(int elementType,int pno, int px, int py)
+	{return (s_elements[elementType]!=NULL)?s_elements[elementType]->builder(pno, px, py):NULL;};
 
 	protected:
 	void updatePos();
-
+	
+	static Element ** s_elements;
 	//     team numero  HP  type
 	// ID:    4| 999 9|99 9|99
 	int updateID()
@@ -90,8 +93,6 @@ class Element
 	Color m_color;
 
 	static unsigned long int * s_map;
-	
-	static Element * s_elements[100];
 
 	static int s_mapHeight;
 	static int s_mapWidth;

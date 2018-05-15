@@ -45,6 +45,7 @@ class Warehouse: public Buildable
 	~Warehouse(){};
 
 	Request update();
+	static void setting();
 	Element * builder(int pno, int px, int py){return new Warehouse(pno,px,py);};
 	
 	static void setTexture()

@@ -5,6 +5,7 @@
 
 //Elements
 #define NB_ELEMENT 4
+#define NB_MAX_ELEMENT 100
 #define ELEMENTS_ARRAY {new Warehouse(),NULL,NULL,new Unit()}
 
 
@@ -61,8 +62,8 @@
 #define R_CREATE_UNIT UNIT_TYPE
 #define R_CREATE_SUPERUNIT 11
 
-#define R_MOVE 20
+#define R_MOVE 120
 
-#define R_ACTION 30
-#define R_ATTACK 31
-#define R_HEAL 32
+#define R_ACTION 130
+#define R_ATTACK 131
+#define R_HEAL 132
