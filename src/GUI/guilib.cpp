@@ -17,7 +17,7 @@ GUI::GUI(unsigned long int * map, int width, int height)
        
        //////------- Loading different fonts ------- /////
        Button::setFont(GAME_FONT_BUTTON);
-       Button::setTexture(GAME_THEME_BUTTON);
+       Button::setTexture(GAME_THEME_BUTTON,137,50);
        
        //////------- WINDOW SETTING ------- /////
        window.create(VideoMode(WIN_W,WIN_H), GAME_NAME); 
@@ -268,7 +268,8 @@ void GUI::createContext()
 			mapSprite->setPosition(Vector2f(m_mapPosX,m_mapPosY));
 			m_arraySprite.push_back(mapSprite);
 
-
+			
+			
 			Sprite * warehouseSrpite = new Sprite();
 			warehouseSrpite->setTexture(t);
 			int warehouseHeight= 60;
@@ -277,6 +278,8 @@ void GUI::createContext()
 			warehouseSrpite->setPosition(Vector2f(m_mapPosX,m_mapPosY + m_mapHeight + 10));
 			warehouseSrpite->setColor(sf::Color(0, 150, 0));
 			m_arraySprite.push_back(warehouseSrpite);
+			
+			m_arrayButton.push_back(new Button("media/theme/warehouseButton.png",60,60,Vector2f(m_mapPosX,m_mapPosY + m_mapHeight + 10),1));
 
 			Sprite * farmSrpite = new Sprite();
 			farmSrpite->setTexture(t);
