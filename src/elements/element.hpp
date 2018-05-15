@@ -36,6 +36,7 @@ class Element
 
 	//TODO tranform to return a action 
 	virtual Request update()=0;
+	virtual Element* builder(int pno, int px, int py)=0;
 
 	int& x(){return m_x;};
 	int& y(){return m_y;};
@@ -66,6 +67,9 @@ class Element
 	static bool isPlaceFree(int px,int py,int pw, int ph);
 	static bool placeAround(Element *fixed, Element *toPlaced,int *x, int *y);
 	void updateStatut(int x, int y, int hp);
+	
+	static Element ** elements(){ return s_elements;};
+	static Element * factory(int elementType,int pno, int px, int py){ return s_elements[elementType]->builder(pno, px, py);}
 
 	protected:
 	void updatePos();
@@ -86,6 +90,8 @@ class Element
 	Color m_color;
 
 	static unsigned long int * s_map;
+	
+	static Element * s_elements[100];
 
 	static int s_mapHeight;
 	static int s_mapWidth;
@@ -105,6 +111,21 @@ class Element
 
 	clock_t m_clock;
 	int m_test =0;
+
+
+};
+
+class Buildable: public Element
+{
+	public:
+	Buildable(){};
+	Buildable(int no, int px, int py):Element(no,px,py) {};
+
+	~Buildable(){};
+
+	//TODO tranform to return a action 
+	virtual Request update()=0;
+
 
 
 };

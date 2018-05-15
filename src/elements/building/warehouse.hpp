@@ -10,13 +10,13 @@
 using namespace std;
 
 
-class Warehouse: public Element
+class Warehouse: public Buildable
 {
 
 	public:
 	Warehouse(): Warehouse(-1,0,0){};
 
-	Warehouse(int no, int px, int py): Element(no,px,py)
+	Warehouse(int no, int px, int py): Buildable(no,px,py)
 	{
 		m_width = s_width;
 		m_height = s_height;
@@ -45,6 +45,7 @@ class Warehouse: public Element
 	~Warehouse(){};
 
 	Request update();
+	Element * builder(int pno, int px, int py){return new Warehouse(pno,px,py);};
 	
 	static void setTexture()
 	{

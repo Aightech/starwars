@@ -43,6 +43,7 @@ class Unit: public Element
 
 
 	Request update();
+	Element * builder(int pno, int px, int py){return new Unit(pno,px,py);};
 
 	private:
 	void setSize(int pw,int ph){};
