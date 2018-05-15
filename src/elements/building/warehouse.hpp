@@ -29,11 +29,23 @@ class Warehouse: public Element
 		//to compensate mouse middle effect
 		m_x -= m_width/2; 
 		m_y -= m_height/2;
+		
+		Image im;
+		if (!im.loadFromFile("media/elements/warehouse.jpg"))
+		{
+			cout << "Erreur chargement image!"<< endl;
+			// return
+		}
+		//im.createMaskFromColor(Color::White);
+
 		Texture t;
+		t.loadFromImage(im);
+		
 		m_sprite.setTexture(t);
+		//m_sprite.setScale(Vector2f(50,50));
 		m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
-		m_sprite.setTextureRect(sf::IntRect(0, 0,m_width, m_height));
-		m_sprite.setColor(m_color);
+		//m_sprite.setTextureRect(sf::IntRect(0, 0,m_width, m_height));
+		//m_sprite.setColor(m_color);
 		
 		if(no!=-1)
 			updatePos();
