@@ -21,7 +21,7 @@ int main(int argc,char ** argv)
 	srand(time(NULL));
 
 	Game game;
-	//game.verbose();
+	game.verbose();
 	game.setConnectable();
 
 	game.setServer(2000);
