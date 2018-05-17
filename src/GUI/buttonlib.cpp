@@ -32,12 +32,16 @@ Button::Button(std::string s, sf::Vector2f position,int nb)
 
 }
 
-Button::Button(const std::string &filename, int pw, int ph, sf::Vector2f position,int nb)
+
+
+Button::Button(GUI* pgui,const std::string &filename, int pw, int ph, sf::Vector2f position, void (GUI::*f)(int),int nb)
 {
+	m_gui = pgui;
 	m_texture = new Texture();
 	m_texture->loadFromFile(filename);
 	m_width = pw;
 	m_height = ph;
+	m_fctCllBck = f;
 
 	m_button.setTexture(*m_texture);
 	m_button.setTextureRect(IntRect(0, 0, m_width, m_height));
@@ -75,7 +79,7 @@ void Button::create(std::string s, sf::Vector2f position,int nb)
 
 int Button::update(RenderWindow &w)
 {            
-       
+//       
        msPos=Mouse::getPosition(w);
        if(msPos.x >= btPos.x
        && msPos.x <= btPos.x + btSize.width
@@ -107,6 +111,7 @@ int Button::update(RenderWindow &w)
                      m_state=0;
                      m_button.setTextureRect(IntRect(0, 0, m_width, m_height));
               }
+              (*m_gui.*m_fctCllBck)(m_nb);
               return m_nb;
        }
        if(!Mouse::isButtonPressed(Mouse::Left))//to ensure the click has been released

@@ -10,14 +10,15 @@
 using namespace std;
 
 
-class Warehouse: public Buildable
+class Warehouse: public Element
 {
 
 	public:
 	Warehouse(): Warehouse(-1,0,0){};
 
-	Warehouse(int no, int px, int py): Buildable(no,px,py)
+	Warehouse(int no, int px, int py): Element(no,px,py)
 	{
+		m_isBuidable = true;
 		m_width = s_width;
 		m_height = s_height;
 		m_HP = s_HP;
@@ -25,13 +26,6 @@ class Warehouse: public Buildable
 		m_type = s_type;
 		m_color = s_color;
 
-
-		//to compensate mouse middle effect
-//		m_x -= m_width/2; 
-//		m_y -= m_height/2;
-		
-		
-		
 		m_sprite.setTexture(*s_texture);
 		m_sprite.setScale(Vector2f(0.25,0.25));
 		m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
@@ -48,6 +42,7 @@ class Warehouse: public Buildable
 	static void setting();
 	Element * builder(int pno, int px, int py){return new Warehouse(pno,px,py);};
 	
+	
 	static void setTexture()
 	{
 		Image im;
@@ -63,6 +58,8 @@ class Warehouse: public Buildable
 	
 	const static int width(){return s_width;}
 	const static int height(){return s_height;}
+	
+	
 
 	private:
 	void setSize(int pw,int ph){};

@@ -6,8 +6,9 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 
-using namespace sf;
+class GUI;
 
+using namespace sf;
 
 class Button
 {
@@ -18,10 +19,10 @@ class Button
 	public:
 	Button(){s_nb++;};
 	Button(std::string s, sf::Vector2f position,int nb = 0);
-	Button(const std::string &filename, int pw, int ph, sf::Vector2f position,int nb=0);
+	Button(GUI* pgui, const std::string &filename, int pw, int ph, sf::Vector2f position, void (GUI::*f)(int),int nb=0);
 	void create(std::string s, sf::Vector2f position,int nb = 0);
 	~Button(){s_nb--;};//std::cout<<"deleted"<<std::endl;};
-
+	
 	static void setTexture(const std::string &filename, int pw, int ph)
 	{s_texture->loadFromFile(filename);s_width=pw;s_height=ph;};
 	static void setFont(const std::string &filename)
@@ -31,7 +32,7 @@ class Button
 	{m_texture->loadFromFile(filename);};
 
 	int update(RenderWindow &w);
-	int clicked(){return m_state;};
+	int& clicked(){return m_state;};
 
 	int getNbOfBt(){return s_nb-1;};
 
@@ -46,6 +47,8 @@ class Button
 	static int s_height;
 	static Font* s_font;
 	
+	void (GUI::*m_fctCllBck)(int);
+	
 	Vector2i msPos;
 	Vector2f btPos;
 	FloatRect btSize;
@@ -53,6 +56,7 @@ class Button
 	int m_nb;
 	int m_width;
 	int m_height;
+	GUI * m_gui;
 
 	Text m_label;
 	Texture* m_texture;

@@ -73,52 +73,20 @@ int GUI::start(void *pgame)
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
 
-				if(m_elementSelectedType!=0)
+				if(m_elementSelectedType!=0 && m_elementOk)
 				{
-					if(m_elementOk)
-					{
-						switch(m_elementSelectedType)
-						{
-							case WAREHOUSE_TYPE:
-							{
-							//int height = Warehouse::heigth();
-							//int width  = Warehouse::width();
-							//add a ellement on the map
-							cout << "CLICKED" << endl;
-							Request r={R_CREATE_WAREHOUSE,msPos.x-m_mapPosX-Warehouse::width()/2,msPos.y-m_mapPosY-Warehouse::height()/2};
-							game->request(&r);
-							//game->addElement(new Warehouse(game->elmtListIndex(),msPos.x-m_mapPosX,msPos.y-m_mapPosY));
+					cout << "CLICKED" << endl;
+					Request r={m_elementSelectedType,msPos.x-m_mapPosX-Warehouse::width()/2,msPos.y-m_mapPosY-Warehouse::height()/2};
+					game->request(&r);
+					delete m_elementSelected;
+					m_elementSelected = NULL;
 
-							}break;
-
-							/*case FARM_TYPE:
-							{
-							int height = Warehouse::heigth();
-							int width  = Warehouse::width();
-							//add a ellement on the map
-							//game->addElement(new Warehouse(game->elmtListIndex(),msPos.x-m_mapPosX,msPos.y-m_mapPosY));
-							}break;
-
-							case TOWER_TYPE:
-							{
-							int height = Warehouse::heigth();
-							int width  = Warehouse::width();
-							//add a ellement on the map
-							//game->addElement(new Warehouse(game->elmtListIndex(),msPos.x-m_mapPosX,msPos.y-m_mapPosY));
-							}break;*/
-						}
-
-
-						m_elementOk=false;
-						m_elementSelectedType=0;
-					}
-				}
-				//TODO transform this in button
-				for(int i=0;i<3;i++)
-				if(msPos.x > m_mapPosX +80*i && msPos.x < m_mapPosX + 60 +80*i && msPos.y > m_mapPosY + m_mapHeight && msPos.y < m_mapPosY + m_mapHeight + 60)
-				{
-					m_elementSelectedType = i+1;
-					m_elementSelected = new Warehouse(-1,msPos.x-50/2,msPos.y-50/2);
+					m_elementOk=false;
+					m_elementSelectedType=0;
+					
+					for(int i=0;i<m_arrayButton.size();i++)
+						m_arrayButton[i]->clicked()=false;
+				
 				}
 
 
@@ -217,6 +185,14 @@ int GUI::start(void *pgame)
 	return 0;
 }
 
+void GUI::buildElement(int type)
+{
+	if(m_elementSelected!=NULL)
+		delete m_elementSelected;
+	m_elementSelected = Element::factory(type, -1, msPos.x-50/2, msPos.y-50/2);//new Warehouse(-1,msPos.x-50/2,msPos.y-50/2);
+	m_elementSelectedType = type;
+}
+
 void GUI::createContext()
 {
 	/////------- FLUSH ALL THE GUI ARRAYS ------- /////
@@ -268,36 +244,17 @@ void GUI::createContext()
 			mapSprite->setPosition(Vector2f(m_mapPosX,m_mapPosY));
 			m_arraySprite.push_back(mapSprite);
 
+			int c=0;
+			Element ** elmts = Element::elements();
+			for(int i = 0 ; i< NB_MAX_ELEMENT; i++)
+			{
+				
+				if(elmts[i] != NULL && elmts[i]->isBuidable())
+					m_arrayButton.push_back(new Button(this,"media/theme/warehouseButton.png",60,60,Vector2f(m_mapPosX + c++*70,m_mapPosY + m_mapHeight + 10),&GUI::buildElement,WAREHOUSE_TYPE));
+			}
 			
-			
-			Sprite * warehouseSrpite = new Sprite();
-			warehouseSrpite->setTexture(t);
-			int warehouseHeight= 60;
-			int warehouseWidth= 60;
-			warehouseSrpite->setTextureRect(sf::IntRect(0, 0, warehouseWidth, warehouseHeight ));
-			warehouseSrpite->setPosition(Vector2f(m_mapPosX,m_mapPosY + m_mapHeight + 10));
-			warehouseSrpite->setColor(sf::Color(0, 150, 0));
-			m_arraySprite.push_back(warehouseSrpite);
-			
-			m_arrayButton.push_back(new Button("media/theme/warehouseButton.png",60,60,Vector2f(m_mapPosX,m_mapPosY + m_mapHeight + 10),1));
 
-			Sprite * farmSrpite = new Sprite();
-			farmSrpite->setTexture(t);
-			int farmHeight= 60;
-			int farmWidth= 60;
-			farmSrpite->setTextureRect(sf::IntRect(0, 0, farmWidth, farmHeight ));
-			farmSrpite->setPosition(Vector2f(m_mapPosX + 80,m_mapPosY + m_mapHeight + 10));
-			farmSrpite->setColor(sf::Color(0, 200, 0));
-			m_arraySprite.push_back(farmSrpite);
-
-			Sprite * towerSrpite = new Sprite();
-			towerSrpite->setTexture(t);
-			int towerHeight= 60;
-			int towerWidth= 60;
-			towerSrpite->setTextureRect(sf::IntRect(0, 0, towerWidth, towerHeight ));
-			towerSrpite->setPosition(Vector2f(m_mapPosX + 160,m_mapPosY + m_mapHeight + 10));
-			towerSrpite->setColor(sf::Color(0, 250, 0));
-			m_arraySprite.push_back(towerSrpite);
+			
 
 		}
 		break;
@@ -346,13 +303,12 @@ void GUI::drawMap()
 			}
 		}
 	}
-	//cout << "====================" << endl;
 }
 
 
 void GUI::drawSelection()
 {
-	if(m_elementSelectedType)
+	if(m_elementSelected!=NULL)
 	{
 
 		Sprite s = m_elementSelected->sprite();

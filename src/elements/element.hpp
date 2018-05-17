@@ -44,6 +44,7 @@ class Element
 	int no(){return m_no;};
 	int& HP(){return m_HP;};
 	int type(){return m_type;}
+	int isBuidable(){return m_isBuidable;};
 	Sprite& sprite(){return m_sprite;};
 	Color& color(){return m_color;};
 
@@ -100,6 +101,8 @@ class Element
 	static int s_mapOffsetX;
 
 	Sprite m_sprite;
+	
+	bool m_isBuidable=false;
 
 	int m_x;
 	int m_y;
@@ -116,20 +119,6 @@ class Element
 
 };
 
-class Buildable: public Element
-{
-	public:
-	Buildable(){};
-	Buildable(int no, int px, int py):Element(no,px,py) {};
-
-	~Buildable(){};
-
-	//TODO tranform to return a action 
-	virtual Request update()=0;
-
-
-
-};
 
 
 #include "building/warehouse.hpp"

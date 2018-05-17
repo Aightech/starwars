@@ -98,6 +98,7 @@ class GUI
        /*! \brief draw the selected unit at the mouse position. colored the Unit to indicate the validity of the position*/
        void drawSelection();
        
+       void buildElement(int type);
        
        //the window of the gui
        RenderWindow window;
@@ -118,8 +119,8 @@ class GUI
        
        //useful flags
        int m_elementSelectedType;//use for drawMap
-       Element * m_elementSelected;
-       bool m_elementOk;
+       Element * m_elementSelected=NULL;
+       bool m_elementOk = false;
        
        
        unsigned long int *m_map;//refer to the game map
