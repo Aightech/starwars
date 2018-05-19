@@ -19,7 +19,7 @@ Textbox::Textbox(std::string *s, sf::Vector2f position,int nb)
        label.setString(*s);
        label.setCharacterSize(20);
        label.setPosition(Vector2f(bxPos.x+(bxSize.width-s->size()*13)/2, bxPos.y+(bxSize.height-5-20)/2));
-       label.setColor(Color(255,255,255));
+       label.setFillColor(Color(255,255,255));
        
        m_nb=nb;
        s_nb++;

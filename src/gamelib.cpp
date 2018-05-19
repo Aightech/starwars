@@ -125,7 +125,7 @@ bool Game::sendRequest(Request * req)
 {
 	char buffReq[1024],reply[1024];
 	sprintf(buffReq,"MR%dE%dU%dV%d",req->type,(req->e1!=0)?((Element *)req->e1)->no():-1,req->val1,req->val2);
-	this->sendToServerTCP(buffReq,reply);
+	this->sendToServer(buffReq,(char*)"tcp",reply);
 	return (strcmp(reply,"rcvd") == 0)?true:false;
 }
 
@@ -194,8 +194,7 @@ void Game::update()
 			{
 				char up[1024],buff[1024];
 				sprintf(up,"MUE%dT%dX%dY%dH%d",(*it)->no(),(*it)->type(),(*it)->x(),(*it)->y(),(*it)->HP());
-				for(int i = 0; i < getClientAddr().size(); i++)
-					sendToClientUDP(i,up);
+				sendToClient(ALL_CLIENT,up);
 			}
 			m_elmtsMtx.lock();
 		}
