@@ -20,6 +20,7 @@
 #define WAREHOUSE_HEIGHT 50
 #define WAREHOUSE_DEFENSE 5
 #define WAREHOUSE_COLOR Color(0,0,255)
+#define WAREHOUSE_PATH_BUTTON_TEXTURE "media/theme/warehouseButton.png"
 
 
 //Farm dimensions

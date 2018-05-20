@@ -2,32 +2,13 @@
 #include <iostream>
 #include <string>
 
-#include "GUI/guilib.hpp"
+//#include "GUI/guilib.hpp"
 #include "gamelib.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
-/*#include "vector"
-#include <time.h> 
 
-
-#include <sys/types.h> 
-#include <sys/socket.h>
-#include <sys/ioctl.h>
-#include <netinet/in.h>
-#include <net/if.h>
-#include <sys/wait.h>
-
-#include <netdb.h>
-#include <arpa/inet.h>
-
-#include <fcntl.h>
-
-#include <pthread.h>
-
-#include <stdio.h>
-#include <stdlib.h>*/
 
 
 
@@ -56,6 +37,8 @@ Game::Game()
 	m_isServer = false;
 
 	m_elementsIndex =0;
+	
+	m_players.push_back(new Player(this,0));
 
 
 	//////------- ELEMENT SETTING ------- /////
@@ -108,15 +91,16 @@ void Game::setServer(int port)
 
 void Game::addElement(Element * element)
 {
-	cout << "Element added" << endl;
-	cout << element->no() <<  endl;
-
-	cout << "++++++++++++" << endl;
+	if(m_verbose)
+	{
+		cout << "Element added" << endl;
+		cout << element->no() <<  endl;
+		cout << "++++++++++++" << endl;
+	}
 	 m_elementsIndex++;
 	m_elmtsMtx.lock();
 	m_elements.push_back(element);
 	m_elmtsMtx.unlock();
-	cout << "++++++++++++" << endl;
 
 
 }
@@ -124,7 +108,7 @@ void Game::addElement(Element * element)
 bool Game::sendRequest(Request * req)
 {
 	char buffReq[1024],reply[1024];
-	sprintf(buffReq,"MR%dE%dU%dV%d",req->type,(req->e1!=0)?((Element *)req->e1)->no():-1,req->val1,req->val2);
+	sprintf(buffReq,"MR%dE%dU%dV%dP%d",req->type,(req->e!=0)?((Element *)req->e)->no():-1,req->val1,req->val2,(int)req->p);
 	this->sendToServer(buffReq,(char*)"tcp",reply);
 	return (strcmp(reply,"rcvd") == 0)?true:false;
 }
@@ -149,11 +133,15 @@ bool Game::processRequest(Request* req)
 		return false;
 	if(req->type/NB_MAX_ELEMENT==0)//request of element creation
 	{
-		Element * e= Element::factory(req->type, (req->e1==0)?m_elementsIndex:(req->e1), req->val1, req->val2);;
+		Player * p = (req->p==-1)?m_players[0]:m_players[req->p];
+		Element * e= Element::factory(req->type, (req->e==0)?m_elementsIndex:(req->e), req->val1, req->val2, p);
 		if(e==NULL)	return false;
 		if(req->val3 != -1)
 			e->HP() = req->val3;
+		
+		p->addElement(e);
 		this->addElement(e);
+		sendUpdateAreaAround(e);
 	}
 	else
 	{
@@ -161,7 +149,8 @@ bool Game::processRequest(Request* req)
 		{
 			case R_MOVE:
 			{
-				((Unit *)(req->e1))->move(req->val1,req->val2);
+				((Unit *)(req->e))->move(req->val1,req->val2);
+				sendUpdateAreaAround(((Unit *)(req->e)));
 			}break;
 
 			case R_ACTION:
@@ -176,29 +165,38 @@ bool Game::processRequest(Request* req)
 	return true;
 }
 
+bool Game::sendUpdate(Element * e)
+{
+	char updateMsg[512];
+	sprintf(updateMsg,"MUE%dT%dX%dY%dH%dP%d", e->no(), e->type(), e->x(), e->y(), e->HP(),e->player()->no());
+	sendToClient(ALL_CLIENT,updateMsg);
+}
+
+bool Game::sendUpdateAreaAround(Element * e)
+{
+	int e_height = e->height();
+	int e_width  = e->width();
+	int e_y = e->y();
+	int e_x = e->x();
+	int i_start = (e_y - e_height >= 0)?e_y - e_height:0;
+	int j_start = (e_x - e_width >= 0)?e_x - e_width:0;
+	int i_end = (e_y + e_height < m_mapHeight)?e_y + e_height:m_mapHeight;
+	int j_end = (e_x + e_width  < m_mapWidth )?e_x + e_width: m_mapWidth ;
+	
+	
+	for(int i = i_start; i < i_end+4 ; i+=5 )
+		for(int j = j_start; j < j_end+4 ; j+=5 )
+			if(m_map[i*m_mapWidth + j] != 0)
+				sendUpdate((Element*) m_map[i*m_mapWidth + j]);
+}
+
 
 void Game::update()
 {
 	if(!m_online || m_isServer)
 	{
-		Request r={0,0,0,0};
-		m_elmtsMtx.lock();
-		for(list<Element*>::iterator it = m_elements.begin(); it !=  m_elements.end(); it++) 
-		{
-			m_elmtsMtx.unlock();
-
-			r = (*it)->update();
-
-			this->request(&r);
-			if(m_isServer)
-			{
-				char up[1024],buff[1024];
-				sprintf(up,"MUE%dT%dX%dY%dH%d",(*it)->no(),(*it)->type(),(*it)->x(),(*it)->y(),(*it)->HP());
-				sendToClient(ALL_CLIENT,up);
-			}
-			m_elmtsMtx.lock();
-		}
-		m_elmtsMtx.unlock(); 
+		m_players[0]->update(10);
+		//waitSec(2,true);
 	}
 	else
 	{
@@ -218,6 +216,7 @@ int Game::processReceiverMessage(char * buffer, char* reply)
 int Game::processPlayerRequest(char * buffer)
 {
 	Request r = {parseNumber(buffer,'R',NO_REQUEST),parseNumber(buffer,'U',10),parseNumber(buffer,'V',10),parseNumber(buffer,'W',-1)};
+	r.p = parseNumber(buffer,'P',-1);
 	processRequest(&r);
 }
 
@@ -243,12 +242,13 @@ int Game::processServerUpdate(char * buffer)
 			}
 			//std::cout << "element:"<< (*it)->no() << std::endl;
 		}
-		//std::cout << "new element:"<< no << std::endl;
+//		std::cout << "new element:"<< no << std::endl;
 		Request r = {	parseNumber(buffer,'T',NO_REQUEST),
 				parseNumber(buffer,'X',10),
 				parseNumber(buffer,'Y',10),
 				parseNumber(buffer,'H',-1),
-				(unsigned long int )no		};
+				(unsigned long int )no	,
+				(unsigned long int )parseNumber(buffer,'P',-1)	};
 		processRequest(&r);
 		return 1;
 		

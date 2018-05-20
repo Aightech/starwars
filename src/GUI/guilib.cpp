@@ -77,6 +77,7 @@ int GUI::start(void *pgame)
 				{
 					cout << "CLICKED" << endl;
 					Request r={m_elementSelectedType,msPos.x-m_mapPosX-Warehouse::width()/2,msPos.y-m_mapPosY-Warehouse::height()/2};
+					r.p=-1;
 					game->request(&r);
 					delete m_elementSelected;
 					m_elementSelected = NULL;
@@ -247,11 +248,9 @@ void GUI::createContext()
 			int c=0;
 			Element ** elmts = Element::elements();
 			for(int i = 0 ; i< NB_MAX_ELEMENT; i++)
-			{
-				
 				if(elmts[i] != NULL && elmts[i]->isBuidable())
-					m_arrayButton.push_back(new Button(this,"media/theme/warehouseButton.png",60,60,Vector2f(m_mapPosX + c++*70,m_mapPosY + m_mapHeight + 10),&GUI::buildElement,WAREHOUSE_TYPE));
-			}
+					m_arrayButton.push_back(new Button(this,((Buildable*)elmts[i])->getButtonTexture(),60,60,Vector2f(m_mapPosX + c++*70,m_mapPosY + m_mapHeight + 10),&GUI::buildElement,WAREHOUSE_TYPE));
+			
 			
 
 			

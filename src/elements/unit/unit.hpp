@@ -18,7 +18,7 @@ class Unit: public Element
 
 	Unit(): Unit(-1,0,0){};
 
-	Unit(int no, int px, int py): Element(no,px,py)
+	Unit(int no, int px, int py,  Player * player = NULL): Element(no,px,py,player)
 	{
 		m_width = s_width;
 		m_height = s_height;
@@ -43,7 +43,7 @@ class Unit: public Element
 
 	static void setting();
 	Request update();
-	Element * builder(int pno, int px, int py){return new Unit(pno,px,py);};
+	Element * builder(int pno, int px, int py,Player * player=NULL){return new Unit(pno,px,py,player);};
 
 	private:
 	void setSize(int pw,int ph){};

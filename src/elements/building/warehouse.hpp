@@ -10,13 +10,13 @@
 using namespace std;
 
 
-class Warehouse: public Element
+class Warehouse: public Buildable
 {
 
 	public:
 	Warehouse(): Warehouse(-1,0,0){};
 
-	Warehouse(int no, int px, int py): Element(no,px,py)
+	Warehouse(int no, int px, int py,  Player * player=NULL): Buildable(no,px,py,player)
 	{
 		m_isBuidable = true;
 		m_width = s_width;
@@ -25,6 +25,7 @@ class Warehouse: public Element
 		m_defense = s_defense;
 		m_type = s_type;
 		m_color = s_color;
+		m_pathButtonTexture = s_pathButtonTexture;
 
 		m_sprite.setTexture(*s_texture);
 		m_sprite.setScale(Vector2f(0.25,0.25));
@@ -40,7 +41,7 @@ class Warehouse: public Element
 
 	Request update();
 	static void setting();
-	Element * builder(int pno, int px, int py){return new Warehouse(pno,px,py);};
+	Element * builder(int pno, int px, int py, Player * player=NULL){return new Warehouse(pno,px,py,player);};
 	
 	
 	static void setTexture()
@@ -71,6 +72,7 @@ class Warehouse: public Element
 	const static int s_height = WAREHOUSE_HEIGHT;
 	const static int s_HP = WAREHOUSE_HP;
 	const static int s_defense = WAREHOUSE_DEFENSE;
+	const static char s_pathButtonTexture[];
 	const static Color s_color;
 
 

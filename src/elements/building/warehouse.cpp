@@ -5,6 +5,7 @@ using namespace sf;
 
 const Color Warehouse::s_color = WAREHOUSE_COLOR;
 const Texture* Warehouse::s_texture = new Texture();
+const char Warehouse::s_pathButtonTexture[] = WAREHOUSE_PATH_BUTTON_TEXTURE;
 
 void Warehouse::setting()
 {
@@ -16,7 +17,7 @@ void Warehouse::setting()
 Request Warehouse::update()
 {
 	//create unit
-	Request req={NO_REQUEST,0,0,0,0,(unsigned long int)this};
+	Request req={NO_REQUEST,0,0,0,0,(unsigned long int)m_player->no()};
 	updatePos();
 	if(clock()-m_clock>CLOCKS_PER_SEC && m_test < 5)
 	{

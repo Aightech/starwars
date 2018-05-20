@@ -5,7 +5,8 @@
 #include "network/netapi.hpp"
 
 #include "GUI/guilib.hpp"
-#include "elements/element.hpp"
+#include "player/playerlib.hpp"
+//#include "elements/element.hpp"
 
 
 #include <list>
@@ -17,24 +18,7 @@
 using namespace sf;
 using namespace std;
 
-
-//struct to store players data
-typedef struct _Player {
-
-	int no;
-	char name[16];
-	char IPaddress[16];
-	int  portNo;
-	
-	int card[6];
-	
-}Player;
-
-
-
-
-
-
+class GUI;
 
 class Game: public  NetAPI
 {
@@ -68,6 +52,9 @@ class Game: public  NetAPI
 	
 	bool processRequest(Request* req);
 	bool request(Request* req);
+	
+	bool sendUpdateAreaAround(Element * e);
+	bool sendUpdate(Element * e);
 
 	/*! \brief */
 	void addElement(Element * element);
@@ -89,6 +76,8 @@ class Game: public  NetAPI
 	
 	int processPlayerRequest(char * buffer);
 	int processServerUpdate(char * buffer);
+	
+	mutex* getElmtMtx(){return &m_elmtsMtx;}
 
 
 
@@ -101,9 +90,10 @@ class Game: public  NetAPI
 	int m_mapHeight;
 	int m_mapWidth;
 
-
+	vector<Player *> m_players;
 	list<Element *> m_elements;
 	int m_elementsIndex;
+	int m_currentPlayer=0;
 
 	atomic<bool> m_guiTerminate;
 	mutex m_elmtsMtx;
