@@ -19,7 +19,7 @@ Request Warehouse::update()
 	//create unit
 	Request req={NO_REQUEST,0,0,0,0,(unsigned long int)m_player->no()};
 	updatePos();
-	if(clock()-m_clock>CLOCKS_PER_SEC && m_test < 5)
+	if(clock()-m_clock>CLOCKS_PER_SEC/10 && m_player->population() < m_player->populationMax())
 	{
 		m_clock=clock();
 		req.type=R_CREATE_UNIT;

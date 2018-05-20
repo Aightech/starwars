@@ -38,6 +38,7 @@ void Player::update(int step)
 {
 	Request r={0,0,0,0,0,0};
 	r.p=(unsigned long int)m_no;
+	clock_t start= clock();
 	for (int i = 0; i < step; i += 1)
 	{
 		m_elmtsMtx->lock();
@@ -51,6 +52,7 @@ void Player::update(int step)
 			m_elmtsMtx->lock();
 		}
 		m_elmtsMtx->unlock();
+		
 	}
 	
 };

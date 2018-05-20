@@ -2,6 +2,27 @@
 
 const Color Unit::s_color = UNIT_COLOR;
 
+Unit::Unit(int no, int px, int py,  Player * player): Element(no,px,py,player)
+{
+	m_width = s_width;
+	m_height = s_height;
+	m_HP = s_HP;
+	m_defense = s_defense;
+	m_type = s_type;
+	m_color = s_color;
+
+	Texture t;
+	m_sprite.setTexture(t);
+	m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
+	m_sprite.setTextureRect(sf::IntRect(0, 0,m_width, m_height));
+	m_sprite.setColor(m_color);
+	if(no!=-1)
+		updatePos();
+	
+	if(player!=NULL)
+		player->population()++;
+}
+
 void Unit::setting()
 {
 	//Unit:setTexture();
@@ -13,7 +34,7 @@ Request Unit::update()
 
 	Request req={NO_REQUEST,0,0,0,(unsigned long int)this};
 	updatePos();
-	if(clock()-m_clock>CLOCKS_PER_SEC/8)
+	if(clock()-m_clock>CLOCKS_PER_SEC/100)
 	{
 		m_clock=clock();
 		req.type=R_MOVE;
@@ -33,7 +54,9 @@ int  Unit::move(int dx,int dy)
 		m_x+=dx;
 		m_y+=dy;
 		updatePos();
+		return 1;
 	}
 	else
 		cout << "can't move" << endl;
+	return 0;
 }

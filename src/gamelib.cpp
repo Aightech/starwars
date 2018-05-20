@@ -149,8 +149,8 @@ bool Game::processRequest(Request* req)
 		{
 			case R_MOVE:
 			{
-				((Unit *)(req->e))->move(req->val1,req->val2);
-				sendUpdateAreaAround(((Unit *)(req->e)));
+				if(((Unit *)(req->e))->move(req->val1,req->val2)==1)
+					sendUpdateAreaAround(((Unit *)(req->e)));
 			}break;
 
 			case R_ACTION:
@@ -195,8 +195,8 @@ void Game::update()
 {
 	if(!m_online || m_isServer)
 	{
-		m_players[0]->update(10);
-		//waitSec(2,true);
+		m_players[0]->update(50000);
+		waitSec(2,true);
 	}
 	else
 	{

@@ -18,23 +18,7 @@ class Unit: public Element
 
 	Unit(): Unit(-1,0,0){};
 
-	Unit(int no, int px, int py,  Player * player = NULL): Element(no,px,py,player)
-	{
-		m_width = s_width;
-		m_height = s_height;
-		m_HP = s_HP;
-		m_defense = s_defense;
-		m_type = s_type;
-		m_color = s_color;
-
-		Texture t;
-		m_sprite.setTexture(t);
-		m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
-		m_sprite.setTextureRect(sf::IntRect(0, 0,m_width, m_height));
-		m_sprite.setColor(m_color);
-		if(no!=-1)
-			updatePos();
-	};
+	Unit(int no, int px, int py,  Player * player = NULL);
 
 	~Unit(){};
 
