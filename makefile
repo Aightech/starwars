@@ -1,10 +1,10 @@
 all: game server clean
 
-game: bin/main.o bin/guilib.o bin/gamelib.o bin/playerlib.o bin/netapi.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/warehouse.o bin/unit.o
-	g++ -o game bin/main.o  bin/playerlib.o bin/guilib.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/unit.o bin/warehouse.o bin/gamelib.o bin/netapi.o  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lpthread -g
+game: bin/main.o bin/guilib.o bin/gamelib.o bin/playerlib.o bin/netapi.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/warehouse.o bin/tower.o bin/farm.o bin/unit.o
+	g++ -o game bin/main.o  bin/playerlib.o bin/guilib.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/unit.o bin/warehouse.o bin/tower.o bin/farm.o bin/gamelib.o bin/netapi.o  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lpthread -g
 
-server: bin/server.o bin/guilib.o bin/gamelib.o bin/playerlib.o bin/netapi.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/warehouse.o bin/unit.o
-	g++ -o server bin/server.o  bin/playerlib.o bin/guilib.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/unit.o bin/warehouse.o bin/gamelib.o bin/netapi.o  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lpthread
+server: bin/server.o bin/guilib.o bin/gamelib.o bin/playerlib.o bin/netapi.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/warehouse.o bin/tower.o bin/farm.o bin/unit.o
+	g++ -o server bin/server.o  bin/playerlib.o bin/guilib.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/unit.o bin/warehouse.o bin/tower.o bin/farm.o bin/gamelib.o bin/netapi.o  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lpthread
 
 
 bin/server.o: server.cpp 
@@ -35,6 +35,12 @@ bin/element.o: src/elements/element.cpp src/elements/element.hpp
 	
 bin/warehouse.o: src/elements/element.cpp src/elements/element.hpp src/elements/building/warehouse.cpp src/elements/building/warehouse.hpp
 	g++ -c src/elements/building/warehouse.cpp -o bin/warehouse.o -std=c++11
+
+bin/tower.o: src/elements/element.cpp src/elements/element.hpp src/elements/building/tower.cpp src/elements/building/tower.hpp
+	g++ -c src/elements/building/tower.cpp -o bin/tower.o -std=c++11
+
+bin/farm.o: src/elements/element.cpp src/elements/element.hpp src/elements/building/farm.cpp src/elements/building/farm.hpp
+	g++ -c src/elements/building/farm.cpp -o bin/farm.o -std=c++11
 	
 bin/unit.o: src/elements/element.hpp src/elements/unit/unit.cpp src/elements/unit/unit.hpp
 	g++ -c src/elements/unit/unit.cpp -o bin/unit.o -std=c++11

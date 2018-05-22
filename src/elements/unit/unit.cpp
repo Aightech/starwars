@@ -1,6 +1,12 @@
 #include "unit.hpp"
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+using namespace sf;
 
 const Color Unit::s_color = UNIT_COLOR;
+const Texture* Unit::s_texture = new Texture();
+
+
 
 Unit::Unit(int no, int px, int py,  Player * player): Element(no,px,py,player)
 {
@@ -11,21 +17,22 @@ Unit::Unit(int no, int px, int py,  Player * player): Element(no,px,py,player)
 	m_type = s_type;
 	m_color = s_color;
 
-	Texture t;
-	m_sprite.setTexture(t);
+	m_sprite.setTexture(*s_texture);
+	//m_sprite.setScale(Vector2f(2,2));
 	m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
-	m_sprite.setTextureRect(sf::IntRect(0, 0,m_width, m_height));
-	m_sprite.setColor(m_color);
+	//m_sprite.setTextureRect(sf::IntRect(0, 0,m_width, m_height));
+	//m_sprite.setColor(m_color);
 	if(no!=-1)
 		updatePos();
 	
 	if(player!=NULL)
 		player->population()++;
+	std :: cout << "Unit created" << std :: endl; 
 }
 
 void Unit::setting()
 {
-	//Unit:setTexture();
+	Unit:setTexture();
 	Element::elements()[UNIT_TYPE] = new Unit();
 };
 

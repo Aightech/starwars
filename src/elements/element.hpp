@@ -136,6 +136,9 @@ class Buildable: public Element
 
 #include "../player/playerlib.hpp"
 #include "building/warehouse.hpp"
+#include "building/tower.hpp"
+#include "building/farm.hpp"
+
 #include "unit/unit.hpp"
 
 #endif

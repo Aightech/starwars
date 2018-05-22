@@ -25,7 +25,7 @@ Request Warehouse::update()
 		req.type=R_CREATE_UNIT;
 
 		m_test++;
-
+		std::cout << "Warehouse try to create unit" << std::endl;
 		Unit unit;
 		Element::placeAround(this,&unit,&req.val1,&req.val2);
 

@@ -29,10 +29,25 @@ class Unit: public Element
 	Request update();
 	Element * builder(int pno, int px, int py,Player * player=NULL){return new Unit(pno,px,py,player);};
 
+	static void setTexture()
+	{
+		Image im;
+		if (!im.loadFromFile("media/elements/bb81.png"))
+		{
+			cout << "Erreur chargement image!"<< endl;
+			// return
+		}
+		std :: cout << "Image chargée" << std :: endl; 
+		im.createMaskFromColor(Color::White);
+		
+		const_cast<Texture*>(s_texture)->loadFromImage(im);
+	}
+
 	private:
 	void setSize(int pw,int ph){};
 	void setID(int pw,int ph){};
 
+	const static Texture * s_texture;
 	const static int s_type = UNIT_TYPE;
 	const static int s_width = UNIT_WIDTH;
 	const static int s_height = UNIT_HEIGHT;

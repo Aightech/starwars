@@ -46,6 +46,8 @@ Game::Game()
 	Element::mapHeight()=m_mapHeight;
 	Element::mapWidth()=m_mapWidth;
 	Warehouse::setting();
+	Tower::setting();
+	Farm::setting();
 	Unit::setting();
 	
 }

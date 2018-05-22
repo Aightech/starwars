@@ -28,7 +28,7 @@ class Warehouse: public Buildable
 		m_pathButtonTexture = s_pathButtonTexture;
 
 		m_sprite.setTexture(*s_texture);
-		m_sprite.setScale(Vector2f(0.25,0.25));
+		m_sprite.setScale(Vector2f(0.9,0.9));
 		m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
 		//m_sprite.setTextureRect(sf::IntRect(0, 0,m_width, m_height));
 		//m_sprite.setColor(m_color);
@@ -47,7 +47,7 @@ class Warehouse: public Buildable
 	static void setTexture()
 	{
 		Image im;
-		if (!im.loadFromFile("media/elements/warehouse.jpg"))
+		if (!im.loadFromFile("media/elements/warehouse1.jpg"))
 		{
 			cout << "Erreur chargement image!"<< endl;
 			// return

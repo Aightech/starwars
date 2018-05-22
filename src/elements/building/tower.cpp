@@ -1,7 +1,13 @@
 #include "tower.hpp"
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+using namespace sf;
 
+const Texture* Tower::s_texture = new Texture();
+const char Tower::s_pathButtonTexture[] = TOWER_PATH_BUTTON_TEXTURE;
+const Color Tower::s_color = TOWER_COLOR;
 
-int Tower::findTarget(){
+/*int Tower::findTarget(){
 //find a reachable target around the tower and return its id, return -1 if no one is reachable
 	for (int i=0; i<m_reach; i++){ 
 		for (int j=0; j<m_reach; j++){
@@ -12,7 +18,13 @@ int Tower::findTarget(){
 	}  
 	return -1;
 
-}
+}*/
+
+void Tower::setting()
+{
+       Tower::setTexture();
+       Element::elements()[TOWER_TYPE] = new Tower();
+};
 
 Request Tower::update()
 {
@@ -25,7 +37,7 @@ Request Tower::update()
               req.type=R_ATTACK;
               m_test++;
               
-              Tower::findTarget(this,&req.val1,&req.val2);
+              //Tower::findTarget(this,&req.val1,&req.val2);
             
               
        }
