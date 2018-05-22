@@ -65,5 +65,6 @@ int  Unit::move(int dx,int dy)
 	}
 	else
 		cout << "can't move" << endl;
+	updatePos();
 	return 0;
 }

@@ -32,9 +32,9 @@ public:
       //m_sprite.setColor(m_color);
       
       //to compensate mouse middle effect
-      m_x -= m_width/2; 
-      m_y -= m_height/2;
-      
+//      m_x -= m_width/2; 
+//      m_y -= m_height/2;
+//      
       updatePos();
    };
    
@@ -67,11 +67,11 @@ public:
   int m_nbpop; //capacity of population added when build
    
   const static Texture * s_texture;
-  const static int s_type = TOWER_TYPE;
-  const static int s_width = TOWER_WIDTH;
-  const static int s_height = TOWER_HEIGHT;
-  const static int s_HP = TOWER_HP;
-  const static int s_defense = TOWER_DEFENSE;
+  const static int s_type = FARM_TYPE;
+  const static int s_width = FARM_WIDTH;
+  const static int s_height = FARM_HEIGHT;
+  const static int s_HP = FARM_HP;
+  const static int s_defense = FARM_DEFENSE;
   //const static int s_color = TOWER_COLOR;
   const static int s_nbpop = FARM_NBPOP;
   const static char s_pathButtonTexture[];

@@ -49,8 +49,8 @@
 //Unit dimensions
 #define UNIT_TYPE 10
 #define UNIT_HP 999
-#define UNIT_WIDTH 10
-#define UNIT_HEIGHT 10
+#define UNIT_WIDTH 20
+#define UNIT_HEIGHT 31
 #define UNIT_DEFENSE 5
 #define UNIT_COLOR Color(0,255,0)
 

@@ -34,8 +34,8 @@ public:
           //m_sprite.setColor(m_color);
           
           //to compensate mouse middle effect
-          m_x -= m_width/2; 
-          m_y -= m_height/2;
+//          m_x -= m_width/2; 
+//          m_y -= m_height/2;
           
           updatePos();
    };

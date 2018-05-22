@@ -45,7 +45,7 @@ bool Element::isPlaceFree(int px,int py,int pw, int ph)
 		for(int iu = 0 ; iu < ph ; iu++)
 			for(int ju = 0; ju < pw ; ju++)
 				if(s_map[(py+iu)*s_mapWidth + px + ju] != 0)
-					placeFree = false;
+					return false;
 	}
 	
 	return placeFree;

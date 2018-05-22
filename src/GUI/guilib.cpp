@@ -76,7 +76,7 @@ int GUI::start(void *pgame)
 				if(m_elementSelectedType!=0 && m_elementOk)
 				{
 					cout << "CLICKED" << endl;
-					Request r={m_elementSelectedType,msPos.x-m_mapPosX-Warehouse::width()/2,msPos.y-m_mapPosY-Warehouse::height()/2};
+					Request r={m_elementSelectedType,msPos.x-m_mapPosX-m_elementSelected->width()/2,msPos.y-m_mapPosY-m_elementSelected->height()/2};
 					r.p=-1;
 					game->request(&r);
 					delete m_elementSelected;
