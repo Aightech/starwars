@@ -38,6 +38,9 @@ class Button
 
 	void disable(){m_state=-1;};//m_label.setFillColor(Color(155,155,155));};
 	void enable(){m_state=0;};//m_label.setFillColor(Color(255,255,255));};
+	
+	void setPosition(sf::Vector2f position);
+	
 
 
 	private:

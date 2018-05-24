@@ -67,7 +67,7 @@ void Game::startGUI()
 	m_gui = new GUI(m_map,m_mapWidth,m_mapHeight);
 
 	//DEBUG: set the context to debug the game mode
-	m_gui->getState()=GAME_CONTEXT;
+	m_gui->getState()=MAIN_MENU;//GAME_CONTEXT;
 
 	m_guiTerminate=false;
 

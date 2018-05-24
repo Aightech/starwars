@@ -39,8 +39,8 @@ GUI::GUI(unsigned long int * map, int width, int height)
        m_elementSelectedType=0;
        m_mapDraw = new unsigned char[m_mapHeight*m_mapWidth] ();//used in drawMap
        m_mapdrawVal = 0;
-       
- 
+
+	m_hasBeenAnimated = false;
 
 }
 
@@ -113,24 +113,8 @@ int GUI::start(void *pgame)
 		//get the mouse position
 		msPos = Mouse::getPosition(window);
 
-		//clear the window
-		window.clear(Color(48,48,48));
-
-
-		/////------- DRAWING GUI OBJECT ARRAYS ------- /////
-		for(int i=0;i<m_arraySprite.size();i++)
-			window.draw(*m_arraySprite[i]);
-		for(int i=0;i<m_arrayText.size();i++)
-			window.draw(*m_arrayText[i]);
-
-		/////------- DRAWING MAP ------- /////
-		drawMap();
-		drawSelection();
-
-		/////------- GET BUTTON'S STATES ------- /////
-		int select=0,s=0;
-		for(int i=0;i<m_arrayButton.size();i++)
-			select+=m_arrayButton[i]->update(window);
+		
+		int select=update();
 		if(select)//if a button was selected
 		{
 			/*switch(abs(select))
@@ -179,7 +163,7 @@ int GUI::start(void *pgame)
 			}*/
 		}
 
-		window.display();
+		//window.display();
 	}
 
 	game->endGUI();
@@ -222,7 +206,19 @@ void GUI::createContext()
 			int buttonIndex[]={PLAY_BUTT,LAN_BUTT,OPTION_BUTT,QUIT_BUTT};
 			for(int i=0;i<4;i++)
 			{
-				m_arrayButton.push_back(new Button(buttonsLabel[i],Vector2f(window.getSize().x/2-60, window.getSize().y*2/7+80*i),buttonIndex[i]));
+				m_arrayButton.push_back(new Button(buttonsLabel[i],Vector2f(window.getSize().x*3/4-60, window.getSize().y*4/7+80*i-300),buttonIndex[i]));
+			}
+			if(!m_hasBeenAnimated)
+			{
+				int nbInc = 20;
+				for(int j = 0; j< nbInc+1; j++)
+				{
+					for(int i=0;i<4;i++)
+						m_arrayButton[i]->setPosition(Vector2f(window.getSize().x*3/4-60, window.getSize().y*4/7*j/nbInc+80*i-300));
+					update();
+					waitSec(1.5/nbInc);
+				}
+				m_hasBeenAnimated=true;
 			}
 		}
 		break;
@@ -259,6 +255,31 @@ void GUI::createContext()
 		//elmts[i]->type()
 		break;
 	}
+}
+
+int GUI::update()
+{
+	window.clear(Color(48,48,48));
+
+
+	/////------- DRAWING GUI OBJECT ARRAYS ------- /////
+	for(int i=0;i<m_arraySprite.size();i++)
+		window.draw(*m_arraySprite[i]);
+	for(int i=0;i<m_arrayText.size();i++)
+		window.draw(*m_arrayText[i]);
+
+	/////------- DRAWING MAP ------- /////
+	drawMap();
+	drawSelection();
+
+
+	/////------- GET BUTTON'S STATES ------- /////
+	int select=0,s=0;
+	for(int i=0;i<m_arrayButton.size();i++)
+		select+=m_arrayButton[i]->update(window);
+	
+	window.display();
+	return select;
 }
 
 void GUI::drawMap()

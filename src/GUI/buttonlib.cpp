@@ -121,3 +121,13 @@ int Button::update(RenderWindow &w)
        w.draw(m_label);
        return 0;
 }
+
+void Button::setPosition(sf::Vector2f position)
+{
+	m_button.setPosition(position);
+	btPos=m_button.getPosition();
+	btSize=m_button.getGlobalBounds();
+
+	std::string s = m_label.getString();
+	m_label.setPosition(Vector2f(btPos.x+(btSize.width-s.size()*13)/2, btPos.y+(btSize.height-5-20)/2));
+}

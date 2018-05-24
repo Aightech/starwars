@@ -100,6 +100,10 @@ class GUI
        
        void buildElement(int type);
        
+       int update();
+       
+       bool m_hasBeenAnimated;
+       
        //the window of the gui
        RenderWindow window;
        
