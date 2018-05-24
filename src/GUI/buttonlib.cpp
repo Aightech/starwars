@@ -25,7 +25,7 @@ Button::Button(std::string s, sf::Vector2f position,int nb)
 	m_label.setString(s);
 	m_label.setCharacterSize(20);
 	m_label.setPosition(Vector2f(btPos.x+(btSize.width-s.size()*13)/2, btPos.y+(btSize.height-5-20)/2));
-	m_label.setFillColor(Color(255,255,255));
+	//m_label.setFillColor(Color(255,255,255));
 
 	m_nb=nb;
 	s_nb++;
@@ -72,7 +72,7 @@ void Button::create(std::string s, sf::Vector2f position,int nb)
 	m_label.setString(s);
 	m_label.setCharacterSize(20);
 	m_label.setPosition(Vector2f(btPos.x+(btSize.width-s.size()*13)/2, btPos.y+(btSize.height-5-20)/2));
-	m_label.setFillColor(Color(255,255,255));
+	//m_label.setFillColor(Color(255,255,255));
 
 	m_nb=nb;
 }
