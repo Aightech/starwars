@@ -5,6 +5,7 @@ using namespace sf;
 
 const Texture* Tower::s_texture = new Texture();
 const char Tower::s_pathButtonTexture[] = TOWER_PATH_BUTTON_TEXTURE;
+const char Tower::s_pathButtonTexture2[] = TOWER_PATH_BUTTON_TEXTURE2;
 const Color Tower::s_color = TOWER_COLOR;
 
 /*int Tower::findTarget(){

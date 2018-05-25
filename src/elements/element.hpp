@@ -50,6 +50,8 @@ class Element
 	int isBuidable(){return m_isBuidable;};
 	Sprite& sprite(){return m_sprite;};
 	Color& color(){return m_color;};
+	
+	virtual std::string getInfo(){};
 
 
 	int getDamage(int damage)
@@ -126,11 +128,12 @@ class Buildable: public Element
 {
 	public:
 	Buildable(int no, int px, int py, Player * player=NULL): Element(no,px,py,player){};
-	const char * getButtonTexture(){	return m_pathButtonTexture;	};
+	const char * getButtonTexture(int i=0){	return (i==0)?m_pathButtonTexture:m_pathButtonTexture2;	};
 	
 	protected:
 	
 	const char * m_pathButtonTexture;
+	const char * m_pathButtonTexture2;
 };
 
 

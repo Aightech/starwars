@@ -26,6 +26,7 @@ public:
           m_reach = s_reach;
           m_damages = s_damages;
           m_pathButtonTexture = s_pathButtonTexture;
+          m_pathButtonTexture2 = s_pathButtonTexture2;
 
           m_sprite.setTexture(*s_texture);
           //m_sprite.setScale(Vector2f(0.25,0.25));
@@ -58,7 +59,7 @@ public:
     
     const_cast<Texture*>(s_texture)->loadFromImage(im);
   }
-
+	std::string getInfo(){return "Tower";};
    int findTarget(){
     return 0;
    }
@@ -80,6 +81,7 @@ public:
    const static int s_reach = TOWER_REACH;
    const static int s_damages = TOWER_DAMAGES;
     const static char s_pathButtonTexture[];
+    const static char s_pathButtonTexture2[];
     const static Color s_color;
 };
 

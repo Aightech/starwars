@@ -26,6 +26,7 @@ class Warehouse: public Buildable
 		m_type = s_type;
 		m_color = s_color;
 		m_pathButtonTexture = s_pathButtonTexture;
+		m_pathButtonTexture2 = s_pathButtonTexture2;
 
 		m_sprite.setTexture(*s_texture);
 		m_sprite.setScale(Vector2f(0.9,0.9));
@@ -38,7 +39,7 @@ class Warehouse: public Buildable
 	};
 
 	~Warehouse(){};
-
+	std::string getInfo(){return "Warehouse";};
 	Request update();
 	static void setting();
 	Element * builder(int pno, int px, int py, Player * player=NULL){return new Warehouse(pno,px,py,player);};
@@ -73,6 +74,7 @@ class Warehouse: public Buildable
 	const static int s_HP = WAREHOUSE_HP;
 	const static int s_defense = WAREHOUSE_DEFENSE;
 	const static char s_pathButtonTexture[];
+	const static char s_pathButtonTexture2[];
 	const static Color s_color;
 
 

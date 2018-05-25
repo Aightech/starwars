@@ -69,7 +69,7 @@
 
 using namespace sf;
 using namespace std;
-
+class Game;
 
 class GUI
 {
@@ -135,9 +135,14 @@ class GUI
        int m_mapPosX;
        int m_mapPosY;
        
+       int m_nbBuildable;
+       
        //used in drawMap to ensure the update
        unsigned char *m_mapDraw;
        int m_mapdrawVal;
+       
+       Game * m_game;
+       
        
        
 };

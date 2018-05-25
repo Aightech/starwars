@@ -28,6 +28,7 @@ class Unit: public Element
 	static void setting();
 	Request update();
 	Element * builder(int pno, int px, int py,Player * player=NULL){return new Unit(pno,px,py,player);};
+	std::string getInfo(){return "Unit";};
 
 	static void setTexture()
 	{

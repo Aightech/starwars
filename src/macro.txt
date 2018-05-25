@@ -21,7 +21,7 @@
 #define WAREHOUSE_DEFENSE 5
 #define WAREHOUSE_COLOR Color(0,0,255)
 #define WAREHOUSE_PATH_BUTTON_TEXTURE "media/theme/warehouseButton.jpg"
-
+#define WAREHOUSE_PATH_BUTTON_TEXTURE2 "media/theme/warehouseButton.jpg"
 
 //Farm dimensions
 #define FARM_TYPE 2
@@ -31,6 +31,7 @@
 #define FARM_DEFENSE 5
 #define FARM_COLOR Color(0,0,240)
 #define FARM_PATH_BUTTON_TEXTURE "media/theme/farmButton.jpg"
+#define FARM_PATH_BUTTON_TEXTURE2 "media/theme/farmButton.jpg"
 #define FARM_NBPOP 5
 
 
@@ -42,6 +43,7 @@
 #define TOWER_DEFENSE 5
 #define TOWER_COLOR Color(0,0,230)
 #define TOWER_PATH_BUTTON_TEXTURE "media/theme/towerButton.jpg"
+#define TOWER_PATH_BUTTON_TEXTURE2 "media/theme/towerButton.jpg"
 #define TOWER_REACH 50
 #define TOWER_DAMAGES 50
 

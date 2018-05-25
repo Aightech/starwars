@@ -24,6 +24,7 @@ public:
       m_type = s_type;
       m_color = s_color;
       m_pathButtonTexture = s_pathButtonTexture;
+      m_pathButtonTexture2 = s_pathButtonTexture2;
 
       m_sprite.setTexture(*s_texture);
       //m_sprite.setScale(Vector2f(0.25,0.25));
@@ -43,7 +44,8 @@ public:
    Request update(){}; //TODO
    static void setting();
    Element * builder(int pno, int px, int py, Player * player=NULL){return new Farm(pno,px,py,player);};
-
+	
+	std::string getInfo(){return "Farm";};
   static void setTexture()
   {
     Image im;
@@ -75,6 +77,7 @@ public:
   //const static int s_color = TOWER_COLOR;
   const static int s_nbpop = FARM_NBPOP;
   const static char s_pathButtonTexture[];
+  const static char s_pathButtonTexture2[];
   const static Color s_color;
 };
 

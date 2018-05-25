@@ -6,6 +6,7 @@ using namespace sf;
 const Color Warehouse::s_color = WAREHOUSE_COLOR;
 const Texture* Warehouse::s_texture = new Texture();
 const char Warehouse::s_pathButtonTexture[] = WAREHOUSE_PATH_BUTTON_TEXTURE;
+const char Warehouse::s_pathButtonTexture2[] = WAREHOUSE_PATH_BUTTON_TEXTURE2;
 
 void Warehouse::setting()
 {

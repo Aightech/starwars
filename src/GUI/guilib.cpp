@@ -26,8 +26,8 @@ GUI::GUI(unsigned long int * map, int width, int height)
        m_map = map;//get and share the game map
        m_mapHeight = height;
        m_mapWidth = width;
-       m_mapPosX = window.getSize().x-m_mapWidth - 10;//set the position of the map on the window
-       m_mapPosY = 10;
+       m_mapPosX = window.getSize().x/2-m_mapWidth/2;//set the position of the map on the window
+       m_mapPosY = 20;
        /////--------ELEMENT SETING --------/////
        Element::mapOffsetY()=m_mapPosY;
        Element::mapOffsetX()=m_mapPosX;
@@ -48,7 +48,7 @@ GUI::GUI(unsigned long int * map, int width, int height)
 int GUI::start(void *pgame)
 {       
 	//get the game object
-	Game * game = (Game *) pgame;
+	m_game = (Game *) pgame;
 
 	//create the first GUI context of the app
 	createContext();
@@ -79,7 +79,7 @@ int GUI::start(void *pgame)
 					cout << "CLICKED" << endl;
 					Request r={m_elementSelectedType,msPos.x-m_mapPosX-m_elementSelected->width()/2,msPos.y-m_mapPosY-m_elementSelected->height()/2};
 					r.p=-1;
-					game->request(&r);
+					m_game->request(&r);
 					delete m_elementSelected;
 					m_elementSelected = NULL;
 
@@ -103,7 +103,7 @@ int GUI::start(void *pgame)
 				if(c=='p')
 				{
 					std::cout << "Attack " << std::endl;
-					game->test();
+					m_game->test();
 				}
 			}
 
@@ -119,7 +119,7 @@ int GUI::start(void *pgame)
 		
 	}
 
-	game->endGUI();
+	m_game->endGUI();
 	return 0;
 }
 
@@ -141,6 +141,8 @@ void GUI::menu(int select)
 			createContext();
 		break;
 		case LAN_BUTT:
+			m_game->setOnline(2001); //comment if offline
+			m_game->connectToServer(2000,(char *)"127.0.0.1"); //comment if offline
 			break;
 
 
@@ -230,7 +232,7 @@ void GUI::createContext()
 		break;
 		case OPTION_MENU:
 		{
-			std::cout << "Menu " << std::endl<< std::endl<< std::endl;
+			//std::cout << "Menu " << std::endl<< std::endl<< std::endl;
 			string buttonsLabel[]={"save","back","quit"};
 			int buttonIndex[]={SAVE_BUTT,BACK_BUTT,QUIT_BUTT};
 			for(int i=0;i<3;i++)
@@ -244,6 +246,7 @@ void GUI::createContext()
 			Sprite * mapSprite = new Sprite();
 			Texture t;// = new Texture();
 			mapSprite->setTexture(t);
+			m_mapPosX = window.getSize().x/2-m_mapWidth/2;
 			mapSprite->setTextureRect(sf::IntRect(0, 0, m_mapWidth,m_mapHeight ));
 			mapSprite->setPosition(Vector2f(m_mapPosX,m_mapPosY));
 			m_arraySprite.push_back(mapSprite);
@@ -252,12 +255,25 @@ void GUI::createContext()
 			Element ** elmts = Element::elements();
 			for(int i = 0 ; i< NB_MAX_ELEMENT; i++)
 				if(elmts[i] != NULL && elmts[i]->isBuidable())
-					m_arrayButton.push_back(new Button(this,((Buildable*)elmts[i])->getButtonTexture(),60,60,Vector2f(m_mapPosX + c++*70,m_mapPosY + m_mapHeight + 10),&GUI::buildElement,elmts[i]->type()));
+					m_arrayButton.push_back(new Button(this,((Buildable*)elmts[i])->getButtonTexture(),60,60,Vector2f(m_mapPosX + c++*70,m_mapPosY + m_mapHeight + 10),&GUI::buildElement,elmts[i]->type(),elmts[i]->getInfo()));
 			
+			m_arrayButton.push_back(new Button(this,"next",Vector2f(m_mapPosX - 160,m_mapPosY + m_mapHeight + 17),0,&GUI::menu));
+			
+			m_nbBuildable = ++c;
+			
+			c=0;
+			for(int i = 0 ; i< NB_MAX_ELEMENT; i++)
+				if(elmts[i] != NULL && elmts[i]->isBuidable())
+					m_arrayButton.push_back(new Button(this,((Buildable*)elmts[i])->getButtonTexture(1),60,60,Vector2f(m_mapPosX + m_mapWidth -60 - c++*70,m_mapPosY + m_mapHeight + 10),&GUI::buildElement,elmts[i]->type(),elmts[i]->getInfo()));
 			
 
 			
-
+			m_arrayButton.push_back(new Button(this,"next",Vector2f(m_mapPosX + m_mapWidth + 20 ,m_mapPosY + m_mapHeight + 17),0,&GUI::menu));
+			
+			for(int i =m_nbBuildable; i< 2*m_nbBuildable ; i++)
+				m_arrayButton[i]->disable();
+			
+			
 		}
 		//elmts[i]->type()
 		break;

@@ -4,6 +4,7 @@
 
 int Button::s_nb=0;
 Texture* Button::s_texture = new Texture();
+Texture* Button::s_infoBox = new Texture();
 int Button::s_width=0;
 int Button::s_height=0;
 Font* Button::s_font = new Font();
@@ -26,8 +27,11 @@ Button::Button(GUI* pgui,std::string s, sf::Vector2f position,int nb, void (GUI:
 	m_label.setString(s);
 	m_label.setCharacterSize(20);
 	m_label.setPosition(Vector2f(btPos.x+(btSize.width-s.size()*13)/2, btPos.y+(btSize.height-5-20)/2));
-	//m_label.setFillColor(Color(255,255,255));
-	
+	#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4
+		m_label.setFillColor(Color(255,255,255));
+	#else
+		m_label.setColor(Color(255,255,255));
+	#endif
 	m_fctCllBck = f;
 	
 	m_nb=nb;
@@ -37,7 +41,7 @@ Button::Button(GUI* pgui,std::string s, sf::Vector2f position,int nb, void (GUI:
 
 
 
-Button::Button(GUI* pgui,const std::string &filename, int pw, int ph, sf::Vector2f position, void (GUI::*f)(int),int nb)
+Button::Button(GUI* pgui,const std::string &filename, int pw, int ph, sf::Vector2f position, void (GUI::*f)(int),int nb,std::string info)
 {
 	m_gui = pgui;
 	m_texture = new Texture();
@@ -52,6 +56,22 @@ Button::Button(GUI* pgui,const std::string &filename, int pw, int ph, sf::Vector
 	btPos=m_button.getPosition();
 	btSize=m_button.getGlobalBounds();
 	m_state=0;
+	
+	if(info.compare("")!=0)
+	{
+		m_info.setFont(*s_font);
+		m_info.setString(info);
+		m_info.setCharacterSize(15);
+		m_info.setPosition(Vector2f(btPos.x+btSize.width-30+(160-info.size()*13)/2, btPos.y-50+(60-5-20)/2));
+		#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4
+			m_info.setFillColor(Color(0,0,0));
+		#else
+			m_info.setColor(Color(0,0,0));
+		#endif
+		//t.loadFromFile("media/theme/dialogBox.png");
+		m_infoBox.setTexture(*s_infoBox);
+		m_infoBox.setPosition(Vector2f(btPos.x+btSize.width-30, btPos.y-50));
+	}
 
 	m_nb=nb;
 	s_nb++;
@@ -75,7 +95,11 @@ void Button::create(std::string s, sf::Vector2f position,int nb)
 	m_label.setString(s);
 	m_label.setCharacterSize(20);
 	m_label.setPosition(Vector2f(btPos.x+(btSize.width-s.size()*13)/2, btPos.y+(btSize.height-5-20)/2));
-	//m_label.setFillColor(Color(255,255,255));
+	#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4
+		m_label.setFillColor(Color(255,255,255));
+	#else
+		m_label.setColor(Color(255,255,255));
+	#endif
 
 	m_nb=nb;
 }
@@ -123,6 +147,11 @@ int Button::update(RenderWindow &w)
              
        w.draw(m_button);
        w.draw(m_label);
+       if(m_msInButton==1&& !m_info.getString().isEmpty()&&m_state!=-1)
+       {
+       		w.draw(m_infoBox);
+       		w.draw(m_info);
+       	}
        return 0;
 }
 
