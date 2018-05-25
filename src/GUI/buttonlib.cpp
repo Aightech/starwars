@@ -8,7 +8,7 @@ int Button::s_width=0;
 int Button::s_height=0;
 Font* Button::s_font = new Font();
 
-Button::Button(std::string s, sf::Vector2f position,int nb)
+Button::Button(std::string s, sf::Vector2f position,int nb, void (GUI::*f)(int))
 {
 	m_texture = s_texture;
 	m_width = s_width;
@@ -26,7 +26,9 @@ Button::Button(std::string s, sf::Vector2f position,int nb)
 	m_label.setCharacterSize(20);
 	m_label.setPosition(Vector2f(btPos.x+(btSize.width-s.size()*13)/2, btPos.y+(btSize.height-5-20)/2));
 	//m_label.setFillColor(Color(255,255,255));
-
+	
+	m_fctCllBck = f;
+	
 	m_nb=nb;
 	s_nb++;
 
@@ -111,7 +113,8 @@ int Button::update(RenderWindow &w)
                      m_state=0;
                      m_button.setTextureRect(IntRect(0, 0, m_width, m_height));
               }
-              (*m_gui.*m_fctCllBck)(m_nb);
+              if(m_fctCllBck!=NULL)
+              	(*m_gui.*m_fctCllBck)(m_nb);
               return m_nb;
        }
        if(!Mouse::isButtonPressed(Mouse::Left))//to ensure the click has been released

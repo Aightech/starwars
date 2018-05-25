@@ -67,6 +67,7 @@ int GUI::start(void *pgame)
 			if (event.type == sf::Event::Resized)
 			{
 				window.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
+				
 				createContext();
 			}
 			/////------- MOUSE EVENT ------- /////
@@ -115,55 +116,7 @@ int GUI::start(void *pgame)
 
 		
 		int select=update();
-		if(select)//if a button was selected
-		{
-			/*switch(abs(select))
-			{
-				case PLAY_BUTT:
-					break;
-				case LAN_BUTT:
-					break;
-
-
-				case JOIN_S1_BUTT:
-				case JOIN_S2_BUTT:
-				case JOIN_S3_BUTT:
-				case JOIN_S4_BUTT:
-				{int server=abs(select)-JOIN_S1_BUTT;}
-				break;
-
-				case HOST_BUTT:
-				break;
-
-				case KILL_P1_BUTT: 
-				case KILL_P2_BUTT: 
-				case KILL_P3_BUTT: 
-				case KILL_P4_BUTT:            
-				break;
-
-				case START_BUTT:           
-				break;
-
-
-				case OPTION_BUTT:
-					m_state=OPTION_MENU;
-					createContext();
-				break;
-				case QUIT_BUTT:
-					window.close();
-				break;
-
-				case BACK_BUTT:
-					m_state=MAIN_MENU;
-					createContext();
-				break;
-
-				case SAVE_BUTT:
-				break;
-			}*/
-		}
-
-		//window.display();
+		
 	}
 
 	game->endGUI();
@@ -176,6 +129,63 @@ void GUI::buildElement(int type)
 		delete m_elementSelected;
 	m_elementSelected = Element::factory(type, -1, msPos.x-50/2, msPos.y-50/2);//new Warehouse(-1,msPos.x-50/2,msPos.y-50/2);
 	m_elementSelectedType = type;
+}
+
+void GUI::menu(int select)
+{
+	std::cout << "Attack " << std::endl<< std::endl<< std::endl<<std::endl;
+	std::cout << m_state<< std::endl<< std::endl<< std::endl<<std::endl;
+	
+	switch(abs(select))
+	{
+		case PLAY_BUTT:
+			//m_state=GAME_CONTEXT;
+			std::cout << "Attack " << std::endl<< std::endl<< std::endl<<std::endl;
+			createContext();
+		break;
+		case LAN_BUTT:
+			break;
+
+
+		case JOIN_S1_BUTT:
+		case JOIN_S2_BUTT:
+		case JOIN_S3_BUTT:
+		case JOIN_S4_BUTT:
+		{int server=abs(select)-JOIN_S1_BUTT;}
+		break;
+
+		case HOST_BUTT:
+		break;
+
+		case KILL_P1_BUTT: 
+		case KILL_P2_BUTT: 
+		case KILL_P3_BUTT: 
+		case KILL_P4_BUTT:            
+		break;
+
+		case START_BUTT:           
+		break;
+
+
+		case OPTION_BUTT:
+			m_state=OPTION_MENU;
+			createContext();
+		break;
+		case QUIT_BUTT:
+			window.close();
+		break;
+
+		case BACK_BUTT:
+			m_state=MAIN_MENU;
+			createContext();
+		break;
+
+		case SAVE_BUTT:
+		break;
+	}
+	//createContext();
+	//update();
+		//window.display();
 }
 
 void GUI::createContext()
@@ -206,7 +216,7 @@ void GUI::createContext()
 			int buttonIndex[]={PLAY_BUTT,LAN_BUTT,OPTION_BUTT,QUIT_BUTT};
 			for(int i=0;i<4;i++)
 			{
-				m_arrayButton.push_back(new Button(buttonsLabel[i],Vector2f(window.getSize().x*3/4-60, window.getSize().y*4/7+80*i-300),buttonIndex[i]));
+				m_arrayButton.push_back(new Button(buttonsLabel[i],Vector2f(window.getSize().x*3/4-60, window.getSize().y*4/7+80*i-300),buttonIndex[i],&GUI::menu));
 			}
 			if(!m_hasBeenAnimated)
 			{
@@ -224,6 +234,7 @@ void GUI::createContext()
 		break;
 		case OPTION_MENU:
 		{
+			std::cout << "Menu " << std::endl<< std::endl<< std::endl;
 			string buttonsLabel[]={"save","back","quit"};
 			int buttonIndex[]={SAVE_BUTT,BACK_BUTT,QUIT_BUTT};
 			for(int i=0;i<3;i++)

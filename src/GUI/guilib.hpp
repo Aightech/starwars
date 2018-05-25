@@ -97,7 +97,7 @@ class GUI
        
        /*! \brief draw the selected unit at the mouse position. colored the Unit to indicate the validity of the position*/
        void drawSelection();
-       
+       void menu(int type);
        void buildElement(int type);
        
        int update();

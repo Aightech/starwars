@@ -18,7 +18,7 @@ class Button
 	*/
 	public:
 	Button(){s_nb++;};
-	Button(std::string s, sf::Vector2f position,int nb = 0);
+	Button(std::string s, sf::Vector2f position,int nb = 0,void (GUI::*f)(int)=NULL);
 	Button(GUI* pgui, const std::string &filename, int pw, int ph, sf::Vector2f position, void (GUI::*f)(int),int nb=0);
 	void create(std::string s, sf::Vector2f position,int nb = 0);
 	~Button(){s_nb--;};//std::cout<<"deleted"<<std::endl;};
