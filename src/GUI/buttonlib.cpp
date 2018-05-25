@@ -8,8 +8,9 @@ int Button::s_width=0;
 int Button::s_height=0;
 Font* Button::s_font = new Font();
 
-Button::Button(std::string s, sf::Vector2f position,int nb, void (GUI::*f)(int))
+Button::Button(GUI* pgui,std::string s, sf::Vector2f position,int nb, void (GUI::*f)(int))
 {
+	m_gui = pgui;
 	m_texture = s_texture;
 	m_width = s_width;
 	m_height = s_height;

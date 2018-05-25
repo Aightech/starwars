@@ -133,14 +133,11 @@ void GUI::buildElement(int type)
 
 void GUI::menu(int select)
 {
-	std::cout << "Attack " << std::endl<< std::endl<< std::endl<<std::endl;
-	std::cout << m_state<< std::endl<< std::endl<< std::endl<<std::endl;
 	
 	switch(abs(select))
 	{
 		case PLAY_BUTT:
-			//m_state=GAME_CONTEXT;
-			std::cout << "Attack " << std::endl<< std::endl<< std::endl<<std::endl;
+			m_state=GAME_CONTEXT;
 			createContext();
 		break;
 		case LAN_BUTT:
@@ -183,9 +180,8 @@ void GUI::menu(int select)
 		case SAVE_BUTT:
 		break;
 	}
-	//createContext();
-	//update();
-		//window.display();
+	update();
+	window.display();
 }
 
 void GUI::createContext()
@@ -216,7 +212,7 @@ void GUI::createContext()
 			int buttonIndex[]={PLAY_BUTT,LAN_BUTT,OPTION_BUTT,QUIT_BUTT};
 			for(int i=0;i<4;i++)
 			{
-				m_arrayButton.push_back(new Button(buttonsLabel[i],Vector2f(window.getSize().x*3/4-60, window.getSize().y*4/7+80*i-300),buttonIndex[i],&GUI::menu));
+				m_arrayButton.push_back(new Button(this,buttonsLabel[i],Vector2f(window.getSize().x*3/4-60, window.getSize().y*4/7+80*i-300),buttonIndex[i],&GUI::menu));
 			}
 			if(!m_hasBeenAnimated)
 			{
@@ -239,7 +235,7 @@ void GUI::createContext()
 			int buttonIndex[]={SAVE_BUTT,BACK_BUTT,QUIT_BUTT};
 			for(int i=0;i<3;i++)
 			{
-				m_arrayButton.push_back(new Button(buttonsLabel[i],Vector2f(20+window.getSize().x*i/3,window.getSize().y*7/8),buttonIndex[i]));
+				m_arrayButton.push_back(new Button(this,buttonsLabel[i],Vector2f(20+window.getSize().x*i/3,window.getSize().y*7/8),buttonIndex[i]));
 			}
 		}
 		break;
