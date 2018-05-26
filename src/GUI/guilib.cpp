@@ -208,6 +208,9 @@ void GUI::createContext()
 		delete m_arrayText[i];
 		m_arrayText.pop_back();
 	}
+	///
+	///BACKGROUND
+	///
 
 	/////------- CREATION F CONTEXTS ------- /////
 	switch(m_state)
@@ -232,6 +235,11 @@ void GUI::createContext()
 				}
 				m_hasBeenAnimated=true;
 			}
+			/////
+			//LOGO GAME
+			//PORG ANIMATION
+			/////
+
 		}
 		break;
 		case OPTION_MENU:
@@ -277,6 +285,11 @@ void GUI::createContext()
 			for(int i =m_nbBuildable; i< 2*m_nbBuildable ; i++)
 				m_arrayButton[i]->disable();
 			
+			//////
+			//PLAYER LOGOS
+			//STONE ICON
+			//////
+
 			
 		}
 		//elmts[i]->type()
