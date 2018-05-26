@@ -78,6 +78,8 @@ class Game: public  NetAPI
 	int processServerUpdate(char * buffer);
 	
 	mutex* getElmtMtx(){return &m_elmtsMtx;}
+	
+	void setTurn(int playerNo);
 
 
 

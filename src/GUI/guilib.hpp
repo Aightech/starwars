@@ -99,6 +99,7 @@ class GUI
        void drawSelection();
        void menu(int type);
        void buildElement(int type);
+       void nextButton(int playerNo);
        
        int update();
        
@@ -106,6 +107,10 @@ class GUI
        
        //the window of the gui
        RenderWindow window;
+       
+       Sprite m_selectionRect;
+       Vector2f m_startSelection;
+       int m_mouseClicked;
        
        //arrays containing graphical elements
        vector<Sprite*> m_arraySprite;// such as icons
@@ -136,6 +141,7 @@ class GUI
        int m_mapPosY;
        
        int m_nbBuildable;
+       int m_playerTurn=0;
        
        //used in drawMap to ensure the update
        unsigned char *m_mapDraw;

@@ -44,6 +44,7 @@ class Player
 	void update(int step=1);
 	void addElement(Element * element);
 	int no(){return m_no;};
+	int& turn(){return m_turn;};
 
 
 
@@ -59,6 +60,7 @@ class Player
 	int m_pop=0;
 	int m_popMax=5;
 	int m_crystal;
+	int m_turn;
 
 
 	list<Element *> m_elements;

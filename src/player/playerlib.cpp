@@ -21,6 +21,7 @@ Player::Player(Game *game,int no)
 	m_game = game;
 	m_elmtsMtx = game->getElmtMtx();
 	m_no =no;
+	m_turn =0;
 };
 
 
@@ -54,6 +55,7 @@ void Player::update(int step)
 		m_elmtsMtx->unlock();
 		
 	}
+	m_turn=0;
 	
 };
 

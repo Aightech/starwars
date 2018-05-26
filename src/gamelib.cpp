@@ -39,6 +39,9 @@ Game::Game()
 	m_elementsIndex =0;
 	
 	m_players.push_back(new Player(this,0));
+	m_players.push_back(new Player(this,1));
+	
+	//m_players[0]->turn()=1;
 
 
 	//////------- ELEMENT SETTING ------- /////
@@ -197,8 +200,9 @@ void Game::update()
 {
 	if(!m_online || m_isServer)
 	{
-		m_players[0]->update(50000);
-		waitSec(2,true);
+		for(int i =0; i<m_players.size(); i++)
+			if(m_players[i]->turn())
+				m_players[i]->update(50000);
 	}
 	else
 	{
@@ -208,6 +212,12 @@ void Game::update()
 			processServerUpdate(enter);
 		}
 	}
+}
+
+void Game::setTurn(int playerNo)
+{
+	if(playerNo<m_players.size())
+		m_players[playerNo]->turn()=1;
 }
 
 int Game::processReceiverMessage(char * buffer, char* reply)

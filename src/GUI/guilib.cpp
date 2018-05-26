@@ -73,12 +73,12 @@ int GUI::start(void *pgame)
 			/////------- MOUSE EVENT ------- /////
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
-
+				m_mouseClicked++;
 				if(m_elementSelectedType!=0 && m_elementOk)
 				{
 					cout << "CLICKED" << endl;
 					Request r={m_elementSelectedType,msPos.x-m_mapPosX-m_elementSelected->width()/2,msPos.y-m_mapPosY-m_elementSelected->height()/2};
-					r.p=-1;
+					r.p=m_playerTurn;
 					m_game->request(&r);
 					delete m_elementSelected;
 					m_elementSelected = NULL;
@@ -93,6 +93,10 @@ int GUI::start(void *pgame)
 
 
 
+			}
+			else
+			{
+				m_mouseClicked=0;
 			}
 			/////------- KEYBOARD EVENT ------- /////
 			if (event.type == sf::Event::TextEntered)
@@ -257,7 +261,7 @@ void GUI::createContext()
 				if(elmts[i] != NULL && elmts[i]->isBuidable())
 					m_arrayButton.push_back(new Button(this,((Buildable*)elmts[i])->getButtonTexture(),60,60,Vector2f(m_mapPosX + c++*70,m_mapPosY + m_mapHeight + 10),&GUI::buildElement,elmts[i]->type(),elmts[i]->getInfo()));
 			
-			m_arrayButton.push_back(new Button(this,"next",Vector2f(m_mapPosX - 160,m_mapPosY + m_mapHeight + 17),0,&GUI::menu));
+			m_arrayButton.push_back(new Button(this,"next",Vector2f(m_mapPosX - 160,m_mapPosY + m_mapHeight + 17),0,&GUI::nextButton));
 			
 			m_nbBuildable = ++c;
 			
@@ -268,7 +272,7 @@ void GUI::createContext()
 			
 
 			
-			m_arrayButton.push_back(new Button(this,"next",Vector2f(m_mapPosX + m_mapWidth + 20 ,m_mapPosY + m_mapHeight + 17),0,&GUI::menu));
+			m_arrayButton.push_back(new Button(this,"next",Vector2f(m_mapPosX + m_mapWidth + 20 ,m_mapPosY + m_mapHeight + 17),1,&GUI::nextButton));
 			
 			for(int i =m_nbBuildable; i< 2*m_nbBuildable ; i++)
 				m_arrayButton[i]->disable();
@@ -352,9 +356,28 @@ void GUI::drawMap()
 
 void GUI::drawSelection()
 {
+	if(m_mouseClicked==5)
+	{
+		Texture t;
+		m_selectionRect.setTexture(t);
+		m_selectionRect.setTextureRect(sf::IntRect(0, 0, 5,5 ));
+		m_startSelection = Vector2f(msPos.x,msPos.y);
+		m_selectionRect.setPosition(Vector2f(msPos.x,msPos.y));
+		m_selectionRect.setColor(Color(255,0,0,100));
+		window.draw(m_selectionRect);
+	}
+	if(m_mouseClicked>5)
+	{
+		float dx = msPos.x-m_startSelection.x;
+		float dy = msPos.y-m_startSelection.y;
+		m_selectionRect.setPosition(Vector2f( (dx>0)?m_startSelection.x:msPos.x, (dy>0)?m_startSelection.y:msPos.y));
+		m_selectionRect.setTextureRect(sf::IntRect(0, 0, dx ,dy ));
+		
+		window.draw(m_selectionRect);
+	}
+	
 	if(m_elementSelected!=NULL)
 	{
-
 		Sprite s = m_elementSelected->sprite();
 
 		int height = m_elementSelected->height();
@@ -396,5 +419,17 @@ void GUI::drawSelection()
 
 		window.draw(s);
 	}
+}
+
+void GUI::nextButton(int playerNo)
+{
+	m_game->setTurn(playerNo);
+	for(int i =m_nbBuildable*playerNo; i< m_nbBuildable*(1+playerNo) ; i++)
+		m_arrayButton[i]->disable();
+		
+	for(int i =m_nbBuildable*(1-playerNo); i< m_nbBuildable*(2-playerNo) ; i++)
+		m_arrayButton[i]->enable();
+	
+	m_playerTurn=1-playerNo;
 }
 
