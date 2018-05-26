@@ -32,10 +32,10 @@
 #define WIN_W 1200
 #define WIN_H 700
 
-#define GAME_FONT_TITLE "media/fonts/SHERLOCKED.ttf"
+#define GAME_FONT_TITLE "media/fonts/Starjedi.ttf"
 
 
-#define GAME_FONT_BUTTON "media/fonts/SHERLOCKED.ttf"
+#define GAME_FONT_BUTTON "media/fonts/SFDistantGalaxy.ttf"
 #define GAME_THEME_BUTTON "media/theme/button.png"
 #define GAME_THEME_ARRAY "media/theme/arrayConnection.png"
 
