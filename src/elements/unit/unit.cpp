@@ -45,7 +45,7 @@ Request Unit::update()
 	{
 		m_clock=clock();
 		req.type=R_MOVE;
-		req.val1 = 1;
+		req.val1 = (m_player->no()==0)?1:-1;
 		req.val2 = -1;
 	}
 return req;

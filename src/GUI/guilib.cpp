@@ -241,7 +241,7 @@ void GUI::createContext()
 			int buttonIndex[]={SAVE_BUTT,BACK_BUTT,QUIT_BUTT};
 			for(int i=0;i<3;i++)
 			{
-				m_arrayButton.push_back(new Button(this,buttonsLabel[i],Vector2f(20+window.getSize().x*i/3,window.getSize().y*7/8),buttonIndex[i]));
+				m_arrayButton.push_back(new Button(this,buttonsLabel[i],Vector2f(window.getSize().x*(1+i)/5,window.getSize().y*7/8),buttonIndex[i],&GUI::menu));
 			}
 		}
 		break;
