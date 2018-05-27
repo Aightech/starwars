@@ -1,3 +1,4 @@
-warehouse;40x40;100
-farm;40x40;100
-tower;40x40;100
+warehouse: l=64 h=64
+farm: l=64 h=192
+tower: l=47 h=32
+unit: l=24 h=34
