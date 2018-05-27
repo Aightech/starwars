@@ -29,7 +29,7 @@
 #define INQUIRY_GAME2 10
 
 #define GAME_NAME "GAME"
-#define WIN_W 1200
+#define WIN_W 1400
 #define WIN_H 700
 
 #define GAME_FONT_TITLE "media/fonts/Starjedi.ttf"

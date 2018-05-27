@@ -73,7 +73,12 @@ int GUI::start(void *pgame)
 			/////------- MOUSE EVENT ------- /////
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
-				m_mouseClicked++;
+				if(	m_state == GAME_CONTEXT && 
+					msPos.x > m_mapPosX &&
+					msPos.y > m_mapPosY &&
+					msPos.x< m_mapPosX+m_mapWidth &&
+					msPos.y < m_mapPosY+m_mapHeight	)
+						m_mouseClicked++;
 				if(m_elementSelectedType!=0 && m_elementOk)
 				{
 					cout << "CLICKED" << endl;
@@ -347,13 +352,13 @@ void GUI::drawMap()
 					int u_width  = e->width();
 
 					//draw HP
-					/*Sprite life;
+					Sprite life;
 					Texture t;
 					life.setTexture(t);
 					life.setPosition(Vector2f(m_mapPosX+j+2,m_mapPosY+i+2));
-					life.setTextureRect(sf::IntRect(0, 0, ((float)999/1000)*u_width-4, 8));
-					life.setColor(sf::Color(255, 0, 0));
-					window.draw(life);*/
+					life.setTextureRect(sf::IntRect(0, 0, ((float)999/1000)*u_width-4, 4));
+					life.setColor(sf::Color(0, 255, 0));
+					window.draw(life);
 
 
 
@@ -371,20 +376,24 @@ void GUI::drawSelection()
 {
 	if(m_mouseClicked==5)
 	{
-		Texture t;
-		m_selectionRect.setTexture(t);
-		m_selectionRect.setTextureRect(sf::IntRect(0, 0, 5,5 ));
-		m_startSelection = Vector2f(msPos.x,msPos.y);
-		m_selectionRect.setPosition(Vector2f(msPos.x,msPos.y));
-		m_selectionRect.setColor(Color(255,0,0,100));
-		window.draw(m_selectionRect);
+			Texture t;
+			m_selectionRect.setTexture(t);
+			m_selectionRect.setTextureRect(sf::IntRect(0, 0, 5,5 ));
+			m_startSelection = Vector2f(msPos.x,msPos.y);
+			m_selectionRect.setPosition(Vector2f(msPos.x,msPos.y));
+			m_selectionRect.setColor(Color(255,0,0,100));
+			window.draw(m_selectionRect);
 	}
 	if(m_mouseClicked>5)
 	{
-		float dx = msPos.x-m_startSelection.x;
-		float dy = msPos.y-m_startSelection.y;
-		m_selectionRect.setPosition(Vector2f( (dx>0)?m_startSelection.x:msPos.x, (dy>0)?m_startSelection.y:msPos.y));
-		m_selectionRect.setTextureRect(sf::IntRect(0, 0, dx ,dy ));
+		if(msPos.x> m_mapPosX && msPos.y > m_mapPosY && msPos.x < m_mapPosX+m_mapWidth && msPos.y < m_mapPosY+m_mapHeight)
+		{
+			float dx = msPos.x-m_startSelection.x;
+			float dy = msPos.y-m_startSelection.y;
+			
+			m_selectionRect.setPosition(Vector2f( (dx>0)?m_startSelection.x:msPos.x, (dy>0)?m_startSelection.y:msPos.y));
+			m_selectionRect.setTextureRect(sf::IntRect(0, 0, dx ,dy ));
+		}
 		
 		window.draw(m_selectionRect);
 	}
