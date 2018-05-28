@@ -83,6 +83,7 @@ int GUI::start(void *pgame)
 				{
 					cout << "CLICKED" << endl;
 					Request r={m_elementSelectedType,msPos.x-m_mapPosX-m_elementSelected->width()/2,msPos.y-m_mapPosY-m_elementSelected->height()/2};
+					r.val3 = -1;
 					r.p=m_playerTurn;
 					m_game->request(&r);
 					delete m_elementSelected;
@@ -355,8 +356,10 @@ void GUI::drawMap()
 					Sprite life;
 					Texture t;
 					life.setTexture(t);
-					life.setPosition(Vector2f(m_mapPosX+j+2,m_mapPosY+i+2));
-					life.setTextureRect(sf::IntRect(0, 0, ((float)999/1000)*u_width-4, 4));
+					float hps = ((float)e->HP())/20;
+					//cout << e->HP() << endl;
+					life.setPosition(Vector2f(m_mapPosX+j+(u_width-hps)/2,m_mapPosY+i+2));
+					life.setTextureRect(sf::IntRect(0, 0, hps, 4));
 					life.setColor(sf::Color(0, 255, 0));
 					window.draw(life);
 

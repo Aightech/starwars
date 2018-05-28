@@ -35,20 +35,21 @@ void Element::updateStatut(int x, int y, int hp)
 }
 
 
-bool Element::isPlaceFree(int px,int py,int pw, int ph)
+unsigned long int Element::isPlaceOccupied(int px,int py,int pw, int ph,Element * elmt)
 {
-	bool placeFree = false;
+	bool placeOccupied = 0;
 	if(px > 0 && py > 0 && px + pw < s_mapWidth && py + pw < s_mapHeight)
 	{
-		placeFree = true;
+		placeOccupied = 0;
+		unsigned long int ptr;
 		//test the whole area of the element to know if the element is at a free place
 		for(int iu = 0 ; iu < ph ; iu++)
 			for(int ju = 0; ju < pw ; ju++)
-				if(s_map[(py+iu)*s_mapWidth + px + ju] != 0)
-					return false;
+				if((ptr=s_map[(py+iu)*s_mapWidth + px + ju]) != 0 && ptr != (unsigned long int )elmt)
+					return ptr;
 	}
 	
-	return placeFree;
+	return 0;
 }
 
 bool Element::placeAround(Element *fixed, Element *toPlaced,int *px, int *py)
@@ -61,7 +62,7 @@ bool Element::placeAround(Element *fixed, Element *toPlaced,int *px, int *py)
        int fy = fixed->y();
        
        int i=0,j=-1,idir=1,jdir=0,phase=0,level=0;
-       while(!Element::isPlaceFree(fx+i*uw,fy+j*uh,uw,uh))
+       while(Element::isPlaceOccupied(fx+i*uw,fy+j*uh,uw,uh))
        {
               if(phase == 0 && i*uw >= fw+level*uw)
               {   

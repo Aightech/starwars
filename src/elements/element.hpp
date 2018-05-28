@@ -71,7 +71,7 @@ class Element
 	static int& mapOffsetY(){return s_mapOffsetY;};
 	static int& mapOffsetX(){return s_mapOffsetX;};
 
-	static bool isPlaceFree(int px,int py,int pw, int ph);
+	static unsigned long int isPlaceOccupied(int px,int py,int pw, int ph, Element * elmt =NULL);
 	static bool placeAround(Element *fixed, Element *toPlaced,int *x, int *y);
 	void updateStatut(int x, int y, int hp);
 	
@@ -113,7 +113,11 @@ class Element
 	int m_y;
 	int m_width;
 	int m_height;
-
+	int m_speed;
+	
+	int m_targetX;
+	int m_targetY;
+	
 	int m_HP;
 	float m_defense;
 	Player *m_player;

@@ -16,6 +16,10 @@ Unit::Unit(int no, int px, int py,  Player * player): Element(no,px,py,player)
 	m_defense = s_defense;
 	m_type = s_type;
 	m_color = s_color;
+	m_speed =1;
+	
+	m_targetX = 0;
+	m_targetY = s_mapWidth;
 
 	m_sprite.setTexture(*s_texture);
 	//m_sprite.setScale(Vector2f(2,2));
@@ -44,11 +48,35 @@ Request Unit::update()
 	if(clock()-m_clock>CLOCKS_PER_SEC/100)
 	{
 		m_clock=clock();
-		req.type=R_MOVE;
-		req.val1 = (m_player->no()==0)?1:-1;
-		req.val2 = -1;
+		int dx = m_targetX - m_x;
+		int dy = m_targetY - m_y;
+		
+		int dirx=dx>0?m_speed:-m_speed;
+		int diry=dy>0?m_speed:-m_speed;
+		dx=abs(dx);
+		dy=abs(dy);
+		over=dx/2;
+		//unsigned long int ptr = isPlaceOccupied(m_x+dx,m_y+dy,m_width,m_height));
+		if(1)//ptr == 0)
+		{
+			req.type=R_MOVE;
+			req.val1 = (m_player->no()==0)?1:-1;
+			req.val2 = -1;
+		}
+		else
+		{
+		
+		}
 	}
 return req;
+}
+
+int Unit::moveTo(int x, int y)
+{
+	float dx = x-m_x;
+	float dy = y-m_y;
+	
+	
 }
 
 int  Unit::move(int dx,int dy)
@@ -56,7 +84,7 @@ int  Unit::move(int dx,int dy)
 	for(int ie = 0 ; ie < m_height ; ie++)//mark the whole area of the element as 0
 		for(int je = 0; je < m_width ; je++)
 			s_map[(m_y+ie)*s_mapWidth + m_x + je] = 0;
-	if(isPlaceFree(m_x+dx,m_y+dy,m_width,m_height))
+	if(!isPlaceOccupied(m_x+dx,m_y+dy,m_width,m_height))
 	{
 		m_x+=dx;
 		m_y+=dy;

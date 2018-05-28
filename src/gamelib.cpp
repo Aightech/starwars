@@ -143,7 +143,7 @@ bool Game::processRequest(Request* req)
 		if(e==NULL)	return false;
 		if(req->val3 != -1)
 			e->HP() = req->val3;
-		
+		cout << req->val3 << endl;
 		p->addElement(e);
 		this->addElement(e);
 		sendUpdateAreaAround(e);

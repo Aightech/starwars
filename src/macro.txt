@@ -15,7 +15,7 @@
 
 //Warehouse dimensions
 #define WAREHOUSE_TYPE 1
-#define WAREHOUSE_HP 999
+#define WAREHOUSE_HP 500
 #define WAREHOUSE_WIDTH 64
 #define WAREHOUSE_HEIGHT 56
 #define WAREHOUSE_DEFENSE 5
@@ -37,7 +37,7 @@
 
 //Tower dimensions
 #define TOWER_TYPE 3
-#define TOWER_HP 999
+#define TOWER_HP 200
 #define TOWER_WIDTH 48
 #define TOWER_HEIGHT 27
 #define TOWER_DEFENSE 5
@@ -50,7 +50,7 @@
 
 //Unit dimensions
 #define UNIT_TYPE 10
-#define UNIT_HP 999
+#define UNIT_HP 100
 #define UNIT_WIDTH 20
 #define UNIT_HEIGHT 31
 #define UNIT_DEFENSE 5

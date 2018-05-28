@@ -21,7 +21,7 @@ class Unit: public Element
 	Unit(int no, int px, int py,  Player * player = NULL);
 
 	~Unit(){};
-
+	int moveTo(int x, int y);
 	int move(int dx,int dy);
 	int attack(){};
 
