@@ -137,7 +137,7 @@ void GUI::buildElement(int type)
 {
 	if(m_elementSelected!=NULL)
 		delete m_elementSelected;
-	m_elementSelected = Element::factory(type, -1, msPos.x-50/2, msPos.y-50/2);//new Warehouse(-1,msPos.x-50/2,msPos.y-50/2);
+	m_elementSelected = Element::factory(type, -1, msPos.x-50/2, msPos.y-50/2,(Player *)m_playerTurn);//new Warehouse(-1,msPos.x-50/2,msPos.y-50/2);
 	m_elementSelectedType = type;
 }
 
@@ -288,7 +288,7 @@ void GUI::createContext()
 			
 			m_arrayButton.push_back(new Button(this,"next",Vector2f(m_mapPosX + m_mapWidth + 20 ,m_mapPosY + m_mapHeight + 17),1,&GUI::nextButton));
 			
-			for(int i =m_nbBuildable; i< 2*m_nbBuildable ; i++)
+			for(int i =m_nbBuildable*(1-m_playerTurn); i< m_nbBuildable*(2-m_playerTurn) ; i++)
 				m_arrayButton[i]->disable();
 			
 			//////

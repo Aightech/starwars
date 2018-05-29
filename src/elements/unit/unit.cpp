@@ -55,7 +55,7 @@ Request Unit::update()
 		int diry=dy>0?m_speed:-m_speed;
 		dx=abs(dx);
 		dy=abs(dy);
-		over=dx/2;
+		//over=dx/2;
 		//unsigned long int ptr = isPlaceOccupied(m_x+dx,m_y+dy,m_width,m_height));
 		if(1)//ptr == 0)
 		{
