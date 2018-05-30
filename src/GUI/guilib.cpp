@@ -216,6 +216,17 @@ void GUI::createContext()
 	}
 	///
 	///BACKGROUND
+	Sprite * background = new Sprite();
+	Texture tb;// = new Texture();
+	background->setTexture(tb);
+	if (!tb.loadFromFile("media/theme/background.jpg"))
+		{
+			cout << "Erreur chargement image!"<< endl;
+			// return
+		}
+	background->setTextureRect(sf::IntRect(0, 0, window.getSize().x,window.getSize().y));
+	m_arraySprite.push_back(background);
+
 	///
 
 	/////------- CREATION F CONTEXTS ------- /////
@@ -223,6 +234,19 @@ void GUI::createContext()
 	{
 		case MAIN_MENU:
 		{
+			Sprite * logo = new Sprite();
+			Texture tl;// = new Texture();
+			if (!tl.loadFromFile("media/theme/game_logo.png"))
+				{
+					cout << "Erreur chargement image!"<< endl;
+					// return
+				}
+
+			logo->setTexture(tl);
+			logo->setPosition(30,30);
+			//logo->setTextureRect(sf::IntRect(0, 0, window.getSize().x,window.getSize().y));
+			m_arraySprite.push_back(logo);
+
 			string buttonsLabel[]={"play","lan","options","quit"};
 			int buttonIndex[]={PLAY_BUTT,LAN_BUTT,OPTION_BUTT,QUIT_BUTT};
 			for(int i=0;i<4;i++)
@@ -245,6 +269,7 @@ void GUI::createContext()
 			//LOGO GAME
 			//PORG ANIMATION
 			/////
+			
 
 		}
 		break;

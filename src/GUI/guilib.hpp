@@ -28,7 +28,7 @@
 #define INIT_GAME 9
 #define INQUIRY_GAME2 10
 
-#define GAME_NAME "GAME"
+#define GAME_NAME "STAR WARS - WAR OF DROIDS"
 #define WIN_W 1400
 #define WIN_H 700
 
