@@ -1,7 +1,7 @@
-all: game server clean
+all: game clean
 
-game: bin/main.o bin/guilib.o bin/gamelib.o bin/playerlib.o bin/netapi.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/warehouse.o bin/tower.o bin/farm.o bin/unit.o
-	g++ -o game bin/main.o  bin/playerlib.o bin/guilib.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/unit.o bin/warehouse.o bin/tower.o bin/farm.o bin/gamelib.o bin/netapi.o  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lpthread -g
+game: bin/main.o bin/guilib.o bin/animlib.o bin/gamelib.o bin/playerlib.o bin/netapi.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/warehouse.o bin/tower.o bin/farm.o bin/unit.o
+	g++ -o game bin/main.o bin/animlib.o bin/playerlib.o bin/guilib.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/unit.o bin/warehouse.o bin/tower.o bin/farm.o bin/gamelib.o bin/netapi.o  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lpthread -g
 
 server: bin/server.o bin/guilib.o bin/gamelib.o bin/playerlib.o bin/netapi.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/warehouse.o bin/tower.o bin/farm.o bin/unit.o
 	g++ -o server bin/server.o  bin/playerlib.o bin/guilib.o bin/buttonlib.o bin/textboxlib.o bin/element.o bin/unit.o bin/warehouse.o bin/tower.o bin/farm.o bin/gamelib.o bin/netapi.o  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lpthread
@@ -12,9 +12,7 @@ bin/server.o: server.cpp
 
 bin/main.o: main.cpp 
 	g++ -c main.cpp -std=c++0x -lpthread -o bin/main.o
-	
 
-	
 bin/netapi.o: src/network/netapi.cpp src/network/netapi.hpp 
 	g++ -c src/network/netapi.cpp -std=c++0x -lpthread -o bin/netapi.o
 	
@@ -25,6 +23,9 @@ bin/guilib.o: src/GUI/guilib.cpp src/GUI/guilib.hpp src/GUI/buttonlib.hpp src/GU
 	
 bin/buttonlib.o: src/GUI/buttonlib.cpp src/GUI/buttonlib.hpp
 	g++ -c src/GUI/buttonlib.cpp -o bin/buttonlib.o
+	
+bin/animlib.o: src/GUI/animlib.cpp src/GUI/animlib.hpp
+	g++ -c src/GUI/animlib.cpp -o bin/animlib.o
 
 bin/textboxlib.o: src/GUI/textboxlib.cpp src/GUI/textboxlib.hpp
 	g++ -c src/GUI/textboxlib.cpp -o bin/textboxlib.o
@@ -55,5 +56,6 @@ bin/gamelib.o: src/gamelib.cpp src/gamelib.hpp
 	
 clean:
 	rm -f bin/*.o
-	
+
+
 

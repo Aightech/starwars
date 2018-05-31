@@ -216,16 +216,16 @@ void GUI::createContext()
 	}
 	///
 	///BACKGROUND
-	Sprite * background = new Sprite();
-	Texture tb;// = new Texture();
-	background->setTexture(tb);
-	if (!tb.loadFromFile("media/theme/background.jpg"))
-		{
-			cout << "Erreur chargement image!"<< endl;
-			// return
-		}
-	background->setTextureRect(sf::IntRect(0, 0, window.getSize().x,window.getSize().y));
-	m_arraySprite.push_back(background);
+//	Sprite * background = new Sprite();
+//	Texture tb;// = new Texture();
+//	background->setTexture(tb);
+//	if (!tb.loadFromFile("media/theme/background.jpg"))
+//		{
+//			cout << "Erreur chargement image!"<< endl;
+//			// return
+//		}
+//	background->setTextureRect(sf::IntRect(0, 0, window.getSize().x,window.getSize().y));
+	m_arrayAnimation.push_back(new Animation("media/theme/background.jpg",0,0,window.getSize().x,window.getSize().y));
 
 	///
 
@@ -234,18 +234,9 @@ void GUI::createContext()
 	{
 		case MAIN_MENU:
 		{
-			Sprite * logo = new Sprite();
-			Texture tl;// = new Texture();
-			if (!tl.loadFromFile("media/theme/game_logo.png"))
-				{
-					cout << "Erreur chargement image!"<< endl;
-					// return
-				}
 
-			logo->setTexture(tl);
-			logo->setPosition(30,30);
-			//logo->setTextureRect(sf::IntRect(0, 0, window.getSize().x,window.getSize().y));
-			m_arraySprite.push_back(logo);
+			m_arrayAnimation.push_back(new Animation("media/theme/game_logo.png",30,30));
+			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,216,3));
 
 			string buttonsLabel[]={"play","lan","options","quit"};
 			int buttonIndex[]={PLAY_BUTT,LAN_BUTT,OPTION_BUTT,QUIT_BUTT};
@@ -286,21 +277,20 @@ void GUI::createContext()
 		break;
 		case GAME_CONTEXT:
 		{
-			Sprite * mapSprite = new Sprite();
-			Texture t;// = new Texture();
-			mapSprite->setTexture(t);
+			
 			m_mapPosX = window.getSize().x/2-m_mapWidth/2;
-			mapSprite->setTextureRect(sf::IntRect(0, 0, m_mapWidth,m_mapHeight ));
-			mapSprite->setPosition(Vector2f(m_mapPosX,m_mapPosY));
-			m_arraySprite.push_back(mapSprite);
-
+			m_arrayAnimation.push_back(new Animation("media/theme/utc.jpg",m_mapPosX,m_mapPosY,m_mapWidth,m_mapHeight));
+			
+			m_arrayAnimation.push_back(new Animation("media/theme/player1.png",m_mapPosX/2-130/2 ,m_mapPosY,130,130));
+			m_arrayAnimation.push_back(new Animation("media/theme/player2.png",m_mapPosX + m_mapWidth+ m_mapPosX/2-130/2,m_mapPosY,130,130));
+			
 			int c=0;
 			Element ** elmts = Element::elements();
 			for(int i = 0 ; i< NB_MAX_ELEMENT; i++)
 				if(elmts[i] != NULL && elmts[i]->isBuidable())
 					m_arrayButton.push_back(new Button(this,((Buildable*)elmts[i])->getButtonTexture(),60,60,Vector2f(m_mapPosX + c++*70,m_mapPosY + m_mapHeight + 10),&GUI::buildElement,elmts[i]->type(),elmts[i]->getInfo()));
 			
-			m_arrayButton.push_back(new Button(this,"next",Vector2f(m_mapPosX - 160,m_mapPosY + m_mapHeight + 17),0,&GUI::nextButton));
+			m_arrayButton.push_back(new Button(this,"next",Vector2f(m_mapPosX/2-130/2, m_mapPosY + m_mapHeight + 17),0,&GUI::nextButton));
 			
 			m_nbBuildable = ++c;
 			
@@ -311,7 +301,7 @@ void GUI::createContext()
 			
 
 			
-			m_arrayButton.push_back(new Button(this,"next",Vector2f(m_mapPosX + m_mapWidth + 20 ,m_mapPosY + m_mapHeight + 17),1,&GUI::nextButton));
+			m_arrayButton.push_back(new Button(this,"next",Vector2f(m_mapPosX + m_mapWidth+ m_mapPosX/2-130/2,m_mapPosY + m_mapHeight + 17),1,&GUI::nextButton));
 			
 			for(int i =m_nbBuildable*(1-m_playerTurn); i< m_nbBuildable*(2-m_playerTurn) ; i++)
 				m_arrayButton[i]->disable();
@@ -336,8 +326,12 @@ int GUI::update()
 	/////------- DRAWING GUI OBJECT ARRAYS ------- /////
 	for(int i=0;i<m_arraySprite.size();i++)
 		window.draw(*m_arraySprite[i]);
+	for(int i=0;i<m_arrayAnimation.size();i++)
+		m_arrayAnimation[i]->update(window);
 	for(int i=0;i<m_arrayText.size();i++)
 		window.draw(*m_arrayText[i]);
+		
+	
 
 	/////------- DRAWING MAP ------- /////
 	drawMap();

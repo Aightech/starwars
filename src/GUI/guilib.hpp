@@ -11,6 +11,7 @@
 
 #include "buttonlib.hpp"
 #include "textboxlib.hpp"
+#include "animlib.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -116,6 +117,7 @@ class GUI
        vector<Sprite*> m_arraySprite;// such as icons
        vector<Text*>   m_arrayText;// texts
        vector<Font*>   m_arrayFont;// and fonts
+       vector<Animation*> m_arrayAnimation;
        
        vector<Button*> m_arrayButton;// but also buttons
        vector<Textbox*> m_arrayTextBox;// and textboxes
