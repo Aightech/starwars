@@ -58,6 +58,8 @@ class Game: public  NetAPI
 
 	/*! \brief */
 	void addElement(Element * element);
+	
+	mutex& elmtMtx(){return m_elmtsMtx;};
 
 
 	/*! \brief */

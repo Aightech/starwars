@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <cmath>
+#include <cstdlib>
 
 
 #include <SFML/Graphics.hpp>
@@ -159,19 +160,30 @@ void GUI::menu(int select)
 			createContext();
 		break;
 		case LAN_BUTT:
+			m_state=LAN_MENU;
+			createContext();
+		break;
+
+
+		case JOIN_BUTT:
+		{
 			m_game->setOnline(2001); //comment if offline
 			m_game->connectToServer(2000,(char *)"127.0.0.1"); //comment if offline
-			break;
-
-
-		case JOIN_S1_BUTT:
-		case JOIN_S2_BUTT:
-		case JOIN_S3_BUTT:
-		case JOIN_S4_BUTT:
-		{int server=abs(select)-JOIN_S1_BUTT;}
+			m_state=GAME_CONTEXT;
+			m_hasBeenAnimated=false;
+			createContext();
+		}
 		break;
 
 		case HOST_BUTT:
+		{
+			system("./server &");
+			m_game->setOnline(2001); //comment if offline
+			m_game->connectToServer(2000,(char *)"127.0.0.1"); //comment if offline
+			m_state=GAME_CONTEXT;
+			m_hasBeenAnimated=false;
+			createContext();
+		}
 		break;
 
 		case KILL_P1_BUTT: 
@@ -277,9 +289,22 @@ void GUI::createContext()
 
 		}
 		break;
+		case LAN_MENU:
+		{
+			//std::cout << "Menu " << std::endl<< std::endl<< std::endl;
+			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,216,3));
+			string buttonsLabel[]={"host","join","back"};
+			int buttonIndex[]={HOST_BUTT,JOIN_BUTT,BACK_BUTT};
+			for(int i=0;i<3;i++)
+			{
+				m_arrayButton.push_back(new Button(this,buttonsLabel[i],Vector2f(window.getSize().x*(1+i)/5,window.getSize().y*7/8),buttonIndex[i],&GUI::menu));
+			}
+		}
+		break;
 		case OPTION_MENU:
 		{
 			//std::cout << "Menu " << std::endl<< std::endl<< std::endl;
+			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,216,3));
 			string buttonsLabel[]={"save","back","quit"};
 			int buttonIndex[]={SAVE_BUTT,BACK_BUTT,QUIT_BUTT};
 			for(int i=0;i<3;i++)
@@ -347,7 +372,8 @@ void GUI::createContext()
 int GUI::update()
 {
 	window.clear(Color(48,48,48));
-	m_arrayAnimation[0]->update(window);
+	for(int i=0;i<m_arrayAnimation.size();i++)
+		m_arrayAnimation[i]->update(window);
 
 	/////------- DRAWING GUI OBJECT ARRAYS ------- /////
 	for(int i=0;i<m_arraySprite.size();i++)
@@ -368,8 +394,7 @@ int GUI::update()
 	for(int i=0;i<m_arrayButton.size();i++)
 		select+=m_arrayButton[i]->update(window);
 	
-	for(int i=1;i<m_arrayAnimation.size();i++)
-		m_arrayAnimation[i]->update(window);
+	m_arrayAnimation[m_arrayAnimation.size()-1]->update(window);
 	
 	window.display();
 	return select;
@@ -397,6 +422,7 @@ void GUI::drawMap()
 					Element * e = (Element*) m_map[i*m_mapWidth + j];//::elementsType[type-1];
 
 					//draw element
+					m_game->elmtMtx().lock();
 					Sprite s = e->sprite();
 					if(m_mouseClicked>5 && e->player()->no()==m_playerTurn)
 					{
@@ -409,6 +435,7 @@ void GUI::drawMap()
 							e->unselect();
 					}
 					window.draw(s);
+					m_game->elmtMtx().unlock();
 
 					int u_height = e->height();
 					int u_width  = e->width();

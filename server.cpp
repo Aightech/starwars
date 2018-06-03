@@ -5,20 +5,15 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
-//#include "src/netlib.hpp"
-//#include "src/GUI/guilib.hpp"
 #include "src/gamelib.hpp"
 
-//#include "src/elements/element.hpp"
-
-
-
-#include <time.h> 
+#include <time.h>
 
 
 int main(int argc,char ** argv)
 {
 	srand(time(NULL));
+	cout << "hey"<< endl;
 
 	Game game;
 	game.verbose();
@@ -32,7 +27,7 @@ int main(int argc,char ** argv)
 	
 
 	while(1)
-	{
+	{//update game
 		if(game.getReceiverBuffer(enter)>-1)
 		{
 			cout << "buffer n°"<< n<< ": "<<enter<< endl;
@@ -44,4 +39,4 @@ int main(int argc,char ** argv)
 	cout << "Game ended" <<endl;
 
 	return 0;
-	}
+}
