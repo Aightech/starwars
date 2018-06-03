@@ -231,12 +231,15 @@ bool Game::sendUpdateAreaAround(Element * e)
 
 void Game::update()
 {
-	if(!m_online || m_isServer)
+	if(!m_online)
 	{
 		for(int i =0; i<m_players.size(); i++)
 			if(m_players[i]->turn())
 				m_players[i]->update(50000);
 	}
+	else if(m_isServer)
+		for(int i =0; i<m_players.size(); i++)
+			m_players[i]->update(1);
 	else
 	{
 		char enter[1024];

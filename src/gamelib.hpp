@@ -68,7 +68,8 @@ class Game: public  NetAPI
 	void update();
 
 	int processReceiverMessage(char * buffer, char* reply);
-
+	
+	bool isOnline(){return m_online;};
 	void setOnline(int port);
 	void setServer(int port);
 	

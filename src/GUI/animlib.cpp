@@ -33,3 +33,8 @@ int Animation::update(RenderWindow &w)
 	w.draw(m_sprite);
 	return m_state;
 }
+
+void Animation::setPosition(sf::Vector2f position)
+{
+	m_sprite.setPosition(position);
+}

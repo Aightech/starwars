@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cmath>
 
 
 #include <SFML/Graphics.hpp>
@@ -73,12 +74,17 @@ int GUI::start(void *pgame)
 			/////------- MOUSE EVENT ------- /////
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
-				if(	m_state == GAME_CONTEXT && 
-					msPos.x > m_mapPosX &&
-					msPos.y > m_mapPosY &&
-					msPos.x< m_mapPosX+m_mapWidth &&
-					msPos.y < m_mapPosY+m_mapHeight	)
-						m_mouseClicked++;
+				if(	m_state == GAME_CONTEXT && msPos.x > m_mapPosX && msPos.y > m_mapPosY &&
+					msPos.x< m_mapPosX+m_mapWidth && msPos.y < m_mapPosY+m_mapHeight	)
+				{
+					if(m_mouseClicked < 5)
+					{
+						for(int i=0 ; i<m_arraySelectedElements.size();i++)
+							m_arraySelectedElements[i]->setTarget(msPos.x-m_mapPosX,msPos.y-m_mapPosY);
+					}
+					m_mouseClicked++;
+				}
+					
 				if(m_elementSelectedType!=0 && m_elementOk)
 				{
 					cout << "CLICKED" << endl;
@@ -149,6 +155,7 @@ void GUI::menu(int select)
 	{
 		case PLAY_BUTT:
 			m_state=GAME_CONTEXT;
+			m_hasBeenAnimated=false;
 			createContext();
 		break;
 		case LAN_BUTT:
@@ -210,6 +217,11 @@ void GUI::createContext()
 		delete m_arraySprite[i];
 		m_arraySprite.pop_back();
 	}
+	for(int i=m_arrayAnimation.size()-1;i>-1;i--)
+	{
+		delete m_arrayAnimation[i];
+		m_arrayAnimation.pop_back();
+	}
 	for(int i=m_arrayText.size()-1;i>-1;i--)
 	{
 		delete m_arrayText[i];
@@ -235,7 +247,7 @@ void GUI::createContext()
 	{
 		case MAIN_MENU:
 		{
-
+			
 			m_arrayAnimation.push_back(new Animation("media/theme/game_logo.png",30,30));
 			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,216,3));
 
@@ -281,9 +293,12 @@ void GUI::createContext()
 			
 			m_mapPosX = window.getSize().x/2-m_mapWidth/2;
 			m_arrayAnimation.push_back(new Animation("media/theme/map.png",m_mapPosX,m_mapPosY,m_mapWidth,m_mapHeight));
+			cout << "w : " << m_mapPosX << endl << " h : " << m_mapPosY << endl;
 			
 			m_arrayAnimation.push_back(new Animation("media/theme/player1.png",m_mapPosX/2-130/2 ,m_mapPosY,130,130));
 			m_arrayAnimation.push_back(new Animation("media/theme/player2.png",m_mapPosX + m_mapWidth+ m_mapPosX/2-130/2,m_mapPosY,130,130));
+			
+			//m_arrayAnimation.push_back(new Animation("media/theme/doorSolo.png",window.getSize().x/2,0,window.getSize().x,window.getSize().y));
 			
 			int c=0;
 			Element ** elmts = Element::elements();
@@ -306,29 +321,38 @@ void GUI::createContext()
 			
 			for(int i =m_nbBuildable*(1-m_playerTurn); i< m_nbBuildable*(2-m_playerTurn) ; i++)
 				m_arrayButton[i]->disable();
+				
+			m_arrayAnimation.push_back(new Animation("media/theme/doorSolo.png",window.getSize().x,0,window.getSize().x,window.getSize().y));
 			
-			//////
-			//PLAYER LOGOS
-			//STONE ICON
-			//////
+			if(!m_hasBeenAnimated && m_game->isOnline())
+			{
+				int nbInc = 20;
+				for(int j = 0; j< nbInc+1; j++)
+				{
+					m_arrayAnimation.back()->setPosition(Vector2f(window.getSize().x*(2-((float)sqrt(j))/sqrt(nbInc))/2,0));
+					update();
+					waitSec(1.5/nbInc);
+				}
+				m_hasBeenAnimated=true;
+			}
 
 			
 		}
 		//elmts[i]->type()
 		break;
+		
 	}
 }
 
 int GUI::update()
 {
 	window.clear(Color(48,48,48));
-
+	m_arrayAnimation[0]->update(window);
 
 	/////------- DRAWING GUI OBJECT ARRAYS ------- /////
 	for(int i=0;i<m_arraySprite.size();i++)
 		window.draw(*m_arraySprite[i]);
-	for(int i=0;i<m_arrayAnimation.size();i++)
-		m_arrayAnimation[i]->update(window);
+	
 	for(int i=0;i<m_arrayText.size();i++)
 		window.draw(*m_arrayText[i]);
 		
@@ -343,6 +367,9 @@ int GUI::update()
 	int select=0,s=0;
 	for(int i=0;i<m_arrayButton.size();i++)
 		select+=m_arrayButton[i]->update(window);
+	
+	for(int i=1;i<m_arrayAnimation.size();i++)
+		m_arrayAnimation[i]->update(window);
 	
 	window.display();
 	return select;

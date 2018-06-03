@@ -17,7 +17,7 @@ class Animation
 {
 	public:
 	Animation(std::string s, int px, int py, int width=-1, int height=-1, int nbFrame=0, double frameRate = 1);
-	~Animation();
+	~Animation(){delete m_texture;};
 	void setPosition(sf::Vector2f position);
 	int update(RenderWindow &w);
 

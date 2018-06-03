@@ -74,7 +74,13 @@ Request Unit::update()
 	if(clock()-m_clock>CLOCKS_PER_SEC/100)
 	{
 		m_clock=clock();
+		
 		req = reqMoveToTarget();
+		if(abs(m_targetX-m_x) < 50 && abs(m_targetY-m_y) < 50)
+		{
+			req.val1 = 0;
+			req.val2=0;
+		}
 		int range = 10;
 		unsigned long int ptr = isPlaceOccupied(m_x-range/2 +req.val1, m_y-range/2 +req.val2, m_width + range, m_height + range, this);
 		if(ptr != 0 && ptr != -1 && ((Element*)ptr)->player()->no() != m_player->no())
