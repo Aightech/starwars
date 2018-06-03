@@ -20,30 +20,19 @@ class Unit: public Element
 
 	Unit(int no, int px, int py,  Player * player = NULL);
 
-	~Unit(){};
-	int moveTo(int x, int y);
+	~Unit();
+	Request reqMoveToTarget();
 	int move(int dx,int dy);
 	int attack(){};
+	void select();
+	void unselect();
 
 	static void setting();
 	Request update();
 	Element * builder(int pno, int px, int py,Player * player=NULL){return new Unit(pno,px,py,player);};
 	std::string getInfo(){return "Unit";};
 
-	static void setTexture()
-	{
-		Image im;
-		if (!im.loadFromFile("media/elements/bb81.png"))
-		{
-			cout << "Erreur chargement image!"<< endl;
-			// return
-		}
-		std :: cout << "Image chargée" << std :: endl; 
-		im.createMaskFromColor(Color::White);
-		
-		const_cast<Texture*>(s_texture)->loadFromImage(im);
-	}
-
+	static void setTexture();
 	private:
 	void setSize(int pw,int ph){};
 	void setID(int pw,int ph){};

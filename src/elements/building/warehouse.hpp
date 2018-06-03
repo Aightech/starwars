@@ -28,7 +28,7 @@ class Warehouse: public Buildable
 	static void setTexture()
 	{
 		Image im;
-		if (!im.loadFromFile("media/elements/warehouse.jpg"))
+		if (!im.loadFromFile("media/elements/warehouse.png"))
 		{
 			cout << "Erreur chargement image!"<< endl;
 			// return

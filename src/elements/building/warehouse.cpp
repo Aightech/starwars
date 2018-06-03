@@ -27,7 +27,7 @@ Warehouse::Warehouse(int no, int px, int py,  Player * player): Buildable(no,px,
 	m_pathButtonTexture2 = s_pathButtonTexture2;
 
 	m_sprite.setTexture(*s_texture);
-	m_sprite.setTextureRect(sf::IntRect(0, ((no==-1)?(unsigned long int)player:player->no())*(m_height+15), m_width, m_height));
+	m_sprite.setTextureRect(sf::IntRect(0, ((no==-1)?(unsigned long int)player:player->no())*(m_height), m_width, m_height));
 	//m_sprite.setScale(Vector2f(0.9,0.9));
 	m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
 	//m_sprite.setTextureRect(sf::IntRect(0, 0,m_width, m_height));

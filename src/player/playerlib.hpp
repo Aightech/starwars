@@ -43,6 +43,7 @@ class Player
 	//TODO: finish method
 	void update(int step=1);
 	void addElement(Element * element);
+	void removeElement(int no);
 	int no(){return m_no;};
 	int& turn(){return m_turn;};
 

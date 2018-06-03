@@ -143,7 +143,6 @@ bool Game::processRequest(Request* req)
 		if(e==NULL)	return false;
 		if(req->val3 != -1)
 			e->HP() = req->val3;
-		cout << req->val3 << endl;
 		p->addElement(e);
 		this->addElement(e);
 		sendUpdateAreaAround(e);
@@ -162,6 +161,40 @@ bool Game::processRequest(Request* req)
 			case R_HEAL:
 			case R_ATTACK:
 			{
+				m_elmtsMtx.lock();
+				list<Element*>::iterator it = m_elements.begin();
+				while(it !=  m_elements.end() && (*it)->no() != (unsigned int)req->e) 
+				{
+					m_elmtsMtx.unlock();
+					m_elmtsMtx.lock();
+					it++;
+				}
+				int hp =(*it)->getDamage(req->val1);
+				m_elmtsMtx.unlock();
+				if(hp<0)
+				{
+					cout << "killing" << endl;
+					m_players[(*it)->player()->no()]->removeElement((unsigned int)req->e);
+					delete (*it);
+					m_elements.erase(it);
+				}
+				
+
+			}break;
+			case R_KILL:
+			{
+				m_elmtsMtx.lock();
+				list<Element*>::iterator it = m_elements.begin();
+				while(it !=  m_elements.end() && (*it)->no() != (unsigned int)req->e) 
+				{
+					m_elmtsMtx.unlock();
+					m_elmtsMtx.lock();
+					it++;
+				}
+				//m_players[(*it)->player->no()]->removeElement((unsigned int)req->e);
+				delete (*it);
+				m_elements.erase(it);
+				m_elmtsMtx.unlock();
 
 			}break;
 		}
@@ -249,12 +282,9 @@ int Game::processServerUpdate(char * buffer)
 //				(*it)->y()  = parseNumber(buffer,'Y',(*it)->y());
 //				(*it)->HP() = parseNumber(buffer,'H',(*it)->HP());
 				(*it)->updateStatut(parseNumber(buffer,'X',(*it)->x()), parseNumber(buffer,'Y',(*it)->y()), parseNumber(buffer,'H',(*it)->HP()));
-				//std::cout << "element:"<< (*it)->no() << std::endl;
 				return 1;
 			}
-			//std::cout << "element:"<< (*it)->no() << std::endl;
 		}
-//		std::cout << "new element:"<< no << std::endl;
 		Request r = {	parseNumber(buffer,'T',NO_REQUEST),
 				parseNumber(buffer,'X',10),
 				parseNumber(buffer,'Y',10),

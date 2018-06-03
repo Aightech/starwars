@@ -34,7 +34,7 @@ class Element
 	Element(){};
 	Element(int no, int px, int py, Player * player =NULL):m_no(no),m_x(px),m_y(py),m_player(player){ m_clock = clock();};
 
-	~Element(){};
+	virtual ~Element();
 
 	//TODO tranform to return a action 
 	virtual Request update()=0;
@@ -50,6 +50,8 @@ class Element
 	int isBuidable(){return m_isBuidable;};
 	Sprite& sprite(){return m_sprite;};
 	Color& color(){return m_color;};
+	virtual void select(){};
+	virtual void unselect(){};
 	
 	virtual std::string getInfo(){};
 
@@ -63,6 +65,8 @@ class Element
 
 	int width(){return m_width;}
 	int height(){return m_height;}
+	
+	int setTarget(int px,int py);
 
 
 	static unsigned long int*& map(){return s_map;};
@@ -117,10 +121,18 @@ class Element
 	
 	int m_targetX;
 	int m_targetY;
+	int m_dx;
+	int m_dy;
+	int m_dirx;
+	int m_diry;
+	double m_over;
 	
 	int m_HP;
 	float m_defense;
 	Player *m_player;
+	
+	int m_selected=0;
+	int m_nbState=3;
 
 	clock_t m_clock;
 	int m_test =0;

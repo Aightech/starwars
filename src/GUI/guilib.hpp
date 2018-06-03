@@ -122,6 +122,8 @@ class GUI
        vector<Button*> m_arrayButton;// but also buttons
        vector<Textbox*> m_arrayTextBox;// and textboxes
        
+       vector<Element*> m_arraySelectedElements;
+       
        Vector2i msPos;// store the mouse position
        
        

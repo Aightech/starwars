@@ -67,5 +67,19 @@ void Player::addElement(Element * element)
 	m_elmtsMtx->unlock();
 }
 
+void Player::removeElement(int no)
+{
+	m_elmtsMtx->lock();
+	list<Element*>::iterator it = m_elements.begin();
+	while(it !=  m_elements.end() && (*it)->no() != no) 
+	{
+		m_elmtsMtx->unlock();
+		m_elmtsMtx->lock();
+		it++;
+	}
+	m_elmtsMtx->unlock();
+	m_elements.erase(it);
+}
+
 
 

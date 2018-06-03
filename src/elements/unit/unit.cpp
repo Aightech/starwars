@@ -18,20 +18,22 @@ Unit::Unit(int no, int px, int py,  Player * player): Element(no,px,py,player)
 	m_color = s_color;
 	m_speed =1;
 	
-	m_targetX = 0;
-	m_targetY = s_mapWidth;
+	setTarget(s_mapWidth,0);
 
 	m_sprite.setTexture(*s_texture);
 	//m_sprite.setScale(Vector2f(2,2));
 	m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
-	//m_sprite.setTextureRect(sf::IntRect(0, 0,m_width, m_height));
-	//m_sprite.setColor(m_color);
+	m_sprite.setTextureRect(sf::IntRect(0, ((no==-1)?(unsigned long int)player:player->no())*(m_height), m_width, m_height));
 	if(no!=-1)
 		updatePos();
 	
 	if(player!=NULL)
 		player->population()++;
-	std :: cout << "Unit created" << std :: endl; 
+}
+Unit::~Unit()
+{
+	if(m_player!=NULL)
+		m_player->population()--;
 }
 
 void Unit::setting()
@@ -40,6 +42,30 @@ void Unit::setting()
 	Element::elements()[UNIT_TYPE] = new Unit();
 };
 
+void Unit::setTexture()
+{
+	Image im;
+	if (!im.loadFromFile("media/elements/unit2.png"))
+	{
+		cout << "Erreur chargement image!"<< endl;
+		// return
+	}
+	std :: cout << "Image chargée" << std :: endl; 
+	im.createMaskFromColor(Color::White);
+	
+	const_cast<Texture*>(s_texture)->loadFromImage(im);
+}
+
+void Unit::select()
+{
+	m_selected = 1;
+	m_sprite.setTextureRect(sf::IntRect(m_nbState*m_selected* m_width, m_player->no()*(m_height), m_width, m_height));
+}
+void Unit::unselect()
+{
+	m_selected = 0;
+	m_sprite.setTextureRect(sf::IntRect(m_nbState*m_selected* m_width, m_player->no()*(m_height), m_width, m_height));
+}
 Request Unit::update()
 {
 
@@ -48,35 +74,45 @@ Request Unit::update()
 	if(clock()-m_clock>CLOCKS_PER_SEC/100)
 	{
 		m_clock=clock();
-		int dx = m_targetX - m_x;
-		int dy = m_targetY - m_y;
-		
-		int dirx=dx>0?m_speed:-m_speed;
-		int diry=dy>0?m_speed:-m_speed;
-		dx=abs(dx);
-		dy=abs(dy);
-		//over=dx/2;
-		//unsigned long int ptr = isPlaceOccupied(m_x+dx,m_y+dy,m_width,m_height));
-		if(1)//ptr == 0)
+		req = reqMoveToTarget();
+		int range = 10;
+		unsigned long int ptr = isPlaceOccupied(m_x-range/2 +req.val1, m_y-range/2 +req.val2, m_width + range, m_height + range, this);
+		if(ptr != 0 && ptr != -1 && ((Element*)ptr)->player()->no() != m_player->no())
 		{
-			req.type=R_MOVE;
-			req.val1 = (m_player->no()==0)?1:-1;
-			req.val2 = -1;
-		}
-		else
-		{
-		
+			req.type = R_ATTACK;
+			req.e = (unsigned long int)((Element*)ptr)->no();
+			req.val1 = 10;
+			//((Element*)ptr)->getDamage(10);
 		}
 	}
 return req;
 }
 
-int Unit::moveTo(int x, int y)
+Request Unit::reqMoveToTarget()
 {
-	float dx = x-m_x;
-	float dy = y-m_y;
-	
-	
+	Request req={NO_REQUEST,0,0,0,(unsigned long int)this};
+	req.type=R_MOVE;
+	if(m_dx < m_dy)
+	{
+		m_over += m_dx;
+		if(m_over >= m_dy)
+		{
+			m_over -= m_dy;
+			req.val1 = m_dirx;
+		}
+		req.val2 = m_diry;
+	}
+	else
+	{
+		m_over += m_dy;
+		if(m_over >= m_dx)
+		{
+			m_over -= m_dx;
+			req.val2 = m_diry;
+		}
+		req.val1 = m_dirx;
+	}
+	return req;
 }
 
 int  Unit::move(int dx,int dy)
@@ -91,8 +127,8 @@ int  Unit::move(int dx,int dy)
 		updatePos();
 		return 1;
 	}
-	else
-		cout << "can't move" << endl;
+//	else
+//		cout << "can't move" << endl;
 	updatePos();
 	return 0;
 }

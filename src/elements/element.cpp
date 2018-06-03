@@ -11,6 +11,13 @@ int Element::s_mapOffsetY = 0;
 Element ** Element::s_elements = new Element*[NB_MAX_ELEMENT]();
 Element ** Element::elements(){ return s_elements;}
 
+Element::~Element()
+{
+	for(int ie = 0 ; ie < m_height ; ie++)//mark the whole area of the element as 0
+		for(int je = 0; je < m_width ; je++)
+			s_map[(m_y+ie)*s_mapWidth + m_x + je] = 0;
+}
+
 
 //store one of each element to get access to them through Element class.
 //Element* Element::elementsType[]= ELEMENTS_ARRAY;
@@ -38,7 +45,7 @@ void Element::updateStatut(int x, int y, int hp)
 unsigned long int Element::isPlaceOccupied(int px,int py,int pw, int ph,Element * elmt)
 {
 	bool placeOccupied = 0;
-	if(px > 0 && py > 0 && px + pw < s_mapWidth && py + pw < s_mapHeight)
+	if(px >= 0 && py >= 0 && px + pw < s_mapWidth && py + ph < s_mapHeight)
 	{
 		placeOccupied = 0;
 		unsigned long int ptr;
@@ -48,6 +55,8 @@ unsigned long int Element::isPlaceOccupied(int px,int py,int pw, int ph,Element 
 				if((ptr=s_map[(py+iu)*s_mapWidth + px + ju]) != 0 && ptr != (unsigned long int )elmt)
 					return ptr;
 	}
+	else
+		return -1;
 	
 	return 0;
 }
@@ -97,4 +106,17 @@ bool Element::placeAround(Element *fixed, Element *toPlaced,int *px, int *py)
        }
        *px=fx+i*uw;
        *py=fy+j*uh;
+}
+
+int Element::setTarget(int px,int py)
+{
+	m_targetX = px;
+	m_targetY = py;
+	m_dx = m_targetX - m_x;
+	m_dy = m_targetY - m_y;
+	
+	m_dirx = m_dx>0?m_speed:-m_speed;
+	m_diry = m_dy>0?m_speed:-m_speed;
+	m_dx = abs(m_dx);
+	m_dy = abs(m_dy);
 }

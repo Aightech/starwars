@@ -102,6 +102,7 @@ int GUI::start(void *pgame)
 			}
 			else
 			{
+				
 				m_mouseClicked=0;
 			}
 			/////------- KEYBOARD EVENT ------- /////
@@ -279,7 +280,7 @@ void GUI::createContext()
 		{
 			
 			m_mapPosX = window.getSize().x/2-m_mapWidth/2;
-			m_arrayAnimation.push_back(new Animation("media/theme/utc.jpg",m_mapPosX,m_mapPosY,m_mapWidth,m_mapHeight));
+			m_arrayAnimation.push_back(new Animation("media/theme/map.png",m_mapPosX,m_mapPosY,m_mapWidth,m_mapHeight));
 			
 			m_arrayAnimation.push_back(new Animation("media/theme/player1.png",m_mapPosX/2-130/2 ,m_mapPosY,130,130));
 			m_arrayAnimation.push_back(new Animation("media/theme/player2.png",m_mapPosX + m_mapWidth+ m_mapPosX/2-130/2,m_mapPosY,130,130));
@@ -352,6 +353,10 @@ void GUI::drawMap()
 	m_mapdrawVal = (m_mapdrawVal+1)%2; //marker to know what has been drawn
 
 	//TODO: create static access from ELEMENT
+	if(m_mouseClicked > 5)
+		for(int i=0 ; i<m_arraySelectedElements.size();i++)
+			m_arraySelectedElements.pop_back();
+	
 
 	for(int i = 0; i < m_mapHeight ; i++ )
 	{
@@ -366,6 +371,16 @@ void GUI::drawMap()
 
 					//draw element
 					Sprite s = e->sprite();
+					if(m_mouseClicked>5 && e->player()->no()==m_playerTurn)
+					{
+						if(m_selectionRect.getGlobalBounds().intersects(s.getGlobalBounds()))
+						{
+							e->select();//cout<<"hey"<<endl;
+							m_arraySelectedElements.push_back(e);
+						}
+						else
+							e->unselect();
+					}
 					window.draw(s);
 
 					int u_height = e->height();
