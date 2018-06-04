@@ -60,6 +60,8 @@ class Game: public  NetAPI
 	void addElement(Element * element);
 	
 	mutex& elmtMtx(){return m_elmtsMtx;};
+	
+	Player* addPlayer(int no);
 
 
 	/*! \brief */

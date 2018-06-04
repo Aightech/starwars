@@ -68,6 +68,7 @@
 #define R_CREATE_SUPERUNIT 11
 
 #define R_MOVE 120
+#define R_TARGET 121
 
 #define R_ACTION 130
 #define R_ATTACK 131

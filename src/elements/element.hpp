@@ -9,6 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include "../macro.txt"
+#include "../GUI/animlib.hpp"
 
 
 using namespace sf;
@@ -49,9 +50,11 @@ class Element
 	Player * player(){ return m_player;};
 	int isBuidable(){return m_isBuidable;};
 	Sprite& sprite(){return m_sprite;};
+	Animation& targetAnimation(){return m_targetAnimation;};
 	Color& color(){return m_color;};
 	virtual void select(){};
 	virtual void unselect(){};
+	bool isSelected(){ return m_selected;};
 	
 	virtual std::string getInfo(){};
 
@@ -118,6 +121,8 @@ class Element
 	int m_width;
 	int m_height;
 	int m_speed;
+	
+	Animation m_targetAnimation;
 	
 	int m_targetX;
 	int m_targetY;

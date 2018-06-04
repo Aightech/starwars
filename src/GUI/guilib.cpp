@@ -16,31 +16,34 @@ using namespace std;
 
 GUI::GUI(unsigned long int * map, int width, int height)
 {
-       
-       //////------- Loading different fonts ------- /////
-       Button::setFont(GAME_FONT_BUTTON);
-       Button::setTexture(GAME_THEME_BUTTON,137,50);
-       
-       //////------- WINDOW SETTING ------- /////
-       window.create(VideoMode(WIN_W,WIN_H), GAME_NAME); 
-       
-       //////------- MAP SETTING ------- /////
-       m_map = map;//get and share the game map
-       m_mapHeight = height;
-       m_mapWidth = width;
-       m_mapPosX = window.getSize().x/2-m_mapWidth/2;//set the position of the map on the window
-       m_mapPosY = 20;
-       /////--------ELEMENT SETING --------/////
-       Element::mapOffsetY()=m_mapPosY;
-       Element::mapOffsetX()=m_mapPosX;
-       
-       
-       
-       //////------- FLAGS SETTING ------- /////
-       m_state=0;
-       m_elementSelectedType=0;
-       m_mapDraw = new unsigned char[m_mapHeight*m_mapWidth] ();//used in drawMap
-       m_mapdrawVal = 0;
+
+	//////------- Loading different fonts ------- /////
+	Button::setFont(GAME_FONT_BUTTON);
+	Button::setTexture(GAME_THEME_BUTTON,137,50);
+
+	//////------- WINDOW SETTING ------- /////
+	window.create(VideoMode(WIN_W,WIN_H), GAME_NAME); 
+	sf::Image icon;
+	icon.loadFromFile("media/theme/Millennium-falcon-icon.png");
+	window.setIcon(32,32,icon.getPixelsPtr());
+
+	//////------- MAP SETTING ------- /////
+	m_map = map;//get and share the game map
+	m_mapHeight = height;
+	m_mapWidth = width;
+	m_mapPosX = window.getSize().x/2-m_mapWidth/2;//set the position of the map on the window
+	m_mapPosY = 20;
+	/////--------ELEMENT SETING --------/////
+	Element::mapOffsetY()=m_mapPosY;
+	Element::mapOffsetX()=m_mapPosX;
+
+
+
+	//////------- FLAGS SETTING ------- /////
+	m_state=0;
+	m_elementSelectedType=0;
+	m_mapDraw = new unsigned char[m_mapHeight*m_mapWidth] ();//used in drawMap
+	m_mapdrawVal = 0;
 
 	m_hasBeenAnimated = false;
 
@@ -78,11 +81,7 @@ int GUI::start(void *pgame)
 				if(	m_state == GAME_CONTEXT && msPos.x > m_mapPosX && msPos.y > m_mapPosY &&
 					msPos.x< m_mapPosX+m_mapWidth && msPos.y < m_mapPosY+m_mapHeight	)
 				{
-					if(m_mouseClicked < 5)
-					{
-						for(int i=0 ; i<m_arraySelectedElements.size();i++)
-							m_arraySelectedElements[i]->setTarget(msPos.x-m_mapPosX,msPos.y-m_mapPosY);
-					}
+					
 					m_mouseClicked++;
 				}
 					
@@ -109,7 +108,17 @@ int GUI::start(void *pgame)
 			}
 			else
 			{
-				
+				if(m_mouseClicked > 0 && m_mouseClicked < 5)
+				{
+					for(int i=0 ; i<m_arraySelectedElements.size();i++)
+					{
+						Request r={R_TARGET,msPos.x-m_mapPosX,msPos.y-m_mapPosY};
+						r.val3 = -1;
+						r.e= (unsigned long int)m_arraySelectedElements[i]->no();
+						m_game->request(&r);
+					}
+					//m_arraySelectedElements[i]->setTarget(msPos.x-m_mapPosX,msPos.y-m_mapPosY);
+				}
 				m_mouseClicked=0;
 			}
 			/////------- KEYBOARD EVENT ------- /////
@@ -155,6 +164,8 @@ void GUI::menu(int select)
 	switch(abs(select))
 	{
 		case PLAY_BUTT:
+			m_game->addPlayer(0);
+			m_game->addPlayer(1);
 			m_state=GAME_CONTEXT;
 			m_hasBeenAnimated=false;
 			createContext();
@@ -168,8 +179,17 @@ void GUI::menu(int select)
 		case JOIN_BUTT:
 		{
 			m_game->setOnline(2001); //comment if offline
-			m_game->connectToServer(2000,(char *)"127.0.0.1"); //comment if offline
-			m_state=GAME_CONTEXT;
+			m_playerTurn = m_game->connectToServer(2000,(char *)"127.0.0.1"); //comment if offline
+			if(m_playerTurn == 0 || m_playerTurn == 1)
+			{
+				m_game->addPlayer(m_playerTurn);
+				m_state=GAME_CONTEXT;
+			}
+			else 
+			{
+				m_playerTurn = 0;
+				m_state=LAN_MENU;
+			}
 			m_hasBeenAnimated=false;
 			createContext();
 		}
@@ -179,8 +199,17 @@ void GUI::menu(int select)
 		{
 			system("./server &");
 			m_game->setOnline(2001); //comment if offline
-			m_game->connectToServer(2000,(char *)"127.0.0.1"); //comment if offline
-			m_state=GAME_CONTEXT;
+			m_playerTurn = m_game->connectToServer(2000,(char *)"127.0.0.1"); //comment if offline
+			if(m_playerTurn == 0 || m_playerTurn == 1)
+			{
+				m_game->addPlayer(m_playerTurn);
+				m_state=GAME_CONTEXT;
+			}
+			else 
+			{
+				m_playerTurn = 0;
+				m_state=LAN_MENU;
+			}
 			m_hasBeenAnimated=false;
 			createContext();
 		}
@@ -262,7 +291,8 @@ void GUI::createContext()
 			
 			m_arrayAnimation.push_back(new Animation("media/theme/game_logo.png",30,30));
 			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,216,3));
-
+			m_arrayAnimation.push_back(new Animation("media/theme/targetPointer.png",400,600,44,42,14,0.2));
+			
 			string buttonsLabel[]={"play","lan","options","quit"};
 			int buttonIndex[]={PLAY_BUTT,LAN_BUTT,OPTION_BUTT,QUIT_BUTT};
 			for(int i=0;i<4;i++)
@@ -331,9 +361,10 @@ void GUI::createContext()
 				if(elmts[i] != NULL && elmts[i]->isBuidable())
 					m_arrayButton.push_back(new Button(this,((Buildable*)elmts[i])->getButtonTexture(),60,60,Vector2f(m_mapPosX + c++*70,m_mapPosY + m_mapHeight + 10),&GUI::buildElement,elmts[i]->type(),elmts[i]->getInfo()));
 			
-			m_arrayButton.push_back(new Button(this,"next",Vector2f(m_mapPosX/2-130/2, m_mapPosY + m_mapHeight + 17),0,&GUI::nextButton));
+			if(!m_game->isOnline())
+				m_arrayButton.push_back(new Button(this,"next",Vector2f(m_mapPosX/2-130/2, m_mapPosY + m_mapHeight + 17),0,&GUI::nextButton));
 			
-			m_nbBuildable = ++c;
+			m_nbBuildable = (!m_game->isOnline())?++c:c;
 			
 			c=0;
 			for(int i = 0 ; i< NB_MAX_ELEMENT; i++)
@@ -341,20 +372,24 @@ void GUI::createContext()
 					m_arrayButton.push_back(new Button(this,((Buildable*)elmts[i])->getButtonTexture(1),60,60,Vector2f(m_mapPosX + m_mapWidth -60 - c++*70,m_mapPosY + m_mapHeight + 10),&GUI::buildElement,elmts[i]->type(),elmts[i]->getInfo()));
 			
 
-			
-			m_arrayButton.push_back(new Button(this,"next",Vector2f(m_mapPosX + m_mapWidth+ m_mapPosX/2-130/2,m_mapPosY + m_mapHeight + 17),1,&GUI::nextButton));
-			
+			if(!m_game->isOnline())
+				m_arrayButton.push_back(new Button(this,"next",Vector2f(m_mapPosX + m_mapWidth+ m_mapPosX/2-130/2,m_mapPosY + m_mapHeight + 17),1,&GUI::nextButton));
+				
 			for(int i =m_nbBuildable*(1-m_playerTurn); i< m_nbBuildable*(2-m_playerTurn) ; i++)
 				m_arrayButton[i]->disable();
-				
-			m_arrayAnimation.push_back(new Animation("media/theme/doorSolo.png",window.getSize().x,0,window.getSize().x,window.getSize().y));
 			
 			if(!m_hasBeenAnimated && m_game->isOnline())
 			{
+				m_arrayAnimation.push_back(new Animation("media/theme/doorSolo.png",window.getSize().x,0,window.getSize().x,window.getSize().y));
+				if(m_playerTurn==1)
+					m_arrayAnimation.back()->setScale(-1.,1.);
 				int nbInc = 20;
 				for(int j = 0; j< nbInc+1; j++)
 				{
-					m_arrayAnimation.back()->setPosition(Vector2f(window.getSize().x*(2-((float)sqrt(j))/sqrt(nbInc))/2,0));
+					if(m_playerTurn==0)
+						m_arrayAnimation.back()->setPosition(Vector2f(window.getSize().x*(2-((float)sqrt(j))/sqrt(nbInc))/2,0));
+					if(m_playerTurn==1)
+						m_arrayAnimation.back()->setPosition(Vector2f(window.getSize().x*(((float)sqrt(j))/sqrt(nbInc))/2,0));
 					update();
 					waitSec(1.5/nbInc);
 				}
@@ -436,7 +471,8 @@ void GUI::drawMap()
 					}
 					window.draw(s);
 					m_game->elmtMtx().unlock();
-
+					
+					
 					int u_height = e->height();
 					int u_width  = e->width();
 
@@ -460,6 +496,8 @@ void GUI::drawMap()
 			}
 		}
 	}
+	if(m_arraySelectedElements.size()>0)
+		m_arraySelectedElements[0]->targetAnimation().update(window);
 }
 
 
@@ -474,6 +512,11 @@ void GUI::drawSelection()
 			m_selectionRect.setPosition(Vector2f(msPos.x,msPos.y));
 			m_selectionRect.setColor(Color(255,0,0,100));
 			window.draw(m_selectionRect);
+			for(int i=m_arraySelectedElements.size()-1 ; i>-1;i--)
+			{
+				m_arraySelectedElements[i]->unselect();
+				m_arraySelectedElements.pop_back();
+			}
 	}
 	if(m_mouseClicked>5)
 	{
@@ -542,6 +585,12 @@ void GUI::nextButton(int playerNo)
 		
 	for(int i =m_nbBuildable*(1-playerNo); i< m_nbBuildable*(2-playerNo) ; i++)
 		m_arrayButton[i]->enable();
+		
+	for(int i=m_arraySelectedElements.size()-1 ; i>-1;i--)
+	{
+		m_arraySelectedElements[i]->unselect();
+		m_arraySelectedElements.pop_back();
+	}
 	
 	m_playerTurn=1-playerNo;
 }

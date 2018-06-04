@@ -35,6 +35,9 @@ void Element::updatePos()
 
 void Element::updateStatut(int x, int y, int hp)
 {
+	for(int ie = 0 ; ie < m_height ; ie++)//mark the whole area of the element as 0
+		for(int je = 0; je < m_width ; je++)
+			s_map[(m_y+ie)*s_mapWidth + m_x + je] = 0;
 	m_x=x;
 	m_y=y;
 	m_HP = hp;
@@ -119,4 +122,5 @@ int Element::setTarget(int px,int py)
 	m_diry = m_dy>0?m_speed:-m_speed;
 	m_dx = abs(m_dx);
 	m_dy = abs(m_dy);
+	m_targetAnimation.setPosition(Vector2f(m_targetX+s_mapOffsetX-15,m_targetY+s_mapOffsetY-15));
 }

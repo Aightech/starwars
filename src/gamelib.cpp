@@ -38,8 +38,7 @@ Game::Game()
 
 	m_elementsIndex =0;
 	
-	m_players.push_back(new Player(this,0));
-	m_players.push_back(new Player(this,1));
+	
 	
 	//m_players[0]->turn()=1;
 
@@ -110,6 +109,12 @@ void Game::addElement(Element * element)
 
 }
 
+Player* Game::addPlayer(int no)
+{
+	m_players.push_back(new Player(this,no));
+	return m_players.back();
+}
+
 bool Game::sendRequest(Request * req)
 {
 	char buffReq[1024],reply[1024];
@@ -139,6 +144,19 @@ bool Game::processRequest(Request* req)
 	if(req->type/NB_MAX_ELEMENT==0)//request of element creation
 	{
 		Player * p = (req->p==-1)?m_players[0]:m_players[req->p];
+		if(req->p==-1)
+		{
+			p = m_players[0];
+		}
+		else 
+		{
+			int i =0;
+			while( i < m_players.size() && req->p != m_players[i]->no()){i++;}
+			if(i < m_players.size() && req->p == m_players[i]->no())
+				p = m_players[i];
+			else
+				p=addPlayer(req->p);
+		}
 		Element * e= Element::factory(req->type, (req->e==0)?m_elementsIndex:(req->e), req->val1, req->val2, p);
 		if(e==NULL)	return false;
 		if(req->val3 != -1)
@@ -155,6 +173,19 @@ bool Game::processRequest(Request* req)
 			{
 				if(((Unit *)(req->e))->move(req->val1,req->val2)==1)
 					sendUpdateAreaAround(((Unit *)(req->e)));
+			}break;
+			case R_TARGET:
+			{
+				m_elmtsMtx.lock();
+				list<Element*>::iterator it = m_elements.begin();
+				while(it !=  m_elements.end() && (*it)->no() != (unsigned int)req->e) 
+				{
+					m_elmtsMtx.unlock();
+					m_elmtsMtx.lock();
+					it++;
+				}
+				(*it)->setTarget(req->val1,req->val2);
+				m_elmtsMtx.unlock();
 			}break;
 
 			case R_ACTION:
@@ -231,6 +262,12 @@ bool Game::sendUpdateAreaAround(Element * e)
 
 void Game::update()
 {
+	if(m_isServer && m_players.size() < m_clientIndex)
+	{
+		cout << "added player " << m_players.size() << endl;
+		m_players.push_back(new Player(this,m_players.size()));
+	}
+	
 	if(!m_online)
 	{
 		for(int i =0; i<m_players.size(); i++)

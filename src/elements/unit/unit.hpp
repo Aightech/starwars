@@ -38,6 +38,7 @@ class Unit: public Element
 	void setID(int pw,int ph){};
 
 	const static Texture * s_texture;
+	const static Texture * s_textureTarget;
 	const static int s_type = UNIT_TYPE;
 	const static int s_width = UNIT_WIDTH;
 	const static int s_height = UNIT_HEIGHT;

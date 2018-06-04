@@ -5,10 +5,11 @@ using namespace sf;
 
 const Color Unit::s_color = UNIT_COLOR;
 const Texture* Unit::s_texture = new Texture();
+const Texture* Unit::s_textureTarget = new Texture();
 
 
 
-Unit::Unit(int no, int px, int py,  Player * player): Element(no,px,py,player)
+Unit::Unit(int no, int px, int py,  Player * player):Element(no,px,py,player)
 {
 	m_width = s_width;
 	m_height = s_height;
@@ -19,6 +20,8 @@ Unit::Unit(int no, int px, int py,  Player * player): Element(no,px,py,player)
 	m_speed =1;
 	
 	setTarget(s_mapWidth,0);
+	
+	m_targetAnimation.set(s_textureTarget,m_targetX,m_targetY,44,42,14,0.2);
 
 	m_sprite.setTexture(*s_texture);
 	//m_sprite.setScale(Vector2f(2,2));
@@ -50,10 +53,18 @@ void Unit::setTexture()
 		cout << "Erreur chargement image!"<< endl;
 		// return
 	}
-	std :: cout << "Image chargée" << std :: endl; 
-	im.createMaskFromColor(Color::White);
-	
+	//std :: cout << "Image chargée" << std :: endl; 
+	//im.createMaskFromColor(Color::White);
 	const_cast<Texture*>(s_texture)->loadFromImage(im);
+	
+	
+	
+	if (!im.loadFromFile("media/theme/targetPointer.png"))
+	{
+		cout << "Erreur chargement image!"<< endl;
+		// return
+	}
+	const_cast<Texture*>(s_textureTarget)->loadFromImage(im);
 }
 
 void Unit::select()

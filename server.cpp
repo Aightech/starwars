@@ -28,6 +28,7 @@ int main(int argc,char ** argv)
 
 	while(1)
 	{//update game
+		
 		if(game.getReceiverBuffer(enter)>-1)
 		{
 			cout << "buffer n°"<< n<< ": "<<enter<< endl;
