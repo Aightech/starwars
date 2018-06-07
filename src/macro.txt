@@ -11,7 +11,7 @@
 
 
 //Building
-#define NB_BUILDING 3
+#define NB_BUILDING 4
 
 //Warehouse dimensions
 #define WAREHOUSE_TYPE 1
@@ -34,7 +34,6 @@
 #define FARM_PATH_BUTTON_TEXTURE2 "media/theme/farmButton2.png"
 #define FARM_NBPOP 5
 
-
 //Tower dimensions
 #define TOWER_TYPE 3
 #define TOWER_HP 200
@@ -46,6 +45,17 @@
 #define TOWER_PATH_BUTTON_TEXTURE2 "media/theme/towerButton2.png"
 #define TOWER_REACH 50
 #define TOWER_DAMAGES 50
+
+//Headquarter dimensions
+#define HEADQUARTER_TYPE 4
+#define HEADQUARTER_HP 1500
+#define HEADQUARTER_WIDTH 62
+#define HEADQUARTER_HEIGHT 55
+#define HEADQUARTER_DEFENSE 5
+#define HEADQUARTER_COLOR Color(0,0,220)
+#define HEADQUARTER_PATH_BUTTON_TEXTURE "media/theme/headquarterButton.png"
+#define HEADQUARTER_PATH_BUTTON_TEXTURE2 "media/theme/headquarterButton2.png"
+
 
 
 //Unit dimensions

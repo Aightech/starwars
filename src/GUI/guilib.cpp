@@ -289,9 +289,9 @@ void GUI::createContext()
 		case MAIN_MENU:
 		{
 			
-			m_arrayAnimation.push_back(new Animation("media/theme/game_logo.png",30,30));
+			m_arrayAnimation.push_back(new Animation("media/theme/game_logo.png",110,60));
 			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,216,3));
-			m_arrayAnimation.push_back(new Animation("media/theme/targetPointer.png",400,600,44,42,14,0.2));
+			//m_arrayAnimation.push_back(new Animation("media/theme/targetPointer.png",400,600,44,42,14,0.2));
 			
 			string buttonsLabel[]={"play","lan","options","quit"};
 			int buttonIndex[]={PLAY_BUTT,LAN_BUTT,OPTION_BUTT,QUIT_BUTT};
@@ -310,12 +310,7 @@ void GUI::createContext()
 					waitSec(1.5/nbInc);
 				}
 				m_hasBeenAnimated=true;
-			}
-			/////
-			//LOGO GAME
-			//PORG ANIMATION
-			/////
-			
+			}			
 
 		}
 		break;
