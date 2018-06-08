@@ -53,8 +53,6 @@ class Headquarter: public Buildable
 	const static int s_height = HEADQUARTER_HEIGHT;
 	const static int s_HP = HEADQUARTER_HP;
 	const static int s_defense = HEADQUARTER_DEFENSE;
-	const static char s_pathButtonTexture[];
-	const static char s_pathButtonTexture2[];
 	const static Color s_color;
 
 
