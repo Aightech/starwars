@@ -290,9 +290,8 @@ void GUI::createContext()
 		{
 			
 			m_arrayAnimation.push_back(new Animation("media/theme/game_logo.png",110,60));
-			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,216,3));
-			//m_arrayAnimation.push_back(new Animation("media/theme/targetPointer.png",400,600,44,42,14,0.2));
-			
+			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,216,4));
+
 			string buttonsLabel[]={"play","lan","options","quit"};
 			int buttonIndex[]={PLAY_BUTT,LAN_BUTT,OPTION_BUTT,QUIT_BUTT};
 			for(int i=0;i<4;i++)
@@ -317,7 +316,7 @@ void GUI::createContext()
 		case LAN_MENU:
 		{
 			//std::cout << "Menu " << std::endl<< std::endl<< std::endl;
-			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,216,3));
+			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,216,4));
 			string buttonsLabel[]={"host","join","back"};
 			int buttonIndex[]={HOST_BUTT,JOIN_BUTT,BACK_BUTT};
 			for(int i=0;i<3;i++)
@@ -329,7 +328,7 @@ void GUI::createContext()
 		case OPTION_MENU:
 		{
 			//std::cout << "Menu " << std::endl<< std::endl<< std::endl;
-			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,216,3));
+			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,216,4));
 			string buttonsLabel[]={"save","back","quit"};
 			int buttonIndex[]={SAVE_BUTT,BACK_BUTT,QUIT_BUTT};
 			for(int i=0;i<3;i++)
@@ -346,7 +345,12 @@ void GUI::createContext()
 			cout << "w : " << m_mapPosX << endl << " h : " << m_mapPosY << endl;
 			
 			m_arrayAnimation.push_back(new Animation("media/theme/player1.png",m_mapPosX/2-130/2 ,m_mapPosY,130,130));
+			m_arrayAnimation.push_back(new Animation("media/theme/ressource.png",m_mapPosX/2-130/2 ,m_mapPosY+135,130,60));
+			m_arrayAnimation.push_back(new Animation("media/theme/pop1.png",m_mapPosX/2-130/2 ,m_mapPosY+200,130,60));
+
 			m_arrayAnimation.push_back(new Animation("media/theme/player2.png",m_mapPosX + m_mapWidth+ m_mapPosX/2-130/2,m_mapPosY,130,130));
+			m_arrayAnimation.push_back(new Animation("media/theme/ressource.png",m_mapPosX + m_mapWidth+ m_mapPosX/2-130/2,m_mapPosY+135,130,60));
+			m_arrayAnimation.push_back(new Animation("media/theme/pop2.png",m_mapPosX + m_mapWidth+ m_mapPosX/2-130/2 ,m_mapPosY+200,130,60));
 			
 			//m_arrayAnimation.push_back(new Animation("media/theme/doorSolo.png",window.getSize().x/2,0,window.getSize().x,window.getSize().y));
 			
@@ -393,7 +397,6 @@ void GUI::createContext()
 
 			
 		}
-		//elmts[i]->type()
 		break;
 		
 	}
