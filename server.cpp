@@ -10,6 +10,10 @@
 #include <time.h>
 
 
+/*!
+Run to host a game online
+*/
+
 int main(int argc,char ** argv)
 {
 	srand(time(NULL));

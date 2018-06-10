@@ -5,8 +5,6 @@ using namespace sf;
 
 const Color Headquarter::s_color = HEADQUARTER_COLOR;
 const Texture* Headquarter::s_texture = new Texture();
-const char Headquarter::s_pathButtonTexture[] = HEADQUARTER_PATH_BUTTON_TEXTURE;
-const char Headquarter::s_pathButtonTexture2[] = HEADQUARTER_PATH_BUTTON_TEXTURE2;
 
 void Headquarter::setting()
 {

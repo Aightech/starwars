@@ -1,16 +1,35 @@
+
+
 >```
 >
->     _______.___________.    ___      .______         ____    __    ____  ___      .______          _______.
->    /       |           |   /   \     |   _  \        \   \  /  \  /   / /   \     |   _  \        /       |
->   |   (----- --|  |----   /  ^  \    |  |_)  |        \   \/    \/   / /  ^  \    |  |_)  |      |   (----°
->    \   \       |  |      /  /_\  \   |      /          \            / /  /_\  \   |      /        \   \    
-> ----)   |      |  |     /  _____  \  |  |\  \----.      \    /\    / /  _____  \  |  |\  \----.----)   |   
->|______/       |__|    /__/     \__\ | _| °._____|       \__/  \__/ /__ /    \__\ | _| °._____|_______/    
+.______        ______   .______      ____    __    ____  ___      .______          _______.
+|   _  \      /  __  \  |   _  \     \   \  /  \  /   / /   \     |   _  \        /       |
+|  |_)  |    |  |  |  | |  |_)  |     \   \/    \/   / /  ^  \    |  |_)  |      |   (----`
+|      /     |  |  |  | |   _  <       \            / /  /_\  \   |      /        \   \    
+|  |\  \----.|  `--'  | |  |_)  |       \    /\    / /  _____  \  |  |\  \----.----)   |   
+| _| `._____| \______/  |______/         \__/  \__/ /__/     \__\ | _| `._____|_______/    
+>                                                                                           
 >                                                                                                          
-> ```                                           - WAR OF DROIDS -
+> ```                              - REVENGE OF THE DROIDS -
 
 # starwars
 
+Created by Alexis DEVILLARD and Maëva ARLANDIS
+ROB 4 @ Polytech Sorbonne
+06/2018
+
+// DESCRIPTION
+
+Rebel Alliance or Galactic Empire ? Choose your side and try to stop your opponent from building 
+its new battleship with your droids !
+
+ROB WARS is a 2-player game which can be played online or offline.
+Every turn, you can develop your basement and enhance your army of droids by buildings warehouses, farms
+and towers but be carreful, your amount of thorilide is limited !
+
+You win if you manage to destroy the headquarter of your opponent and lose if yours is destroyed.
+
+// 
 
 Game created:
 ___NetworkInterface created: 
