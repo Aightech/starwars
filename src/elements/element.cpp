@@ -122,5 +122,6 @@ int Element::setTarget(int px,int py)
 	m_diry = m_dy>0?m_speed:-m_speed;
 	m_dx = abs(m_dx);
 	m_dy = abs(m_dy);
+	m_over = (m_dx<m_dy)?m_dy/2:m_dx/2;
 	m_targetAnimation.setPosition(Vector2f(m_targetX+s_mapOffsetX-15,m_targetY+s_mapOffsetY-15));
 }

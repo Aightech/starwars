@@ -17,7 +17,7 @@ int main(int argc,char ** argv)
 
 	Game game;
 
-	game.verbose();
+	//game.verbose();
 	
 
 	//game.setOnline(atoi(argv[1])); //comment if offline

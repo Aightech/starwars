@@ -75,52 +75,7 @@ int GUI::start(void *pgame)
 				
 				createContext();
 			}
-			/////------- MOUSE EVENT ------- /////
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-			{
-				if(	m_state == GAME_CONTEXT && msPos.x > m_mapPosX && msPos.y > m_mapPosY &&
-					msPos.x< m_mapPosX+m_mapWidth && msPos.y < m_mapPosY+m_mapHeight	)
-				{
-					
-					m_mouseClicked++;
-				}
-					
-				if(m_elementSelectedType!=0 && m_elementOk)
-				{
-					cout << "CLICKED" << endl;
-					Request r={m_elementSelectedType,msPos.x-m_mapPosX-m_elementSelected->width()/2,msPos.y-m_mapPosY-m_elementSelected->height()/2};
-					r.val3 = -1;
-					r.p=m_playerTurn;
-					m_game->request(&r);
-					delete m_elementSelected;
-					m_elementSelected = NULL;
-
-					m_elementOk=false;
-					m_elementSelectedType=0;
-					
-					for(int i=0;i<m_arrayButton.size();i++)
-						m_arrayButton[i]->clicked()=false;
-				
-				}
-
-
-
-			}
-			else
-			{
-				if(m_mouseClicked > 0 && m_mouseClicked < 5)
-				{
-					for(int i=0 ; i<m_arraySelectedElements.size();i++)
-					{
-						Request r={R_TARGET,msPos.x-m_mapPosX,msPos.y-m_mapPosY};
-						r.val3 = -1;
-						r.e= (unsigned long int)m_arraySelectedElements[i]->no();
-						m_game->request(&r);
-					}
-					//m_arraySelectedElements[i]->setTarget(msPos.x-m_mapPosX,msPos.y-m_mapPosY);
-				}
-				m_mouseClicked=0;
-			}
+			
 			/////------- KEYBOARD EVENT ------- /////
 			if (event.type == sf::Event::TextEntered)
 			{
@@ -134,6 +89,60 @@ int GUI::start(void *pgame)
 				}
 			}
 
+		}
+		/////------- MOUSE EVENT ------- /////
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			if(	m_state == GAME_CONTEXT && msPos.x > m_mapPosX && msPos.y > m_mapPosY &&
+				msPos.x< m_mapPosX+m_mapWidth && msPos.y < m_mapPosY+m_mapHeight	)
+			{
+				
+				m_mouseClicked++;
+			}
+				
+			if(m_elementSelectedType!=0 && m_elementOk)
+			{
+				cout << "CLICKED" << endl;
+				Request r={m_elementSelectedType,msPos.x-m_mapPosX-m_elementSelected->width()/2,msPos.y-m_mapPosY-m_elementSelected->height()/2};
+				r.val3 = -1;
+				r.p=m_playerTurn;
+				m_game->request(&r);
+				delete m_elementSelected;
+				m_elementSelected = NULL;
+
+				m_elementOk=false;
+				m_elementSelectedType=0;
+				
+				for(int i=0;i<m_arrayButton.size();i++)
+					m_arrayButton[i]->clicked()=false;
+			
+			}
+
+
+
+		}
+		else
+		{
+			if(m_mouseClicked > 0 && m_mouseClicked < 50)
+			{
+				Request r={R_TARGET,msPos.x-m_mapPosX,msPos.y-m_mapPosY};
+				r.val3 = -1;
+				cout << "set:"<< m_arraySelectedElements.size() << std::endl;
+				
+				for(int i=0 ; i<m_arraySelectedElements.size();i++)
+				{
+					if(m_arraySelectedElements[i] != NULL)
+					{
+						cout << "set:"<<m_arraySelectedElements[i] << std::endl;
+						r.e= (unsigned long int)m_arraySelectedElements[i]->no();
+						m_game->request(&r);
+					}
+					//m_arraySelectedElements[i]->setTarget(msPos.x-m_mapPosX,msPos.y-m_mapPosY);
+				}
+				//m_arraySelectedElements[i]->setTarget(msPos.x-m_mapPosX,msPos.y-m_mapPosY);
+			}
+			m_mouseClicked=0;
+			
 		}
 
 		/////-------  GUI UPDATE ------- /////
@@ -291,7 +300,6 @@ void GUI::createContext()
 			
 			m_arrayAnimation.push_back(new Animation("media/theme/game_logo.png",30,30));
 			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,216,3));
-			m_arrayAnimation.push_back(new Animation("media/theme/targetPointer.png",400,600,44,42,14,0.2));
 			
 			string buttonsLabel[]={"play","lan","options","quit"};
 			int buttonIndex[]={PLAY_BUTT,LAN_BUTT,OPTION_BUTT,QUIT_BUTT};
@@ -440,10 +448,9 @@ void GUI::drawMap()
 	m_mapdrawVal = (m_mapdrawVal+1)%2; //marker to know what has been drawn
 
 	//TODO: create static access from ELEMENT
-	if(m_mouseClicked > 5)
-		for(int i=0 ; i<m_arraySelectedElements.size();i++)
+	if(m_mouseClicked > 50)
+		for(int i=m_arraySelectedElements.size()-1 ; i>=0;i--)
 			m_arraySelectedElements.pop_back();
-	
 
 	for(int i = 0; i < m_mapHeight ; i++ )
 	{
@@ -459,12 +466,13 @@ void GUI::drawMap()
 					//draw element
 					m_game->elmtMtx().lock();
 					Sprite s = e->sprite();
-					if(m_mouseClicked>5 && e->player()->no()==m_playerTurn)
+					if(m_mouseClicked>50 && e->player()->no()==m_playerTurn)
 					{
 						if(m_selectionRect.getGlobalBounds().intersects(s.getGlobalBounds()))
 						{
 							e->select();//cout<<"hey"<<endl;
 							m_arraySelectedElements.push_back(e);
+							//m_arraySelectedElements[0]->no();
 						}
 						else
 							e->unselect();
@@ -498,6 +506,11 @@ void GUI::drawMap()
 	}
 	if(m_arraySelectedElements.size()>0)
 		m_arraySelectedElements[0]->targetAnimation().update(window);
+	
+//	cout  << m_mouseClicked<< "-----------------"<<endl;
+//	for(int i=0 ; i<m_arraySelectedElements.size();i++)
+//		cout  << m_mouseClicked<< "get:"<<m_arraySelectedElements[i] << std::endl;
+//	cout << m_mouseClicked << "-----------------"<<endl;
 }
 
 
@@ -512,13 +525,14 @@ void GUI::drawSelection()
 			m_selectionRect.setPosition(Vector2f(msPos.x,msPos.y));
 			m_selectionRect.setColor(Color(255,0,0,100));
 			window.draw(m_selectionRect);
-			for(int i=m_arraySelectedElements.size()-1 ; i>-1;i--)
-			{
-				m_arraySelectedElements[i]->unselect();
-				m_arraySelectedElements.pop_back();
-			}
 	}
-	if(m_mouseClicked>5)
+	else if(m_mouseClicked==50)
+		for(int i=m_arraySelectedElements.size()-1 ; i>-1;i--)
+		{
+			m_arraySelectedElements[i]->unselect();
+			m_arraySelectedElements.pop_back();
+		}
+	if(m_mouseClicked>50)
 	{
 		if(msPos.x> m_mapPosX && msPos.y > m_mapPosY && msPos.x < m_mapPosX+m_mapWidth && msPos.y < m_mapPosY+m_mapHeight)
 		{

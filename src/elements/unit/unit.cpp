@@ -129,6 +129,7 @@ Request Unit::reqMoveToTarget()
 		}
 		req.val1 = m_dirx;
 	}
+	//cout << "no: "<< m_no << " x: "<< req.val1 << " y: "<< req.val2 << endl;
 	return req;
 }
 
