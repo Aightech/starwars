@@ -28,15 +28,17 @@ Farm::Farm(int no, int px, int py, Player * player): Buildable(no,px,py,player)
 	m_pathButtonTexture = s_pathButtonTexture;
 	m_pathButtonTexture2 = s_pathButtonTexture2;
 
+	cout << "ok farm" << endl;
 	m_sprite.setTexture(*s_texture);
 	//m_sprite.setScale(Vector2f(0.25,0.25));
 	m_sprite.setPosition(Vector2f(s_mapOffsetX+m_x,s_mapOffsetY + m_y));
 	m_sprite.setTextureRect(sf::IntRect(0, ((no==-1)?(unsigned long int)player:player->no())*(m_height), m_width, m_height));
-	
+	cout << "ok" << endl;
 	if(player!=NULL)
 		player->populationMax()+=s_nbpop;
 
 	updatePos();
+	cout << "ok2" << endl;
 };
 
 void Farm::setTexture()
