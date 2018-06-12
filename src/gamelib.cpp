@@ -33,34 +33,24 @@ Game::Game()
 	//allocate the int array represending the map 
 	m_map = new unsigned long int[m_mapHeight*m_mapWidth] ();
 
+	//default setting
 	m_online = false;
 	m_isServer = false;
-
 	m_elementsIndex =0;
-	
-	
-	
-	//m_players[0]->turn()=1;
-
 
 	//////------- ELEMENT SETTING ------- /////
 	Element::map()=m_map;
 	Element::mapHeight()=m_mapHeight;
 	Element::mapWidth()=m_mapWidth;
+
+	//Need to set all the element used in the game
+	Headquarter::setting();
 	Warehouse::setting();
 	Tower::setting();
 	Farm::setting();
 	Unit::setting();
-	
-	Headquarter::setting();
 }
 
-//No current use
-void Game::test()
-{
-	list<Element*>::iterator it = m_elements.begin();
-	(*it)->getDamage(1);
-}
 
 void Game::startGUI()
 {
@@ -82,6 +72,7 @@ void Game::startGUI()
 void Game::setOnline(int port)
 {
 	setConnectionPhrase((char*)CONNECTION_PHRASE);
+	//start the network UDP listener inerited from netapi
 	startReceiver(port,(char*)"UDP");
 	m_online = true;
 }
@@ -89,6 +80,7 @@ void Game::setOnline(int port)
 void Game::setServer(int port)
 {
 	setConnectionPhrase((char*)CONNECTION_PHRASE);
+	//start the network TCP listener inerited from netapi
 	startReceiver(port,(char*)"TCP");
 	m_online = true;
 	m_isServer = true;
@@ -102,17 +94,19 @@ void Game::addElement(Element * element)
 		cout << element->no() <<  endl;
 		cout << "++++++++++++" << endl;
 	}
-	 m_elementsIndex++;
+	//add the element to the element array of the game
+	m_elementsIndex++;
 	m_elmtsMtx.lock();
 	m_elements.push_back(element);
 	m_elmtsMtx.unlock();
-
-
 }
 
 Player* Game::addPlayer(int no)
 {
+	//add a player to the array player of the game
 	m_players.push_back(new Player(this,no));
+	
+	//if main game, add a headquater to the player
 	if(!m_online || m_isServer)
 	{
 		Request req={HEADQUARTER_TYPE,20 +(m_mapWidth-180)*no,20 +(m_mapHeight-125)*no,-1,0,(unsigned long int)no};
@@ -125,20 +119,26 @@ Player* Game::addPlayer(int no)
 bool Game::sendRequest(Request * req)
 {
 	char buffReq[1024],reply[1024];
+	//format of a request
+	//|   M   |   R   |    int    |   E   | int  |  U  | int |  V  | int |  P   | int
+	//|message|request|type of req|Element|numero|pos X|value|pos Y|value|player|numero
 	sprintf(buffReq,"MR%dE%dU%dV%dP%d",req->type,(req->e!=0)?((Element *)req->e)->no():-1,req->val1,req->val2,(int)req->p);
+	//send the request to the server
 	this->sendToServer(buffReq,(char*)"tcp",reply);
+	//return true if the server received the req
 	return (strcmp(reply,"rcvd") == 0)?true:false;
 }
 
 bool Game::request(Request* req)
 {
+	//if the game is online and not the server it cannot process the req itself and thus have to send it to the server
 	if(m_online && !m_isServer)
-	{
+	{//only send not empty request
 		if(req->type!=NO_REQUEST)
 			sendRequest(req);
 	}
 	else
-	{
+	{//if if the game is server or offline it can process the request itself
 		processRequest(req);
 	}
 	return true;
@@ -148,13 +148,15 @@ bool Game::processRequest(Request* req)
 {
 	if(req->type == NO_REQUEST)
 		return false;
-	if(req->type/NB_MAX_ELEMENT==0)//request of element creation
+	//request of element creation
+	if(req->type/NB_MAX_ELEMENT==0)
 	{
+		//get the player of the new element by its numero
 		Player * p = (req->p==-1)?m_players[0]:m_players[req->p];
+		
+		/*Process to find player in a game with more than two player
 		if(req->p==-1)
-		{
 			p = m_players[0];
-		}
 		else 
 		{
 			int i =0;
@@ -163,7 +165,7 @@ bool Game::processRequest(Request* req)
 				p = m_players[i];
 			else
 				p=addPlayer(req->p);
-		}
+		}*/
 		Element * e= Element::factory(req->type, (req->e==0)?m_elementsIndex:(req->e), req->val1, req->val2, p);
 		if(e==NULL)	return false;
 		if(req->val3 != -1)

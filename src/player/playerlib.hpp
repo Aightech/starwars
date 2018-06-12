@@ -59,7 +59,7 @@ class Player
 	Game *m_game;
 	int m_no;
 	int m_pop=0;
-	int m_popMax=5;
+	int m_popMax=4;
 	int m_crystal;
 	int m_turn;
 

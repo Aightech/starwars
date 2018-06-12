@@ -19,7 +19,7 @@ Unit::Unit(int no, int px, int py,  Player * player):Element(no,px,py,player)
 	m_color = s_color;
 	m_speed =1;
 	
-	setTarget(s_mapWidth,0);
+	setTarget( px, py);
 	
 	m_targetAnimation.set(s_textureTarget,m_targetX,m_targetY,44,42,14,0.2);
 

@@ -34,9 +34,6 @@ class Game: public  NetAPI
 	/*! \brief Destructor */
 	~Game(){};
 
-	/*! \brief testing method */
-	void test();
-
 	/*! \brief Process the 'menu' state of the game. It's mainly a event loop */
 	//void menu();
 

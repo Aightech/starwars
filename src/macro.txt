@@ -32,7 +32,7 @@
 #define FARM_COLOR Color(0,0,240)
 #define FARM_PATH_BUTTON_TEXTURE "media/theme/farmButton.png"
 #define FARM_PATH_BUTTON_TEXTURE2 "media/theme/farmButton2.png"
-#define FARM_NBPOP 5
+#define FARM_NBPOP 4
 
 //Tower dimensions
 #define TOWER_TYPE 3

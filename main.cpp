@@ -18,24 +18,15 @@ int main(int argc,char ** argv)
 {
 	srand(time(NULL));
 
+	//The objetct game is able to run game offline/online graphic/nographic 
 	Game game; 
 
-	//game.verbose();
-	
+	//initialize and start a graphic interface thread
+	game.startGUI();
 
-	//game.setOnline(atoi(argv[1])); //comment if offline
-	
-
-	//game.connectToServer(2000,(char *)"127.0.0.1"); //comment if offline
-
-	game.startGUI(); //start the graphic interface
-
+	//main loop updating the game state while it's active
 	while(game.GUIactive())
-	{
 		game.update(); //update the game
-	}
 
-	cout << "Game ended" <<endl;
-	
 	return 0;
 }
