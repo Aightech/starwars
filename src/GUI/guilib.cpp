@@ -298,8 +298,8 @@ void GUI::createContext()
 		case MAIN_MENU:
 		{
 			
-			m_arrayAnimation.push_back(new Animation("media/theme/game_logo.png",30,30));
-			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,216,3));
+			m_arrayAnimation.push_back(new Animation("media/theme/game_logo.png",110,30));
+			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,233,4));
 			
 			string buttonsLabel[]={"play","lan","options","quit"};
 			int buttonIndex[]={PLAY_BUTT,LAN_BUTT,OPTION_BUTT,QUIT_BUTT};
@@ -325,7 +325,7 @@ void GUI::createContext()
 		case LAN_MENU:
 		{
 			//std::cout << "Menu " << std::endl<< std::endl<< std::endl;
-			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,216,4));
+			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,233,4));
 			string buttonsLabel[]={"host","join","back"};
 			int buttonIndex[]={HOST_BUTT,JOIN_BUTT,BACK_BUTT};
 			for(int i=0;i<3;i++)
@@ -355,6 +355,11 @@ void GUI::createContext()
 			
 			m_arrayAnimation.push_back(new Animation("media/theme/player1.png",m_mapPosX/2-130/2 ,m_mapPosY,130,130));
 			m_arrayAnimation.push_back(new Animation("media/theme/ressource.png",m_mapPosX/2-130/2 ,m_mapPosY+135,130,60));
+			Text* t=new Text();
+			t->setString("12");
+			t->setColor(Color(255,255,255));
+			t->setPosition(Vector2f(m_mapPosX/2,m_mapPosY+135));
+			m_arrayText.push_back(t);
 			m_arrayAnimation.push_back(new Animation("media/theme/pop1.png",m_mapPosX/2-130/2 ,m_mapPosY+200,130,60));
 
 			m_arrayAnimation.push_back(new Animation("media/theme/player2.png",m_mapPosX + m_mapWidth+ m_mapPosX/2-130/2,m_mapPosY,130,130));
