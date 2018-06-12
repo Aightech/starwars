@@ -163,6 +163,8 @@ class Buildable: public Element
 #include "building/tower.hpp"
 #include "building/farm.hpp"
 
+#include "building/headquarter.hpp"
+
 #include "unit/unit.hpp"
 
 #endif

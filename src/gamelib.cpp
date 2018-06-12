@@ -52,6 +52,7 @@ Game::Game()
 	Farm::setting();
 	Unit::setting();
 	
+	Headquarter::setting();
 }
 
 //No current use
@@ -112,6 +113,12 @@ void Game::addElement(Element * element)
 Player* Game::addPlayer(int no)
 {
 	m_players.push_back(new Player(this,no));
+	if(!m_online || m_isServer)
+	{
+		Request req={HEADQUARTER_TYPE,20 +(m_mapWidth-180)*no,20 +(m_mapHeight-125)*no,-1,0,(unsigned long int)no};
+		std::cout << "HEADQUARTER" << std::endl;
+		processRequest(&req);
+	}
 	return m_players.back();
 }
 

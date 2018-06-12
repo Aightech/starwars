@@ -7,7 +7,6 @@
 #include <cmath>
 #include <cstdlib>
 
-
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
@@ -88,6 +87,26 @@ int GUI::start(void *pgame)
 					m_game->test();
 				}
 			}
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+				if(m_elementSelectedType!=0 && m_elementOk)
+				{
+					cout << "CLICKED" << endl;
+					Request r={m_elementSelectedType,msPos.x-m_mapPosX-m_elementSelected->width()/2,msPos.y-m_mapPosY-m_elementSelected->height()/2};
+					r.val3 = -1;
+					r.p=m_playerTurn;
+					m_game->request(&r);
+					delete m_elementSelected;
+					m_elementSelected = NULL;
+
+					m_elementOk=false;
+					m_elementSelectedType=0;
+					
+					for(int i=0;i<m_arrayButton.size();i++)
+						m_arrayButton[i]->clicked()=false;
+				
+				}
+			}
 
 		}
 		/////------- MOUSE EVENT ------- /////
@@ -99,26 +118,6 @@ int GUI::start(void *pgame)
 				
 				m_mouseClicked++;
 			}
-				
-			if(m_elementSelectedType!=0 && m_elementOk)
-			{
-				cout << "CLICKED" << endl;
-				Request r={m_elementSelectedType,msPos.x-m_mapPosX-m_elementSelected->width()/2,msPos.y-m_mapPosY-m_elementSelected->height()/2};
-				r.val3 = -1;
-				r.p=m_playerTurn;
-				m_game->request(&r);
-				delete m_elementSelected;
-				m_elementSelected = NULL;
-
-				m_elementOk=false;
-				m_elementSelectedType=0;
-				
-				for(int i=0;i<m_arrayButton.size();i++)
-					m_arrayButton[i]->clicked()=false;
-			
-			}
-
-
 
 		}
 		else

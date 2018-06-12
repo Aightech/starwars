@@ -10,7 +10,7 @@
 using namespace std;
 
 
-class Headquarter: public Buildable
+class Headquarter: public Element
 {
 
 	public:

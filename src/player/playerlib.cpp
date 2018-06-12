@@ -22,6 +22,9 @@ Player::Player(Game *game,int no)
 	m_elmtsMtx = game->getElmtMtx();
 	m_no =no;
 	m_turn =0;
+//	Request req={HEADQUARTER_TYPE,0,0,0,0,(unsigned long int)no};
+//	std::cout << "HEADQUARTER" << std::endl;
+//	m_game->request(&req);
 };
 
 

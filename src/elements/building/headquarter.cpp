@@ -12,17 +12,14 @@ void Headquarter::setting()
 	Element::elements()[HEADQUARTER_TYPE] = new Headquarter();
 };
 
-Headquarter::Headquarter(int no, int px, int py,  Player * player): Buildable(no,px,py,player)
+Headquarter::Headquarter(int no, int px, int py,  Player * player): Element(no,px,py,player)
 {
-	m_isBuidable = true;
 	m_width = s_width;
 	m_height = s_height;
 	m_HP = s_HP;
 	m_defense = s_defense;
 	m_type = s_type;
 	m_color = s_color;
-	m_pathButtonTexture = s_pathButtonTexture;
-	m_pathButtonTexture2 = s_pathButtonTexture2;
 
 	m_sprite.setTexture(*s_texture);
 	m_sprite.setTextureRect(sf::IntRect(0, ((no==-1)?(unsigned long int)player:player->no())*(m_height), m_width, m_height));
@@ -39,5 +36,6 @@ Headquarter::Headquarter(int no, int px, int py,  Player * player): Buildable(no
 
 Request Headquarter::update()
 {
+	Request req;
 	return req;
 }
