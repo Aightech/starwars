@@ -1,252 +1,269 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<diagram program="umlet" version="14.2">
-  <zoom_level>8</zoom_level>
+<?xml version="1.0" encoding="UTF-8"?><diagram program="umlet" version="13.3">
+  <zoom_level>2</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>376</x>
-      <y>72</y>
-      <w>240</w>
-      <h>208</h>
+      <x>896</x>
+      <y>154</y>
+      <w>86</w>
+      <h>124</h>
     </coordinates>
     <panel_attributes>Game
 --
 - m_gui: GUI*
-- m_gui_threadd: thread*
-- m_map: unsigned int*
+- m_gui_thread: thread*
+- m_map: unsigned long*
 - m_mapHeight: int
 - m_mapWidth: int
-- m_lements[10000]: Element*
+- m_players: vector&lt;Player *&gt; 
+- m_elements: list&lt;Element *&gt; 
 - m_elementsIndex: int
+- m_currentPlayer: int
+- m_guiTerminate: atomic&lt;bool&gt; 
+- m_elmtsMtx: mutex 
+- m_online=false: bool 
+- m_isServer=false: bool 
 --
 + Game()
-+ init((): void
-+ menu():  void
-+ start(): void
-+ end(): void
-+ addElement(element: Element*: void
-+ elmtListIndex(): int</panel_attributes>
++ ~Game()
++ startGUI(): void
++ GUIactive(): bool
++ endGUI(): bool
++ processRequest(Request* req): bool
++ request(Request* req): bool 
++ sendUpdateAreaAround(Element * e): bool 
++ sendUpdate(Element * e): bool 
++ addElement(Element * element): void
++ elmtMtx(): mutex&amp;
++ addPlayer(int no): Player*
++ elmtListIndex(): int
++ update(): void
++ processReceiverMessage(char * buffer, char* reply): int
+bool isOnline(): bool
++ setOnline(int port): void
++ setServer(int port): void
++ sendRequest(Request * req): bool
++ processPlayerRequest(char * buffer): int
++ processServerUpdate(char * buffer): int
++ getElmtMtx(): mutex*
++ setTurn(int playerNo): void
+bg=red</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>64</x>
-      <y>88</y>
-      <w>168</w>
-      <h>120</h>
+      <x>710</x>
+      <y>148</y>
+      <w>140</w>
+      <h>160</h>
     </coordinates>
     <panel_attributes>NetAPI
 --
-- ListeningPort
-- nbClient
-- listClient
-- buffer
-
+#m_verbose: bool
+#m_TxThread: vector&lt;thread*&gt;
+#m_TxUDPfd: int
+#m_TxTCPfd: int
+#m_Txaddr: struct sockaddr_in
+#m_Txdest: struct hostent *
+#m_Txlen: socklen_t 
+#m_Serveraddr: struct sockaddr
+#m_Rxfd: int
+#m_Rxaddr: struct sockaddr_in
+#m_Rxlen: socklen_t 
+#m_ReceiverThread: thread* 
+#m_Rxport: int 
+#m_ReceiverActive: atomic&lt;bool&gt; 
+#m_connectable=false: int 
+#m_RxBufferIndex: int 
+#m_RxBuffer: char [NB_BUFFERS][BUFSIZE]
+#m_RxBufferFilled[NB_BUFFERS]: bool 
+#m_clientaddr: struct sockaddr_in 
+#m_claddr: vector&lt;struct sockaddr_in *&gt; 
+#m_clientIndex: int 
+#m_cllen:socklen_t 
+#m_connectionPhrase=NULL: char *
+#m_bufferMtx: mutex[NB_BUFFERS]
+#m_verboseMtx: mutex 
 --
--static listen();
--send(index client);
-
---</panel_attributes>
++NetAPI()
++~NetAPI()
++scan(int port,int IPmin =0,int IPmax=255 ): int
++send(struct sockaddr_in * addr, char * buf, char *protocol=NULL, char * recvBuff=NULL): int
++sendToServer(char * buf,char *protocol=NULL, char * recvBuff=NULL): int
++sendToClient(int index, char * buf, char *protocol=NULL): void
++clearSendingThread():void
++getAddr(int port, char * hostname): struct sockaddr_in
++connectToServer(int port, char * IP): int
++startReceiver(int port,char* protocol): int
+/+processReceiverMessage(char * buffer, char * reply):int/
++getReceiverBuffer(char *buffer): int
++endreceiver(): void
++setConnectionPhrase(char * conPhr): void
++getClientAddr(): const vector&lt;struct sockaddr_in *&gt;&amp;
++verbose(): void
++setConnectable(): void
++unsetConnectable(): void
+#_send(struct sockaddr_in * addr, char * buf, char *protocol=NULL, char * recvBuff=NULL): int
+#say(char * str): int
+#receiverTCP(): int
+#receiverUDP(): int
+bg=orange</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>96</x>
-      <y>264</y>
-      <w>168</w>
-      <h>144</h>
+      <x>900</x>
+      <y>54</y>
+      <w>58</w>
+      <h>76</h>
     </coordinates>
     <panel_attributes>Player
 --
-- name
-- id
-- equip
-
--nbPop
-
-- ressources
-- listBuildings
-- listUnits
+-m_map: unsigned int *
+-m_mapHeight: int
+-m_mapWidth: int
+-m_game: Game *
+-m_no: int
+-m_pop: int
+-m_popMax: int
+-m_crystal: int
+-m_turn: int
+-m_elements: list&lt;Element *&gt; 
+-m_elementsIndex: int
+-m_elmtsMtx: mutex*
 --
---</panel_attributes>
++Player()
++~Player()
++test()
++population(): int&amp;
++populationMax: int&amp;
++update(int step): void
++addElement(Element *element): void
++removeElement(int no): void
++no(): int
+bg=orange</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>328</x>
-      <y>744</y>
-      <w>80</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>/Building/
---
-
---
-
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>304</x>
-      <y>880</y>
-      <w>128</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>Warefare
---
-- m_target: int[2]
---
-+ createUnit(): void
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>184</x>
-      <y>880</y>
-      <w>104</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>Farm
---
-+ m_nbPop: int
---
-
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>440</x>
-      <y>880</y>
-      <w>120</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>tower
---
-- m_reach: int
-- m_damages: int
---
-- s_reach
-- s_damages
---
-+ findTarget(): Unit
-+ attack(): void
-
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>608</x>
-      <y>744</y>
-      <w>360</w>
-      <h>112</h>
-    </coordinates>
-    <panel_attributes>Unit
---
-- m_speed: int (vitesse de déplacement sur la map en pixels/?)
-- m_reach: int (portée)
-- m_damages: int (dégâts infligés)
---
-+ move()
-+ attack()
-
-
-
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>376</x>
-      <y>328</y>
-      <w>248</w>
-      <h>328</h>
+      <x>854</x>
+      <y>370</y>
+      <w>134</w>
+      <h>228</h>
     </coordinates>
     <panel_attributes>/Element/
 --
-- m_ID: int 
-- m_no: int
-- m_type: int
-- m_color: int
-- s_map: static unsigned int *
-- s_mapHeight: static int
-- s_mapWidth: static int
-- m_x: int
-- m_y: int
-- m_width: int
-- m_height: int
-- m_HP: int
-- m_defense: float
-- m_sprite: Sprite
-- s_team: static int
+# m_ID: unsigned int 
+# m_no: int
+# m_type: int
+# m_color: Color
+# s_map: static unsigned int *
+# s_mapHeight: static int
+# s_mapWidth: static int
+# m_sprite: Sprite
+# m_isBuildable: bool
+# m_x: int
+# m_y: int
+# m_width: int
+# m_height: int
+# m_speed: int
+# m_targetAnimation: Animation
+# m_targetX: int
+# m_targetY: int
+# m_dx: int
+# m_dy: int
+# m_dirx: int
+# m_diry: int
+# m_over: double
+# m_HP: int
+# m_defense: float
+# m_player: Player *
+# m_selected: int
+# m_nbState: int
+# clock_t m_clock: clock_t
+# m_test: int
 --
 + Element()
-+ Element(no: int, px: int, py: int)
-+ map(): static unsigned int*
-+ mapHeight(): static int&amp;
-+ mapWidth(): static int&amp;
-+ getDamage()
-+ update(): Request
++ Element(int no, int px, int py, Player * player =NULL)
++ ~Element()
+/+ update(): Request
+/+ builder(int pno, int px, int py, Player * player=NULL): Element *
++x(): int&amp; 
++ y(){return m_y;};
++no(): int&amp; 
++ HP(): int&amp; 
++ type(): int
++ player(): Player * 
++ isBuidable(): int 
++ sprite(): Sprite&amp; 
++ targetAnimation(): Animation&amp; 
++ color(): Color&amp; 
+/+ select(): void/
+/+ unselect(): void/
++ isSelected(): bool 
+/+ getInfo(): std::string/
++ getDamage(int damage): int 
++ width(): int 
++ height(): int 
++ setTarget(int px,int py): int
++ map(): static unsigned long int*&amp; 
++ mapHeight(): static int&amp; 
++ mapWidth(): static int&amp; 
++ mapOffsetY(): static int&amp; 
++ mapOffsetX(): static int&amp; 
++ isPlaceOccupied(int px,int py,int pw, int ph, Element * elmt =NULL): static unsigned long int 
++ placeAround(Element *fixed, Element *toPlaced,int *x, int *y): static bool
++ updateStatut(int x, int y, int hp): void 
++ elements(): static Element ** 
++ factory(int elementType,int pno, int px, int py, Player * player =NULL): static Element * 
 # updatePos(): void
 # updateID(): int
-</panel_attributes>
+# setPos(int px, int py): void 
+/# setSize(int pw,int ph): void/
+/# setID(int pw,int ph): void/
+
+bg=orange</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>608</x>
-      <y>880</y>
-      <w>216</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>SuperUnit
---
-- m_mana: int
---
-+ capacity(): void (quand full mana)
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>760</x>
-      <y>72</y>
-      <w>320</w>
-      <h>352</h>
+      <x>1000</x>
+      <y>144</y>
+      <w>80</w>
+      <h>130</h>
     </coordinates>
     <panel_attributes>GUI
 --
+- m_hasBeenAnimated: bool
 - window: RenderWindow
-- size
+- m_selectionRect: Sprite 
+- m_startSelection: Vector2f 
+- m_mouseClicked: int 
 - m_arraySprite: vector&lt;Sprite*&gt;
 - m_arrayText: vector&lt;Text*&gt; 
 - m_arrayFont: vector&lt;Font*&gt;
+- m_arrayAnimation: vector&lt;Animation*&gt;
 - m_arrayButton: vector&lt;Button*&gt;
 - m_arrayTextBox: vector&lt;Textbox*&gt;
 - msPos: Vector2i
 - m_state: int
-- m_elementSelected: int
-- m_elementOk: int
-- m_map: unsigned int*
+- m_elementSelectedType: int
+- m_elementSelected: Element *
+- m_elementOk: bool
+- m_map: unsigned long int*
 - m_mapHeight: int;
 - m_mapWidth: int
 - m_mapPosX: int
 - m_mapPosY: int
+- m_nbBuildable: int
+- m_playerTurn: int
 - m_mapDraw: unisgned  char*
 - m_mapdrawVal: int
+- m_game: Game *
 --
 + GUI()
 + GUI(map: unsigned int*, width: int, height: int)       
@@ -254,95 +271,551 @@
 + getState():int&amp; 
 - createContext():void 
 - drawMap():void 
-- drawUnitSelection():void </panel_attributes>
+- drawSelection():void 
+- menu(int type): void
+- buildElement(int type): void
+- nextButton(int playerNo): vod
+- update(): int
+bg=orange</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>544</x>
-      <y>648</y>
-      <w>120</w>
-      <h>112</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;130.0;120.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>360</x>
-      <y>648</y>
-      <w>96</w>
-      <h>112</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>100.0;10.0;10.0;120.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>240</x>
-      <y>824</y>
-      <w>112</w>
-      <h>72</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>120.0;10.0;10.0;70.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>384</x>
-      <y>824</y>
-      <w>112</w>
-      <h>72</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;120.0;70.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>360</x>
-      <y>824</y>
-      <w>24</w>
-      <h>72</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>640</x>
-      <y>848</y>
-      <w>24</w>
-      <h>48</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>488</x>
-      <y>272</y>
-      <w>24</w>
-      <h>72</h>
+      <x>934</x>
+      <y>276</y>
+      <w>6</w>
+      <h>98</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;470.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>608</x>
-      <y>160</y>
-      <w>168</w>
+      <x>980</x>
+      <y>166</y>
+      <w>24</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>100.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>848</x>
+      <y>248</y>
+      <w>52</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;240.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1098</x>
+      <y>146</y>
+      <w>80</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>Animation
+--
+- m_ownTexture=false: bool 
+- m_texture: const Texture* 
+- m_sprite: Sprite 
+- m_x: int
+- m_y: int
+- m_width: int
+- m_height: int
+- m_nbFrame: int
+- m_state: int
+- m_clock: clock_t 
+- m_frameRate: double 
+--
++ Animation()
++ Animation(std::string s, int px, int py, int width=-1, int height=-1, int nbFrame=0, double frameRate = 1)
++ Animation(Texture* texture, int px, int py, int width=-1, int height=-1, int nbFrame=0, double frameRate = 1)
++ ~Animation()
++ set(const Texture* texture, int px, int py, int width=-1, int height=-1, int nbFrame=0, double frameRate = 1): void
++ setPosition(sf::Vector2f position): void
++ setScale(float sx, float sy): void
++ update(RenderWindow &amp;w): int
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1098</x>
+      <y>220</y>
+      <w>80</w>
+      <h>118</h>
+    </coordinates>
+    <panel_attributes>Button
+--
+- s_nb: static int s
+- s_texture: static Texture* 
+- s_infoBox: static Texture* 
+- s_width: static int 
+- s_height: static int 
+- s_font: static Font* 
+- msPos: Vector2i 
+- btPos: Vector2f 
+- btSize: FloatRect 
+- m_nb: int 
+- m_width: int 
+- m_height: int 
+- m_gui: GUI * 
+- m_label: Text 
+- m_texture: Texture* 
+- m_button: Sprite 
+- m_info: Text 
+- m_infoBox: Sprite 
+- m_state: int 
+- m_msInButton: int 
+- m_click: int 
+--
++ Button()
++ Button(GUI* pgui,std::string s, sf::Vector2f position,int nb = 0,void (GUI::*f)(int)=NULL)
++ Button(GUI* pgui, const std::string &amp;filename, int pw, int ph, sf::Vector2f position, void (GUI::*f)(int),int nb=0,std::string info = "")
++ create(std::string s, sf::Vector2f position,int nb = 0): void
++ ~Button()
++ setTexture(const std::string &amp;filename, int pw, int ph): static void
++ setFont(const std::string &amp;filename): static void
++ setTexture(const std::string &amp;filename): void
++ update(RenderWindow &amp;w): int
++ clicked(): int&amp;
++ disable(): int
++ enable(): void
++ setPosition(sf::Vector2f position)
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1098</x>
+      <y>68</y>
+      <w>80</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Textbox
+--
+- s_nb: static int s
+- s_font: static Font* 
+- mxPos: Vector2i 
+- bxPos: Vector2f 
+- bxSize: FloatRect 
+- text: std::string *
+- label: Text
+- box: RectangleShape 
+- m_state: int 
+- msInBox: int 
+- click: int
+--
++ Textbox()
++ Textbox(std::string *s, sf::Vector2f position,int nb = 0)
++ create(std::string *s, sf::Vector2f position,int nb = 0): void
++ ~Textbox()
++ setFont(const std::string &amp;filename): void
++ update(RenderWindow &amp;w): int
++ clicked(): int
++ getNbOfBx(): int
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>990</x>
+      <y>42</y>
+      <w>200</w>
+      <h>306</h>
+    </coordinates>
+    <panel_attributes>GUI
+--
+bg=white</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>704</x>
+      <y>456</y>
+      <w>100</w>
+      <h>82</h>
+    </coordinates>
+    <panel_attributes>Unit
+--
+- s_texture: const static Texture * 
+- s_textureTarget: const static Texture *
+- s_type: const static int
+- s_width: const static int
+- s_height: const static int
+- s_HP: const static int : const static int
+- s_color: const static Color 
+--
++ Unit()
++ Unit(int no, int px, int py,  Player * player = NULL)
++ ~Unit();
++ reqMoveToTarget(): Request 
++ move(int dx,int dy): int
++ attack(): int 
++ select(): void 
++ unselect(): void
++ setting(): static void 
++ update(): Request
++ builder(int pno, int px, int py,Player * player=NULL): Element * 
++ getInfo(){return "Unit";}: std::string
++ setTexture(): static void 
+- setSize(int pw,int ph): void
+- setID(int pw,int ph): void
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1002</x>
+      <y>522</y>
+      <w>100</w>
       <h>24</h>
     </coordinates>
+    <panel_attributes>Buildable
+--
+# m_pathButtonTexture: char*
+# m_pathButtonTexture2: char*
+--
++ Buildable(int no, int px, int py, Player * player=NULL)
++ getButtonTexture(int i=0): const char * 
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1118</x>
+      <y>410</y>
+      <w>100</w>
+      <h>76</h>
+    </coordinates>
+    <panel_attributes>Farm
+--
+- s_texture: const static Texture * 
+- s_type: const static int
+- s_width: const static int
+- s_height: const static int
+- s_HP: const static int 
+- s_defense: const static int
+- s_nbpop: const static int 
+- s_pathButtonTexture[]: const static char 
+- s_pathButtonTexture2[]: const static char 
+- s_color: const static Color 
+--
++ Farm()
++ Farm(int no, int px, int py, Player * player=NULL)
++ ~Farm()
++ Request update()
++ setting(): static void 
++ builder(int pno, int px, int py, Player * player=NULL): Element * 
++ getInfo(): std::string 
++ setTexture(): static void 
++ findTarget(): int  
+- setSize(int pw,int ph): void
+- setID(int pw,int ph): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1118</x>
+      <y>590</y>
+      <w>100</w>
+      <h>76</h>
+    </coordinates>
+    <panel_attributes>Warehouse
+--
+- s_texture: const static Texture * 
+- s_type: const static int
+- s_width: const static int
+- s_height: const static int
+- s_HP: const static int : const static int
+- s_defense: const static int
+- s_pathButtonTexture[]: const static char 
+- s_pathButtonTexture2[]: const static char 
+- s_color: const static Color 
+--
++ Warehouse()
++ Warehouse(int no, int px, int py, Player * player=NULL)
++ ~Warehouse()
++ update(): Request 
++ setting(): static void 
++ builder(int pno, int px, int py, Player * player=NULL): Element * 
++ getInfo(): std::string 
++ setTexture(): static void 
++ width(): const static int
++ height(): const static int
+- setSize(int pw,int ph): void
+- setID(int pw,int ph): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1118</x>
+      <y>494</y>
+      <w>100</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>Tower
+--
+- s_texture: const static Texture * 
+- s_textureTarget: const static Texture *
+- s_type: const static int
+- s_width: const static int
+- s_height: const static int
+- s_HP: const static int : const static int
+- s_defense: const static int
+- s_pathButtonTexture[]: const static char 
+- s_pathButtonTexture2[]: const static char 
+- s_color: const static Color 
+- s_reach: const static int
+- s_damages: const static int
+- m_reach: int
+- m_damages: int
+--
++ Tower()
++ Tower(int no, int px, int py, Player * player=NULL)
++ ~Tower()
++ update(): Request 
++ setting(): static void 
++ builder(int pno, int px, int py, Player * player=NULL): Element * 
++ getInfo(): std::string 
++ setTexture(): static void 
++ findTarget(): int  
+- setSize(int pw,int ph): void
+- setID(int pw,int ph): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1002</x>
+      <y>560</y>
+      <w>100</w>
+      <h>76</h>
+    </coordinates>
+    <panel_attributes>Headquarter
+--
+- s_texture: const static Texture * 
+- s_type: const static int
+- s_width: const static int
+- s_height: const static int
+- s_HP: const static int : const static int
+- s_defense: const static int
+- s_pathButtonTexture[]: const static char 
+- s_pathButtonTexture2[]: const static char 
+- s_color: const static Color 
+--
++ Headquarter()
++ Headquarter(int no, int px, int py, Player * player=NULL)
++ ~Headquarter()
++ update(): Request 
++ setting(): static void 
++ builder(int pno, int px, int py, Player * player=NULL): Element * 
++ getInfo(): std::string 
++ setTexture(): static void 
++ width(): const static int
++ height(): const static int
+- setSize(int pw,int ph): void
+- setID(int pw,int ph): void
+
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>926</x>
+      <y>128</y>
+      <w>6</w>
+      <h>30</h>
+    </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>190.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>986</x>
+      <y>532</y>
+      <w>20</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;80.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>986</x>
+      <y>576</y>
+      <w>20</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;80.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1100</x>
+      <y>534</y>
+      <w>22</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;90.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1100</x>
+      <y>538</y>
+      <w>22</w>
+      <h>78</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;40.0;10.0;40.0;370.0;90.0;370.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>894</x>
+      <y>42</y>
+      <w>74</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>player
+--
+bg=white</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>704</x>
+      <y>132</y>
+      <w>156</w>
+      <h>184</h>
+    </coordinates>
+    <panel_attributes>network
+--
+bg=white</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>656</x>
+      <y>352</y>
+      <w>618</w>
+      <h>330</h>
+    </coordinates>
+    <panel_attributes>elements
+--
+bg=white
+layer=-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>690</x>
+      <y>388</y>
+      <w>132</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>unit
+--
+bg=white
+layer=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>802</x>
+      <y>498</y>
+      <w>56</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>260.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1100</x>
+      <y>470</y>
+      <w>22</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;300.0;40.0;300.0;40.0;10.0;90.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>998</x>
+      <y>398</y>
+      <w>244</w>
+      <h>276</h>
+    </coordinates>
+    <panel_attributes>building
+--
+bg=white
+layer=0</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1078</x>
+      <y>166</y>
+      <w>24</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;100.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1078</x>
+      <y>236</y>
+      <w>24</w>
+      <h>6</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;100.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1078</x>
+      <y>126</y>
+      <w>24</w>
+      <h>34</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;150.0;70.0;150.0;70.0;10.0;100.0;10.0</additional_attributes>
   </element>
 </diagram>
