@@ -60,6 +60,15 @@ You win if you manage to destroy the headquarter of your opponent and lose if yo
 ***PLAY***
 * Launch game
 
+#MISSING
+* tower implemention (so it can fire at enemies) ==> need to implement its update method and maybe create a element bullet
+* debug network playing
+* add Lan menu page to select founded game and cusomize game
+* display the number of population and the number of thorolyde
+* add a better end to the game when a player win
+* implement the option menu section
+
+
 
 
 
