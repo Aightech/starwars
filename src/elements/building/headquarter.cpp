@@ -12,6 +12,12 @@ void Headquarter::setting()
 	Element::elements()[HEADQUARTER_TYPE] = new Headquarter();
 };
 
+Headquarter::~Headquarter()
+{
+	m_player->lost()=true;
+	cout<< "end"<< endl;
+}
+
 Headquarter::Headquarter(int no, int px, int py,  Player * player): Element(no,px,py,player)
 {
 	m_width = s_width;
@@ -38,5 +44,7 @@ Request Headquarter::update()
 {
 	Request req={NO_REQUEST};
 //	cout << "hq update"<<endl;
+	if(m_HP < 10)
+		m_player->lost()=true;
 	return req;
 }

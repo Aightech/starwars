@@ -86,7 +86,6 @@ Request Unit::update()
 	if(clock()-m_clock>CLOCKS_PER_SEC/100)
 	{
 		m_clock=clock();
-		cout<< "try to move" << req.e<< endl;
 		req = reqMoveToTarget();
 		if(abs(m_targetX-m_x) < 50 && abs(m_targetY-m_y) < 50)
 		{
@@ -102,7 +101,6 @@ Request Unit::update()
 			req.val1 = 10;
 			//((Element*)ptr)->getDamage(10);
 		}
-		cout<< "end to move"<< req.e << endl;
 	}
 return req;
 }
