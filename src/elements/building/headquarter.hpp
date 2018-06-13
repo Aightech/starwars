@@ -18,7 +18,7 @@ class Headquarter: public Element
 
 	Headquarter(int no, int px, int py,  Player * player=NULL);
 
-	~Headquarter(){};
+	~Headquarter();
 	std::string getInfo(){return "Headquarter";};
 	Request update();
 	static void setting();

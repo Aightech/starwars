@@ -46,6 +46,8 @@ class Player
 	void removeElement(int no);
 	int no(){return m_no;};
 	int& turn(){return m_turn;};
+	
+	bool& lost(){return m_lost;}
 
 
 
@@ -62,6 +64,8 @@ class Player
 	int m_popMax=4;
 	int m_crystal;
 	int m_turn;
+	
+	bool m_lost=false;
 
 
 	list<Element *> m_elements;

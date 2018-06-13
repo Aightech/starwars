@@ -82,6 +82,16 @@ class Game: public  NetAPI
 	mutex* getElmtMtx(){return &m_elmtsMtx;};
 	
 	void setTurn(int playerNo);
+	
+	bool active()
+	{
+		if(m_looser>-1)
+		{
+			cout << "player " << m_looser << " lost!"<< endl;
+			return false;
+		}
+		return true;
+	}
 
 
 
@@ -91,6 +101,7 @@ class Game: public  NetAPI
 	
 	bool r_creationElement(Request *req);
 	Element* findElement(int no);
+	
 
 	/*! \brief represent the map and all its elements (each pixel contain 0 or the ID of the element it shows)*/
 	unsigned long int *m_map;
@@ -98,6 +109,7 @@ class Game: public  NetAPI
 	int m_mapWidth;
 
 	vector<Player *> m_players;
+	int m_looser=-1;
 	list<Element *> m_elements;
 	int m_elementsIndex;
 	int m_currentPlayer=0;

@@ -156,7 +156,7 @@ bool Game::processRequest(Request* req)
 	}
 	else//if the request is an action
 	{
-		cout<< "try smt"  << (int)req->e<< " type " << req->type <<endl;
+		//cout<< "try smt"  << (int)req->e<< " type " << req->type <<endl;
 		Element * e = findElement((int)req->e);
 		if(e!=NULL)
 		{
@@ -165,11 +165,9 @@ bool Game::processRequest(Request* req)
 				case R_MOVE://move the unit
 				{
 					m_elmtsMtx.lock();
-					cout<< "move" <<endl;
 					if(((Unit *)e)->move(req->val1,req->val2)==1)
 						sendUpdateAreaAround(((Unit *)(e)));
 					m_elmtsMtx.unlock();
-					cout<< "end move" <<endl;
 				}break;
 				case R_TARGET://change the target of a element
 				{
@@ -306,7 +304,11 @@ void Game::update()
 	//mode online
 	else if(m_isServer)//the server update continously each player
 		for(int i =0; i<m_players.size(); i++)
+		{
 			m_players[i]->update(1);
+			
+		}
+			
 	else//the client process the update of the server
 	{
 		char enter[1024];
@@ -315,6 +317,9 @@ void Game::update()
 			processServerUpdate(enter);
 		}
 	}
+	for(int i =0; i<m_players.size(); i++)
+		if(m_players[i]->lost())
+			m_looser = m_players[i]->no();
 }
 
 void Game::setTurn(int playerNo)

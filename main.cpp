@@ -26,7 +26,7 @@ int main(int argc,char ** argv)
 	game.startGUI();
 
 	//main loop updating the game state while it's active
-	while(game.GUIactive())
+	while(game.GUIactive()&&game.active())
 		game.update(); //update the game
 
 	return 0;
