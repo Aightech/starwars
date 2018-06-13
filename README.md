@@ -1,6 +1,6 @@
 
 
->```
+```
 >
 .______        ______   .______      ____    __    ____  ___      .______          _______.
 |   _  \      /  __  \  |   _  \     \   \  /  \  /   / /   \     |   _  \        /       |
@@ -10,8 +10,8 @@
 | _| `._____| \______/  |______/         \__/  \__/ /__/     \__\ | _| `._____|_______/    
 >                                                                                           
 >                                                                                                          
-> ```                              - REVENGE OF THE DROIDS -
-
+>                              - REVENGE OF THE DROIDS -
+``` 
 # starwars
 
 Created by Alexis DEVILLARD and Maëva ARLANDIS
@@ -83,51 +83,44 @@ Change the macro.txt file to change HP, Defense and other values.
 
 // GAME STRUCTURE
 
-Game created:
-___NetworkInterface created: 
-______ -listen GameServer requests (thread)
-______ -send GameServer requests
-______ -read and write to Rx et Tx Buffers
-___GUI created:
-______ (thread)
-______ - read Game data (players/units/building)
-______ - write and display the window
-______ - get user events
-______ - write Game data (players/units/building)
+* Game created:
+  * NetworkInterface created: 
+    * listen GameServer requests (thread)
+    * send GameServer requests
+    * read and write to Rx et Tx Buffers
+* GUI created: (thread)
+    * read Game data (players/units/building)
+    * write and display the window
+    * get user events
+    * write Game data (players/units/building)
 
 
 ***Menu selection***
-___play
-______solo
-______Lan
-_______*Show current hosted game(name/nbPlayers:nbMaxPlayer/IP/port) + pseudo textbox*
-_________host
-__________*create server process(port)the player 1 is the host* 
-_________join
-__________*Show creation game menu*
-__________*Options : GameName/Team(color/jedi/sith)/map/players joining the game/nbMaxPlayer*
-__________*Launch game*
-___option //default options are read in a text file
-____*Show Option game menu*
-____*Options : Port/Pseudo/ServerPort/...
-___quit
+* play 
+* lan
+(*Show current hosted game(name/nbPlayers:nbMaxPlayer/IP/port) + pseudo textbox*)
+  * host
+  (*create server process(port)the player 1 is the host*)
+  * join
+  (*Show creation game menu*)
+* Options : GameName/Team(color/jedi/sith)/map/players joining the game/nbMaxPlayer
+(option //default options are read in a text file)
+(*Show Option game menu*)
+* Options : Port/Pseudo/ServerPort/...
+* quit
 
-***Server***
+***PLAY***
+* Launch game
+
+#MISSING
+* tower implemention (so it can fire at enemies) ==> need to implement its update method and maybe create a element bullet
+* debug network playing
+* add Lan menu page to select founded game and cusomize game
+* display the number of population and the number of thorolyde
+* add a better end to the game when a player win
+* implement the option menu section
 
 
-***Launch game***
-
-___if(new message server)
-______get listactionTx and map
-
-___update list units and map = int[L*l][2]: ID and Life
-___send liste:actionTx[nbMaxElement] = [(int) type |(double) value ] 
-               
-***update list***
-___for element in listeElement
-______element.update(*actionRx,*actionRx,*map);
-_________process(actionRx[ID%10000])
-_________action(*actionTx,*map):move/contruct/attack/heal...
 
 
 
