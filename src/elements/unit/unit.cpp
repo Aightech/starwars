@@ -80,12 +80,13 @@ void Unit::unselect()
 Request Unit::update()
 {
 
-	Request req={NO_REQUEST,0,0,0,(unsigned long int)this};
+	Request req={NO_REQUEST,0,0,0};
+	req.e =(unsigned long int)m_no;
 	updatePos();
 	if(clock()-m_clock>CLOCKS_PER_SEC/100)
 	{
 		m_clock=clock();
-		
+		cout<< "try to move" << req.e<< endl;
 		req = reqMoveToTarget();
 		if(abs(m_targetX-m_x) < 50 && abs(m_targetY-m_y) < 50)
 		{
@@ -101,6 +102,7 @@ Request Unit::update()
 			req.val1 = 10;
 			//((Element*)ptr)->getDamage(10);
 		}
+		cout<< "end to move"<< endl;
 	}
 return req;
 }

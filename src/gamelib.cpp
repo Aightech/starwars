@@ -105,6 +105,7 @@ Player* Game::addPlayer(int no)
 {
 	//add a player to the array player of the game
 	m_players.push_back(new Player(this,no));
+	cout << "added player " << endl;
 	
 	//if main game, add a headquater to the player
 	if(!m_online || m_isServer)
@@ -151,107 +152,124 @@ bool Game::processRequest(Request* req)
 	//request of element creation
 	if(req->type/NB_MAX_ELEMENT==0)
 	{
-		//get the player of the new element by its numero
-		Player * p = (req->p==-1)?m_players[0]:m_players[req->p];
-		
-		/*Process to find player in a game with more than two player
-		if(req->p==-1)
-			p = m_players[0];
-		else 
-		{
-			int i =0;
-			while( i < m_players.size() && req->p != m_players[i]->no()){i++;}
-			if(i < m_players.size() && req->p == m_players[i]->no())
-				p = m_players[i];
-			else
-				p=addPlayer(req->p);
-		}*/
-		Element * e= Element::factory(req->type, (req->e==0)?m_elementsIndex:(req->e), req->val1, req->val2, p);
-		if(e==NULL)	return false;
-		if(req->val3 != -1)
-			e->HP() = req->val3;
-		p->addElement(e);
-		this->addElement(e);
-		sendUpdateAreaAround(e);
+		r_creationElement(req);
 	}
-	else
+	else//if the request is an action
 	{
-		switch(req->type)
+		cout<< "try smt"  << req->type <<endl;
+		Element * e = findElement(req->e);
+		if(e!=NULL)
 		{
-			case R_MOVE:
+			switch(req->type)
 			{
-				if(((Unit *)(req->e))->move(req->val1,req->val2)==1)
-					sendUpdateAreaAround(((Unit *)(req->e)));
-			}break;
-			case R_TARGET:
-			{
-				m_elmtsMtx.lock();
-				list<Element*>::iterator it = m_elements.begin();
-				while(it !=  m_elements.end() && (*it)->no() != (unsigned int)req->e) 
+				case R_MOVE://move the unit
 				{
-					m_elmtsMtx.unlock();
 					m_elmtsMtx.lock();
-					it++;
-				}
-				(*it)->setTarget(req->val1,req->val2);
-				m_elmtsMtx.unlock();
-			}break;
-
-			case R_ACTION:
-			case R_HEAL:
-			case R_ATTACK:
-			{
-				m_elmtsMtx.lock();
-				list<Element*>::iterator it = m_elements.begin();
-				while(it !=  m_elements.end() && (*it)->no() != (unsigned int)req->e) 
-				{
+					cout<< "move" <<endl;
+					if(((Unit *)e)->move(req->val1,req->val2)==1)
+						sendUpdateAreaAround(((Unit *)(e)));
 					m_elmtsMtx.unlock();
+					cout<< "end move" <<endl;
+				}break;
+				case R_TARGET://change the target of a element
+				{
 					m_elmtsMtx.lock();
-					it++;
-				}
-				int hp =(*it)->getDamage(req->val1);
-				m_elmtsMtx.unlock();
-				if(hp<0)
-				{
-					cout << "killing" << endl;
-					m_players[(*it)->player()->no()]->removeElement((unsigned int)req->e);
-					delete (*it);
-					m_elements.erase(it);
-				}
-				
-
-			}break;
-			case R_KILL:
-			{
-				m_elmtsMtx.lock();
-				list<Element*>::iterator it = m_elements.begin();
-				while(it !=  m_elements.end() && (*it)->no() != (unsigned int)req->e) 
-				{
+					e->setTarget(req->val1,req->val2);
 					m_elmtsMtx.unlock();
-					m_elmtsMtx.lock();
-					it++;
-				}
-				//m_players[(*it)->player->no()]->removeElement((unsigned int)req->e);
-				delete (*it);
-				m_elements.erase(it);
-				m_elmtsMtx.unlock();
+				}break;
 
-			}break;
+				case R_ACTION:
+				case R_HEAL:
+				case R_ATTACK:
+				{
+					m_elmtsMtx.lock();
+					int hp =e->getDamage(req->val1);
+					m_elmtsMtx.unlock();
+					if(hp<0)
+					{
+						cout << "killing" << endl;
+						m_players[e->player()->no()]->removeElement((unsigned int)req->e);
+						list<Element*>::iterator it = m_elements.begin();
+						while(it !=  m_elements.end() && (*it) != e) {it++;}
+						delete e;
+						m_elements.erase(it);
+					}
+				}break;
+			}
 		}
 	}
-	
 	return true;
 }
+
+Element * Game::findElement(int no)
+{
+	if(no == -1)
+		return NULL;
+	m_elmtsMtx.lock();
+	list<Element*>::iterator it = m_elements.begin();
+	while(it !=  m_elements.end() && (*it)->no() != no) 
+	{
+		m_elmtsMtx.unlock();
+		m_elmtsMtx.lock();
+		it++;
+	}
+	m_elmtsMtx.unlock();
+	if(it !=  m_elements.end() && (*it)->no() == no)
+		return (*it);
+	else
+		return NULL;
+}
+
+
+bool Game::r_creationElement(Request *req)
+{
+	//get the player of the new element by its numero
+	Player * p = (req->p==-1)?m_players[0]:m_players[req->p];
+	
+	/*Process to find player in a game with more than two player
+	if(req->p==-1)
+		p = m_players[0];
+	else 
+	{
+		int i =0;
+		while( i < m_players.size() && req->p != m_players[i]->no()){i++;}
+		if(i < m_players.size() && req->p == m_players[i]->no())
+			p = m_players[i];
+		else
+			p=addPlayer(req->p);
+	}*/
+	//allocate the new element thanks two the static method factory that return a element of the right type
+	Element * e= Element::factory(req->type, (req->e==0)?m_elementsIndex:(req->e), req->val1, req->val2, p);
+	if(e==NULL)	return false;
+	if(req->val3 != -1)//if hp has been specified 
+		e->HP() = req->val3;
+	//add the element to the game array
+	p->addElement(e);
+	//add the element to the right player
+	this->addElement(e);
+	
+	//update the area around the new element
+	sendUpdateAreaAround(e);
+}
+
 
 bool Game::sendUpdate(Element * e)
 {
 	char updateMsg[512];
+	
+	//format of an update 
+	//|   M   |   U   |   E   | int  | T  |  int   |  X  | int |  Y  | int |  H  | int |  P   | int
+	//|message|update |Element|numero|type|TYPE_VAL|pos X|value|pos Y|value|  HP |value|player|numero
 	sprintf(updateMsg,"MUE%dT%dX%dY%dH%dP%d", e->no(), e->type(), e->x(), e->y(), e->HP(),e->player()->no());
 	sendToClient(ALL_CLIENT,updateMsg);
 }
 
 bool Game::sendUpdateAreaAround(Element * e)
 {
+	if(!m_online)
+		return false;
+		
+	//get element infos
 	int e_height = e->height();
 	int e_width  = e->width();
 	int e_y = e->y();
@@ -261,32 +279,35 @@ bool Game::sendUpdateAreaAround(Element * e)
 	int i_end = (e_y + e_height < m_mapHeight)?e_y + e_height:m_mapHeight;
 	int j_end = (e_x + e_width  < m_mapWidth )?e_x + e_width: m_mapWidth ;
 	
-	
+	//look for other ellement in the area around it
 	for(int i = i_start; i < i_end+4 ; i+=5 )
 		for(int j = j_start; j < j_end+4 ; j+=5 )
 			if(m_map[i*m_mapWidth + j] != 0)
 				sendUpdate((Element*) m_map[i*m_mapWidth + j]);
+	return true;
 }
 
 
 void Game::update()
 {
+	//if the server have a new client it have to had a player
 	if(m_isServer && m_players.size() < m_clientIndex)
 	{
-		cout << "added player " << m_players.size() << endl;
 		m_players.push_back(new Player(this,m_players.size()));
 	}
 	
+	//mode offline
 	if(!m_online)
 	{
 		for(int i =0; i<m_players.size(); i++)
 			if(m_players[i]->turn())
 				m_players[i]->update(50000);
 	}
-	else if(m_isServer)
+	//mode online
+	else if(m_isServer)//the server update continously each player
 		for(int i =0; i<m_players.size(); i++)
 			m_players[i]->update(1);
-	else
+	else//the client process the update of the server
 	{
 		char enter[1024];
 		if(getReceiverBuffer(enter)>-1)
@@ -322,18 +343,19 @@ int Game::processServerUpdate(char * buffer)
 		
 		if(no == -1)
 			return -1;
-			
+		
+		//find the element in the list and update it
 		for(list<Element*>::iterator it = m_elements.begin(); it !=  m_elements.end(); it++) 
 		{
 			if((*it)->no()== no)
 			{
-//				(*it)->x()  = parseNumber(buffer,'X',(*it)->x());
-//				(*it)->y()  = parseNumber(buffer,'Y',(*it)->y());
-//				(*it)->HP() = parseNumber(buffer,'H',(*it)->HP());
-				(*it)->updateStatut(parseNumber(buffer,'X',(*it)->x()), parseNumber(buffer,'Y',(*it)->y()), parseNumber(buffer,'H',(*it)->HP()));
+				(*it)->updateStatut(	parseNumber(buffer,'X',(*it)->x()),
+							parseNumber(buffer,'Y',(*it)->y()),
+							parseNumber(buffer,'H',(*it)->HP())	);
 				return 1;
 			}
 		}
+		//if the element hasn't been found it have to be create
 		Request r = {	parseNumber(buffer,'T',NO_REQUEST),
 				parseNumber(buffer,'X',10),
 				parseNumber(buffer,'Y',10),

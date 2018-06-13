@@ -130,7 +130,7 @@ int Button::update(RenderWindow &w)
        {
               m_click=1;
               if(m_state==-1) return 0;
-              cout << "hey:" << m_state << endl;
+              //cout << "hey:" << m_state << endl;
               if(m_state==0)
               {
                      m_state=1;
@@ -141,7 +141,7 @@ int Button::update(RenderWindow &w)
                      m_state=0;
                      m_button.setTextureRect(IntRect(0, 0, m_width, m_height));
               }
-              cout << "hey:" << m_state << endl;
+              //cout << "hey:" << m_state << endl;
               if(m_fctCllBck!=NULL)
               	(*m_gui.*m_fctCllBck)(m_nb);
               return m_nb;

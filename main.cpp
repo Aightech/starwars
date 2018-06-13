@@ -20,6 +20,7 @@ int main(int argc,char ** argv)
 
 	//The objetct game is able to run game offline/online graphic/nographic 
 	Game game; 
+	game.verbose();
 
 	//initialize and start a graphic interface thread
 	game.startGUI();

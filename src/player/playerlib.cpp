@@ -48,12 +48,14 @@ void Player::update(int step)
 		m_elmtsMtx->lock();
 		for(list<Element*>::iterator it = m_elements.begin(); it !=  m_elements.end(); it++) 
 		{
+			//cout << (*it)->no()<<endl;
 			m_elmtsMtx->unlock();
 			m_elmtsMtx->lock();
 			r = (*it)->update();
 			m_elmtsMtx->unlock();
 			m_game->request(&r);
 			m_elmtsMtx->lock();
+			//cout << "test6"<<endl;
 		}
 		m_elmtsMtx->unlock();
 		

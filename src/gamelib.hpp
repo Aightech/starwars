@@ -79,7 +79,7 @@ class Game: public  NetAPI
 	int processPlayerRequest(char * buffer);
 	int processServerUpdate(char * buffer);
 	
-	mutex* getElmtMtx(){return &m_elmtsMtx;}
+	mutex* getElmtMtx(){return &m_elmtsMtx;};
 	
 	void setTurn(int playerNo);
 
@@ -88,6 +88,9 @@ class Game: public  NetAPI
 	private:
 	GUI* m_gui;
 	thread* m_gui_thread;
+	
+	bool r_creationElement(Request *req);
+	Element* findElement(int no);
 
 	/*! \brief represent the map and all its elements (each pixel contain 0 or the ID of the element it shows)*/
 	unsigned long int *m_map;

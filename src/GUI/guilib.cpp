@@ -84,7 +84,7 @@ int GUI::start(void *pgame)
 				if(c=='p')
 				{
 					std::cout << "Attack " << std::endl;
-					m_game->test();
+					//m_game->test();
 				}
 			}
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Left))

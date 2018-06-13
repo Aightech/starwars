@@ -36,6 +36,7 @@ Headquarter::Headquarter(int no, int px, int py,  Player * player): Element(no,p
 
 Request Headquarter::update()
 {
-	Request req;
+	Request req={NO_REQUEST};
+//	cout << "hq update"<<endl;
 	return req;
 }
