@@ -102,14 +102,14 @@ Request Unit::update()
 			req.val1 = 10;
 			//((Element*)ptr)->getDamage(10);
 		}
-		cout<< "end to move"<< endl;
+		cout<< "end to move"<< req.e << endl;
 	}
 return req;
 }
 
 Request Unit::reqMoveToTarget()
 {
-	Request req={NO_REQUEST,0,0,0,(unsigned long int)this};
+	Request req={NO_REQUEST,0,0,0,(unsigned long int)m_no};
 	req.type=R_MOVE;
 	if(m_dx < m_dy)
 	{

@@ -156,8 +156,8 @@ bool Game::processRequest(Request* req)
 	}
 	else//if the request is an action
 	{
-		cout<< "try smt"  << req->type <<endl;
-		Element * e = findElement(req->e);
+		cout<< "try smt"  << (int)req->e<< " type " << req->type <<endl;
+		Element * e = findElement((int)req->e);
 		if(e!=NULL)
 		{
 			switch(req->type)
