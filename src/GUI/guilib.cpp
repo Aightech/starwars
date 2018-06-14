@@ -213,7 +213,15 @@ void GUI::menu(int select)
 		
 		case SEARCH_BUTT:
 		{
-			m_game->scan(2000,20,90);
+			char servers[5][16];
+			char text[1024];
+			int n=m_game->scan(2000,servers,20,90);
+			for(int i =0;i<n;i++)
+			{
+				m_arrayButton.push_back(new Button(this,"media/theme/lanButton.png",923,50,Vector2f(window.getSize().x/2-500+38,window.getSize().y/2-270+175),&GUI::selectServer,i));
+				sprintf(text,"             name: star attack      host: aightech      player: 1/2    ip: %s ",servers[i]);
+				m_arrayButton.back()->setString(text);
+			}
 		}break;
 
 		case HOST_BUTT:
@@ -354,8 +362,8 @@ void GUI::createContext()
 			m_arrayButton.push_back(new Button(this, "search",Vector2f(window.getSize().x/2-500+590,window.getSize().y/2-270+455),SEARCH_BUTT,&GUI::menu));
 			m_arrayButton.push_back(new Button(this, "back",Vector2f(window.getSize().x/2-500+845,window.getSize().y/2-270+479),BACK_BUTT,&GUI::menu));
 			
-			m_arrayButton.push_back(new Button(this,"media/theme/lanButton.png",923,50,Vector2f(window.getSize().x/2-500+38,window.getSize().y/2-270+175),&GUI::selectServer,0));
-			m_arrayButton.back()->setString("             name: star attack      host: aightech      player: 1/2    ip: 192.168.0.1 ");
+			
+			
 		}
 		break;
 		case OPTION_MENU:
