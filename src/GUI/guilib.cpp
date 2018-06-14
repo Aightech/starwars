@@ -175,7 +175,7 @@ void GUI::selectServer(int no)
 
 void GUI::menu(int select)
 {
-	
+	cout <<"selected"<< select << endl;
 	switch(abs(select))
 	{
 		case PLAY_BUTT:
@@ -210,6 +210,11 @@ void GUI::menu(int select)
 			createContext();
 		}
 		break;
+		
+		case SEARCH_BUTT:
+		{
+			m_game->scan(2000,20,90);
+		}break;
 
 		case HOST_BUTT:
 		{
