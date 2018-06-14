@@ -25,6 +25,7 @@ class Button
 	void create(std::string s, sf::Vector2f position,int nb = 0);
 	~Button(){s_nb--;};//std::cout<<"deleted"<<std::endl;};
 	
+	void setString(std::string s, Color color =Color(255,255,255));
 	static void setTexture(const std::string &filename, int pw, int ph)
 	{s_texture->loadFromFile(filename);s_width=pw;s_height=ph;
 	s_infoBox->loadFromFile(GAME_THEME_INFOBOX);};

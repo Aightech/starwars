@@ -13,12 +13,14 @@
 using namespace sf;
 using namespace std;
 
+
 GUI::GUI(unsigned long int * map, int width, int height)
 {
 
 	//////------- Loading different fonts ------- /////
 	Button::setFont(GAME_FONT_BUTTON);
 	Button::setTexture(GAME_THEME_BUTTON,137,50);
+	Textbox::setFont(GAME_FONT_BUTTON);
 
 	//////------- WINDOW SETTING ------- /////
 	window.create(VideoMode(WIN_W,WIN_H), GAME_NAME); 
@@ -166,6 +168,11 @@ void GUI::buildElement(int type)
 	m_elementSelectedType = type;
 }
 
+void GUI::selectServer(int no)
+{
+	//m_selectedSever = no;
+}
+
 void GUI::menu(int select)
 {
 	
@@ -187,7 +194,8 @@ void GUI::menu(int select)
 		case JOIN_BUTT:
 		{
 			m_game->setOnline(2001); //comment if offline
-			m_playerTurn = m_game->connectToServer(2000,(char *)"127.0.0.1"); //comment if offline
+			
+			m_playerTurn = m_game->connectToServer(2000,"196.168.0.1"); //comment if offline
 			if(m_playerTurn == 0 || m_playerTurn == 1)
 			{
 				m_game->addPlayer(m_playerTurn);
@@ -297,6 +305,7 @@ void GUI::createContext()
 		case MAIN_MENU:
 		{
 			
+			
 			m_arrayAnimation.push_back(new Animation("media/theme/game_logo.png",110,30));
 			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,233,4));
 			
@@ -324,13 +333,24 @@ void GUI::createContext()
 		case LAN_MENU:
 		{
 			//std::cout << "Menu " << std::endl<< std::endl<< std::endl;
-			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,233,4));
+			//m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",200,400,232,233,4));
+			
+			m_arrayTextBox.push_back(new Textbox("barbe bleu",Vector2f(window.getSize().x/2-500+38,window.getSize().y/2-270+97)));
+			m_arrayTextBox.push_back(new Textbox("2002",Vector2f(window.getSize().x/2-500+328,window.getSize().y/2-270+97)));
+			m_arrayTextBox.push_back(new Textbox("192.168.0.2",Vector2f(window.getSize().x/2-500+498,window.getSize().y/2-270+97)));
+			
+			m_arrayAnimation.push_back(new Animation("media/theme/lanMenu.png",window.getSize().x/2-500,window.getSize().y/2-270,1000,539));
+			m_arrayAnimation.push_back(new Animation("media/theme/porg_232.png",0,0,1,1));
 			string buttonsLabel[]={"host","join","back"};
 			int buttonIndex[]={HOST_BUTT,JOIN_BUTT,BACK_BUTT};
-			for(int i=0;i<3;i++)
-			{
-				m_arrayButton.push_back(new Button(this,buttonsLabel[i],Vector2f(window.getSize().x*(1+i)/5,window.getSize().y*7/8),buttonIndex[i],&GUI::menu));
-			}
+			
+			m_arrayButton.push_back(new Button(this, "host",Vector2f(window.getSize().x/2-500+140,window.getSize().y/2-270+455),HOST_BUTT,&GUI::menu));
+			m_arrayButton.push_back(new Button(this, "join",Vector2f(window.getSize().x/2-500+370,window.getSize().y/2-270+455),JOIN_BUTT,&GUI::menu));
+			m_arrayButton.push_back(new Button(this, "search",Vector2f(window.getSize().x/2-500+590,window.getSize().y/2-270+455),SEARCH_BUTT,&GUI::menu));
+			m_arrayButton.push_back(new Button(this, "back",Vector2f(window.getSize().x/2-500+845,window.getSize().y/2-270+479),BACK_BUTT,&GUI::menu));
+			
+			m_arrayButton.push_back(new Button(this,"media/theme/lanButton.png",923,50,Vector2f(window.getSize().x/2-500+38,window.getSize().y/2-270+175),&GUI::selectServer,0));
+			m_arrayButton.back()->setString("             name: star attack      host: aightech      player: 1/2    ip: 192.168.0.1 ");
 		}
 		break;
 		case OPTION_MENU:
@@ -427,6 +447,9 @@ int GUI::update()
 	
 	for(int i=0;i<m_arrayText.size();i++)
 		window.draw(*m_arrayText[i]);
+		
+	for(int i=0;i<m_arrayTextBox.size();i++)
+		m_arrayTextBox[i]->update(window);
 		
 	
 

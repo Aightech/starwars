@@ -51,7 +51,7 @@
 #define HOST_BUTT 7
 #define JOIN_BUTT 8
 #define START_BUTT 9
-#define REFRESH_BUTT 10
+#define SEARCH_BUTT 10
 
 #define KILL_P1_BUTT 21
 #define KILL_P2_BUTT 22
@@ -101,6 +101,7 @@ class GUI
        void menu(int type);
        void buildElement(int type);
        void nextButton(int playerNo);
+       void selectServer(int no);
        
        int update();
        

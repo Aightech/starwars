@@ -106,6 +106,19 @@ void Button::create(std::string s, sf::Vector2f position,int nb)
 	m_nb=nb;
 }
 
+void Button::setString(std::string s, Color color)
+{
+	m_label.setFont(*s_font);
+	m_label.setString(s);
+	m_label.setCharacterSize(20);
+	m_label.setPosition(Vector2f(btPos.x+(btSize.width-s.size()*13)/2, btPos.y+(btSize.height-5-20)/2));
+	#if SFML_VERSION_MAJOR == 2 && SFML_VERSION_MINOR >= 4
+		m_label.setFillColor(color);
+	#else
+		m_label.setColor(color);
+	#endif
+}
+
 int Button::update(RenderWindow &w)
 {            
 //       

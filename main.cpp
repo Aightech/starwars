@@ -12,12 +12,13 @@
 /*!
 Run to start the graphic interface and play a game online or offline
 */
-
+char* ip= "196.168.0.1";
 
 int main(int argc,char ** argv)
 {
 	srand(time(NULL));
-
+	if(argc>1)
+		ip = argv[1];
 	//The objetct game is able to run game offline/online graphic/nographic 
 	Game game; 
 	game.verbose();
