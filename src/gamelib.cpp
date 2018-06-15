@@ -104,7 +104,9 @@ void Game::addElement(Element * element)
 Player* Game::addPlayer(int no)
 {
 	//add a player to the array player of the game
+	m_elmtsMtx.lock();
 	m_players.push_back(new Player(this,no));
+	m_elmtsMtx.unlock();
 	cout << "added player " << endl;
 	
 	//if main game, add a headquater to the player
@@ -293,7 +295,6 @@ void Game::update()
 	{
 		m_players.push_back(new Player(this,m_players.size()));
 	}
-	
 	//mode offline
 	if(!m_online)
 	{
@@ -301,6 +302,7 @@ void Game::update()
 			if(m_players[i]->turn())
 				m_players[i]->update(50000);
 	}
+	
 	//mode online
 	else if(m_isServer)//the server update continously each player
 		for(int i =0; i<m_players.size(); i++)
@@ -317,9 +319,11 @@ void Game::update()
 			processServerUpdate(enter);
 		}
 	}
+	m_elmtsMtx.lock();
 	for(int i =0; i<m_players.size(); i++)
 		if(m_players[i]->lost())
 			m_looser = m_players[i]->no();
+	m_elmtsMtx.unlock();
 }
 
 void Game::setTurn(int playerNo)
